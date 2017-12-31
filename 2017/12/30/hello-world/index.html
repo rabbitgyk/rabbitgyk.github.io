@@ -37,6 +37,8 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
 
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css?rev=9.12.0">
@@ -202,8 +204,20 @@
 
     <div id="comments">
         
-    <div id="uyan_frame"></div>
-    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2154221"></script>
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
 
 
 
