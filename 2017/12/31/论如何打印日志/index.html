@@ -175,9 +175,12 @@
 <h2 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h2><p><strong>1. 方便定位问题的日志如何打</strong><br><strong>2. 显示程序运行状态的日志如何打</strong><br><strong>3. 可以用作运营统计的日志如何打</strong><br><strong>4. 什么样的日志不应该打</strong></p>
 <h2 id="1-方便定位问题的日志"><a href="#1-方便定位问题的日志" class="headerlink" title="1. 方便定位问题的日志"></a>1. 方便定位问题的日志</h2><p>这是日志的最主要的用途。</p>
 <ul>
-<li>日志明确标志属于哪次请求<br>打印的每一条日志中尽量包含请求流水号，以便区分这条日志是属于哪次请求的日志，日志样例：<pre><code class="java">log.warn(&quot;账户创建和升级功能，无法识别操作类型（0：创建，1：升级），请求流水号：{}，当前值：{}&quot; , flowNo, operType);
+<li>日志明确标志属于哪次请求<br>打印的每一条日志中尽量包含请求流水号，以便区分这条日志是属于哪次请求的日志，日志样例：</li>
+</ul>
+<pre><code class="java">log.warn(&quot;账户创建和升级功能，无法识别操作类型（0：创建，1：升级），请求流水号：{}，当前值：{}&quot; , flowNo, operType);
 </code></pre>
-如果获取不到流水号，则需要打印明确能缩小日志归属范围的字段信息，如用户号、协议号、手机号等。</li>
+<p>如果获取不到流水号，则需要打印明确能缩小日志归属范围的字段信息，如用户号、协议号、手机号等。</p>
+<ul>
 <li>在对外提供的接口入口处打印一条日志<br>打印接口的唯一标识和中文（如果你English enough可以打英文）简短描述，并且要将调用方传入的参数原样打印出来。这样当系统出现问题时，你就能很容易的判断出是否是调用方出现了问题。日志样例：<pre><code>log.info(&quot;addUpAccount&amp;账户创建和升级接口，外部系统入参：{}&quot; , JSONObject.toJSONString(request));
 </code></pre></li>
 <li>在调用其它系统接口的前后各打印一条日志<br>打印所调用接口的系统名称/接口名称和传入参数/响应参数，这样能方便做问题定界，通过这两条日志可以清楚地看出是否是所调用的系统出现了问题，传染到我了。日志样例：<pre><code>log.info(&quot;调用cif业务订购，bcc入参：{}&quot;  , JSONObject.toJSONString(request));
