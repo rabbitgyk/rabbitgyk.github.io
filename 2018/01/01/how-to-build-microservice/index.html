@@ -1,0 +1,401 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://rabbitgyk.github.io">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>如何构建微服务架构 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw "></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw "></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw "></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw "></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="如何构建微服务架构">
+            
+            如何构建微服务架构
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            微服务
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/01</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>“微服务”的概念兴起于四五年前，近几年尤其火热，各大厂都在进行微服务化改造和微服务建设。最近一年来我们也参与了微服务化的改造大军，这里写下一些做微服务系统设计和开发时的切身感受。</p>
+</blockquote>
+<p><img src="/2018/01/01/how-to-build-microservice/head.png" alt="题图"></p>
+<h2 id="01-微服务架构"><a href="#01-微服务架构" class="headerlink" title="01 微服务架构"></a>01 微服务架构</h2><p>说起微服务，不得不提那篇经典的文章，来自Martin Flower的<a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">《Microservices》</a>，建议多读几遍。Martin Flower是敏捷开发方法创始人之一，《重构》《企业应用架构模式》作者，ThoughtWorks公司的首席科学家。微服务虽然不是在这篇文章中首次提出，但是它将发展多年的微服务架构进行了重要性总结，推动了微服务的流行。</p>
+<p>Martin在文章中从多个方面详细阐述了微服务的概念，首先作者对比单体应用的架构，一个单体应用处理请求的所有逻辑都运行在一个单独的进程中，这种情况下，你可以在笔记本上开发、测试、部署都很简单，还可以通过负载均衡进行横向扩展，最后交付给运维团队。单体应用非常成功，但是越来越多的人感觉不妥，尤其是在云中部署的时候，任何微小的变更都要整体重新构建和部署，扩展的时候也需要整体扩展，不能进行部分扩展。这时候微服务架构风格就出现了，它提出将应用程序构建为一套服务，每个服务都可以独立部署和扩展，运行在独立的进程中，服务之间通过RPC调用进行通信。微服务的应用致力于松耦合和高内聚：采用单独的业务逻辑封装，接受请求、处理业务逻辑、返回响应，而且喜欢简单的REST风格，而不喜欢复杂的协议，最终实现敏捷开发。</p>
+<p><img src="/2018/01/01/how-to-build-microservice/monolithic-and-micro.jpeg" alt="单体架构和微服务架构图"></p>
+<p>微服务不是什么框架，也不是什么系统，只是一种架构风格。我们所使用的DSF（华为）、DUBBO（阿里）、Spring Clould（pivotal）等框架，在介绍中都称是分布式服务框架。这些分布式服务框架都是微服务架构必不可少的基础能力，微服务一定是分布式的。分布式服务的概念比较模糊，只是解决了网站的高并发问题，很多细节问题是微服务帮其明确的。微服务更加强调敏捷和健壮，强调服务的粒度，一个服务只需完成一个单一的、独立的功能，多个微服务组合完成相对复杂的业务系统，以满足需求。而且微服务注重借助于各种中间件进行业务解耦和提高性能，以及提高服务的容错性。</p>
+<p>从上面的介绍中我们可以看出，微服务架构有很多优点。例如，服务的拆分将复杂问题简单化；每个服务由专门的团队开发，开发者可以自由选择实现技术，提供API服务；每个微服务都可独立部署，加快了部署速度；每个服务可独立扩展以满足需求。微服务不是免费的午餐，微服务架构也有缺点。微服务概念强调了服务的大小，但是服务变小不是最终目的，微服务的目的是有效地拆分应用，实现敏捷开发和部署；微服务应用都是分布式系统，需要通过RPC进程间通信完成服务调用，这样大大增加了系统的复杂性，因此必须写代码处理由于网络或者服务不可用等导致的调用失败问题，虽然一般框架都支持相关配置，但是在这种情况下微服务显得相对复杂些；在微服务架构的应用中，建议不同的服务使用不同的数据库，这种情况下，一个交易一般会调用多个服务，同时需要修改多个数据库，由于CAP理论和其它的一些因素，并不能实时地保证数据的一致性，因此不得不使用最终一致性的方法，从而对开发者提出了更高的要求和挑战；测试一个微服务架构的应用也是很复杂的任务，首先需要启动和它相关的所有服务（至少需要这些服务的stubs）。最后还是要强调一下，不要低估了微服务架构带来的复杂性，下面介绍一下我们如何应对这样的复杂性。<br>微服务架构给我们带来方便的同时，也引入一定的系统复杂性，最近几年随着基础设施自动化技术的发展，比如云平台、容器技术，再加上自动化测试与持续集成，减少了构建、发布、运维微服务的复杂性。因此我们的微服务团队应该依赖基础设施自动化技术构建软件，下图说明这种构建的流程：</p>
+<p><img src="/2018/01/01/how-to-build-microservice/build-flow.png" alt="基本的构建流程"></p>
+<p>在构建微服务软件时使用的分布式服务框架也拥有很多特性，这些特性提供了很多复杂问题的解决方案，比如异步调用、超时失败策略、故障隔离、健康检查、流量控制以及自定义路由等，这些特性大大减轻了开发者处理逻辑的负担，还有一些高性能、高可用的保障都增加了我们构建微服务的信心。而且经过多年的微服务实践者的摸索，也总结出了很多辅助运维系统，比如统一日志收集（ELK）、服务管理、服务监控和服务治理等，大大减轻了运维的工作，而且能让我们对复杂的微服务系统做到心中有数。</p>
+<p>总之，微服务架构入坑容易，坑了呆得舒服难。各种基础设施和配套系统必须跟得上，还得有一个具有微服务特性的团队，才能真正驾驭得了微服务。</p>
+<blockquote>
+<p>两个值得深入的话题：<br>1.微服务与持续集成<br>2.微服务与测试</p>
+</blockquote>
+<h2 id="02-微服务团队"><a href="#02-微服务团队" class="headerlink" title="02 微服务团队"></a>02 微服务团队</h2><p>上一节中说到更适合构建微服务应用的微服务团队，什么时微服务团队？说一个比较现实的问题，当我们做服务拆分的时候，通常管理都会集中在技术层面，涉及到UI团队、服务端业务逻辑团队、数据库团队、测试团队和运维团队。当采用这种标准对团队进行划分时，即使时小小的变更都将导致跨团队项目协作，从而消耗时间和预算审批。这就是 Conway’s Law ：</p>
+<blockquote>
+<p>设计一个系统的任何组织（广义上）都会产生这样一种设计，其结构是组织交流结构的复制。<br>——Melvyn Conway, 1967 </p>
+</blockquote>
+<p>Melvyn Conway 的意思是设计一个系统的团队结构将决定了一个软件系统的结构，将人员划分为 UI 团队，中间件团队，DBA 团队，那么相应地，软件系统也就会自然地被划分为 UI 界面，中间件系统，数据库。而一个高效的微服务团队会针对这种情况进行改善，微服务团队需要是一个全栈的团队，跨职能的团队，应该包含整个项目周期的所有技能，前后端开发、UI设计、测试、构建部署、上线与运维都是必须技能。</p>
+<p>微服务团队除了熟练的业务逻辑开发之外，还需要有DevOps能力、服务的快速构建、良好的团队文化：</p>
+<ul>
+<li>首先DevOps能力是保证持续交付和应对复杂运维问题的动力之源，运维人员不懂开发人员的服务设计和调用流程，开发人员不懂产品环境和整体配置结构，开发和运维的融合才能更好的应对微服务架构。正如下面这句话所说的，“你构建，你运维”。</li>
+</ul>
+<blockquote>
+<p>You build it, you own it. – Amazon CTO</p>
+</blockquote>
+<p>因此，需要打造DevOps文化，将运维作为需求提前注入到开发流程中。</p>
+<p><img src="/2018/01/01/how-to-build-microservice/devops.png" alt="DevOps流程"></p>
+<ul>
+<li><p>其次保持服务的持续演进，使服务能够快速、低成本地被拆分和合并，以快速响应业务的变化。</p>
+</li>
+<li><p>同时要保持团队和架构的对齐，微服务看似是技术层面的变革，但它对团队结构和组织文化有很强的要求和影响，识别和构建匹配架构的团队是解决问题的加速器。微服务团队的另一个关键点是持续改进、持续学习和反馈，只有保持这样一个文化氛围，微服务架构才能持续发展下去，保持新鲜的生命力，进而实现我们的初衷。</p>
+</li>
+</ul>
+<p>专业的微服务团队，为微服务保驾护航。</p>
+<h2 id="03-项目的微服务设计实践"><a href="#03-项目的微服务设计实践" class="headerlink" title="03 项目的微服务设计实践"></a>03 项目的微服务设计实践</h2><p>我们在各种基础设施不健全的情况下，匆忙进入了微服务改造的深渊。原来的单体应用按照功能拆分成了下面的结构：</p>
+<p><img src="/2018/01/01/how-to-build-microservice/micro-layer.png" alt="微服务下的系统分层"></p>
+<p>拆分之后，模块突然变多了。将内部业务逻辑和原子功能拆分出来，实现了部分功能的复用，并且对外的接口按类型区分到不同的模块中去了，方便了使用，但是增加了管理的难度。</p>
+<p>从上面我们对微服务架构的了解，一个微服务系统会有大量的服务组成，服务之间的层次关系依然是存在的，但是调用顺序上的要求会有所降低，只要满足严格的上层调用下层即可，在某些简单的业务功能上允许跨层调用。</p>
+<p><img src="/2018/01/01/how-to-build-microservice/architecture-compare.png" alt="架构对比图"></p>
+<p>上图是三种架构（集中式、分布式、微服务架构）的形象化展示。可以看到微服务的一个状态，乍看起来有些混乱，如果还按照以前的管理方式维护项目的话，工作量会成指数级增长，人力所无法胜任的工作。</p>
+<p>这时候就需要依赖一些分布式服务框架，并建立一些辅助运维系统：</p>
+<ol>
+<li>首先服务之间远程调用，服务的注册和发现机制必须有好的<strong>分布式服务框架</strong>（类似dubbo）支持，方便做服务之间的调用配置管理。</li>
+<li>部署的服务进程增加以后，对应的日志文件也会增多，这时再使用ssh到服务器上查看日志，这个工作量也是可想而知的。我们对业务日志做了规范化约束，然后使用<strong>ELK</strong>技术栈搭建了日志集中化管理系统。</li>
+<li>为了能够对线上的所有服务有个全局的把控，我们根据注册中心的数据搭建了<strong>服务的管理系统</strong>，展示各个维度的统计数据，例如，每个主机上多少个应用，每个应用提供了多少个服务，同时又消费了多少个服务等等。还有一些针对服务的约束规则的告警信息，例如某个应用消费的服务，却没有服务提供者等。还有一个整体的应用之间的依赖关系图。</li>
+<li>为了优化系统结构和排查问题，搭建了<strong>服务的监控系统</strong>，这个是依赖分布式服务框架打印的预统计日志的，通过这些日志分析得到一个整体的服务监控功能，例如每个服务的响应时间、错误率等。还有调用链跟踪功能，排查问题时使用它来跟踪请求信息。</li>
+<li><strong>服务治理</strong>功能用来及时地对线上项目做一些调整，例如限流、降级、负载均衡、超时、路由、隔离容错等。</li>
+</ol>
+<p>有了以上这些系统辅助，我们的微服务化改造之路平坦了许多。</p>
+<p>在进行微服务化改造的时候，接口的设计上遇到了一个问题，服务之间的调用是通过私有协议进行的RPC调用，这种调用中<strong>如何描述服务响应成功之外的其他异常情况？</strong></p>
+<blockquote>
+<p>1.采用Exception类，定义各种异常类来描述异常情况。<br>2.采用错误码＋错误描述。</p>
+</blockquote>
+<p>其中方案1采用的Exception类，是我们平时java中定义进程内部接口最常见的方法，这种方法的优点是，能够使调用接口的一方的代码更简洁，通过try…catch来处理，如果不需要处理的话，在方法上声明直接向上抛出即可。缺点是跨语言开发解析难度大增，而且日志中异常堆栈很多。方案2采用错误码的形式恰恰相反，缺点就是每次调用都要判读是否调用成功，增加代码中的if语句。</p>
+<h4 id="针对这个问题，希望各位实践分布式服务或者微服务的大神给出你们的实践方案，疯狂讨论起来。"><a href="#针对这个问题，希望各位实践分布式服务或者微服务的大神给出你们的实践方案，疯狂讨论起来。" class="headerlink" title="针对这个问题，希望各位实践分布式服务或者微服务的大神给出你们的实践方案，疯狂讨论起来。"></a>针对这个问题，希望各位实践分布式服务或者微服务的大神给出你们的实践方案，疯狂讨论起来。</h4><h2 id="04-结束语"><a href="#04-结束语" class="headerlink" title="04 结束语"></a>04 结束语</h2><p>上述三节中讲述了我们在构建微服务的经历和一些感想，给其他准备实施微服务和正在实施微服务的团队以参考，写这篇文章的另一个目的就是希望能起到抛砖引玉的作用，希望能和其他团队进一步交流。</p>
+<p><img src="/2018/01/01/how-to-build-microservice/gao.png" alt="搞微服务"></p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/01/论如何打印日志/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">3</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/微服务/" style="font-size: 10px;">微服务</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">个人博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2017
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
