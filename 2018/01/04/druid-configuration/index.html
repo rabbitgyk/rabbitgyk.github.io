@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>2018，新年快乐 | rabbitGYK&#39;s blog</title>
+<title>druid连接池推荐配置 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -131,9 +131,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="2018，新年快乐">
+        <h1 id="druid连接池推荐配置">
             
-            2018，新年快乐
+            druid连接池推荐配置
             
         </h1>
         <div class="post-meta">
@@ -141,7 +141,7 @@
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <span>随笔</span>
+        <span>工具</span>
     </span>
     
     
@@ -149,7 +149,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            happy new year
+            java
             
         </span>
     </span>
@@ -157,7 +157,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/01</span>
+        <span class="date-meta">2018/01/04</span>
     </span>
 </div>
 
@@ -167,16 +167,95 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>赶在新年的尾巴上，搭建了属于自己的博客，这里将会记录我在2018年的成长历程。新的一年，新的开始。</p>
+<p>摘自公司内部的实践出来的druid连接池最佳配置</p>
 </blockquote>
-<h2 id="回忆2017"><a href="#回忆2017" class="headerlink" title="回忆2017"></a>回忆2017</h2><p>转眼，2017年就剩下几个小时了，用一个字描述一下我的感觉就是：<strong>快</strong>。这一年是在忙碌的工作和学习中度过的，其中也夹杂着一些小故事，在平淡的生活中激起些许浪花。又多去了几个地方，又多经历了几个不一样的事情，有欢声笑语，也有无奈和悲伤。有收获也有损失，还有准备不够充分而错失的良机。</p>
-<p><img src="/2018/01/01/happy-new-year-2018/2017.jpg" alt="2017"></p>
-<h2 id="展望2018"><a href="#展望2018" class="headerlink" title="展望2018"></a>展望2018</h2><p>2018，好好工作学习，对于2017年积累下的认识更有深度，同时继续拓宽知识面。<br>2018，做好一切准备，迎接更多的挑战和机遇。</p>
-<p><img src="/2018/01/01/happy-new-year-2018/2018.jpg" alt="2018"></p>
-<blockquote>
-<p>2017未完的梦2018继续，2017未完的事2018坚持，2017未表白的人2018勇敢面对一次，2017未有的智慧2018学习，2017未有的成功2018努力，2017未成就的事业2018奋斗。2018的朝阳带你成功远航，绘你辉煌的人生篇章。</p>
-</blockquote>
+<h2 id="1-监控"><a href="#1-监控" class="headerlink" title="1. 监控"></a>1. 监控</h2><p>配置Filters(日志、统计等)</p>
+<pre><code>&lt;property name=&quot;proxyFilters&quot;&gt;
+    &lt;list&gt;
+        &lt;ref bean=&quot;log-filter&quot; /&gt;
+        &lt;ref bean=&quot;stat-filter&quot; /&gt;
+    &lt;/list&gt;
+&lt;/property&gt;
+</code></pre><p>Slow Query监控</p>
+<pre><code>&lt;bean id=&quot;stat-filter&quot; class=&quot;com.alibaba.druid.filter.stat.StatFilter&quot;&gt;
+    &lt;property name=&quot;slowSqlMillis&quot; value=&quot;10000&quot; /&gt;
+    &lt;property name=&quot;logSlowSql&quot; value=&quot;true&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><p>Sql合并</p>
+<pre><code>&lt;bean id=&quot;stat-filter&quot; class=&quot;com.alibaba.druid.filter.stat.StatFilter&quot;&gt;
+    &lt;property name=&quot;mergeSql&quot; value=&quot;true&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><p>打印Sql</p>
+<pre><code>&lt;bean id=&quot;log-filter&quot; class=&quot;com.alibaba.druid.filter.logging.Slf4jLogFilter&quot;&gt;
+    &lt;property name=&quot;statementExecutableSqlLogEnable&quot; value=&quot;true&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><p>周期性输出统计信息到日志中</p>
+<pre><code>&lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot; init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt; 
+    &lt;property name=&quot;timeBetweenLogStatsMillis&quot; value=&quot;300000&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><h2 id="2-Druid-推荐配置"><a href="#2-Druid-推荐配置" class="headerlink" title="2. Druid 推荐配置"></a>2. Druid 推荐配置</h2><pre><code>    &lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot;
+        init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt;
+        &lt;!-- 基本属性 url、user、password --&gt;
+        &lt;property name=&quot;url&quot; value=&quot;${jdbc_url}&quot; /&gt;
+        &lt;property name=&quot;username&quot; value=&quot;${jdbc_user}&quot; /&gt;
+        &lt;property name=&quot;password&quot; value=&quot;${jdbc_password}&quot; /&gt;
 
+        &lt;!-- 配置初始化大小、最小、最大 --&gt;
+        &lt;property name=&quot;initialSize&quot; value=&quot;5&quot; /&gt;
+        &lt;property name=&quot;minIdle&quot; value=&quot;5&quot; /&gt;
+        &lt;property name=&quot;maxActive&quot; value=&quot;10&quot; /&gt;
+        &lt;!-- 配置从连接池获取连接等待超时的时间 --&gt;
+        &lt;property name=&quot;maxWait&quot; value=&quot;10000&quot; /&gt;
+
+        &lt;!-- 配置间隔多久启动一次DestroyThread，对连接池内的连接才进行一次检测，单位是毫秒。
+            检测时:1.如果连接空闲并且超过minIdle以外的连接，如果空闲时间超过minEvictableIdleTimeMillis设置的值则直接物理关闭。2.在minIdle以内的不处理。
+        --&gt;
+        &lt;property name=&quot;timeBetweenEvictionRunsMillis&quot; value=&quot;600000&quot; /&gt;
+        &lt;!-- 配置一个连接在池中最大空闲时间，单位是毫秒 --&gt;
+        &lt;property name=&quot;minEvictableIdleTimeMillis&quot; value=&quot;300000&quot; /&gt;
+        &lt;!-- 设置从连接池获取连接时是否检查连接有效性，true时，每次都检查;false时，不检查 --&gt;
+        &lt;property name=&quot;testOnBorrow&quot; value=&quot;false&quot; /&gt;
+        &lt;!-- 设置往连接池归还连接时是否检查连接有效性，true时，每次都检查;false时，不检查 --&gt;
+        &lt;property name=&quot;testOnReturn&quot; value=&quot;false&quot; /&gt;
+        &lt;!-- 设置从连接池获取连接时是否检查连接有效性，true时，如果连接空闲时间超过minEvictableIdleTimeMillis进行检查，否则不检查;false时，不检查 --&gt;
+        &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;
+        &lt;!-- 检验连接是否有效的查询语句。如果数据库Driver支持ping()方法，则优先使用ping()方法进行检查，否则使用validationQuery查询进行检查。(Oracle jdbc Driver目前不支持ping方法) --&gt;
+        &lt;property name=&quot;validationQuery&quot; value=&quot;select 1 from dual&quot; /&gt;
+        &lt;!-- 单位：秒，检测连接是否有效的超时时间。底层调用jdbc Statement对象的void setQueryTimeout(int seconds)方法 --&gt;
+        &lt;!-- &lt;property name=&quot;validationQueryTimeout&quot; value=&quot;1&quot; /&gt;  --&gt;
+
+        &lt;!-- 打开后，增强timeBetweenEvictionRunsMillis的周期性连接检查，minIdle内的空闲连接，每次检查强制验证连接有效性. 参考：https://github.com/alibaba/druid/wiki/KeepAlive_cn --&gt;
+        &lt;property name=&quot;keepAlive&quot; value=&quot;true&quot; /&gt;  
+
+        &lt;!-- 连接泄露检查，打开removeAbandoned功能 , 连接从连接池借出后，长时间不归还，将触发强制回连接。回收周期随timeBetweenEvictionRunsMillis进行，如果连接为从连接池借出状态，并且未执行任何sql，并且从借出时间起已超过removeAbandonedTimeout时间，则强制归还连接到连接池中。 --&gt;
+        &lt;property name=&quot;removeAbandoned&quot; value=&quot;true&quot; /&gt; 
+        &lt;!-- 超时时间，秒 --&gt;
+        &lt;property name=&quot;removeAbandonedTimeout&quot; value=&quot;80&quot;/&gt;
+        &lt;!-- 关闭abanded连接时输出错误日志，这样出现连接泄露时可以通过错误日志定位忘记关闭连接的位置 --&gt;
+        &lt;property name=&quot;logAbandoned&quot; value=&quot;true&quot; /&gt;
+
+        &lt;!-- 根据自身业务及事务大小来设置 --&gt;
+        &lt;property name=&quot;connectionProperties&quot;
+            value=&quot;oracle.net.CONNECT_TIMEOUT=2000;oracle.jdbc.ReadTimeout=10000&quot;&gt;&lt;/property&gt;
+
+        &lt;!-- 打开PSCache，并且指定每个连接上PSCache的大小，Oracle等支持游标的数据库，打开此开关，会以数量级提升性能，具体查阅PSCache相关资料 --&gt;
+        &lt;property name=&quot;poolPreparedStatements&quot; value=&quot;true&quot; /&gt;
+        &lt;property name=&quot;maxPoolPreparedStatementPerConnectionSize&quot;
+            value=&quot;20&quot; /&gt;   
+
+        &lt;!-- 配置监控统计拦截的filters --&gt;
+        &lt;!-- &lt;property name=&quot;filters&quot; value=&quot;stat,slf4j&quot; /&gt; --&gt;
+
+        &lt;property name=&quot;proxyFilters&quot;&gt;
+            &lt;list&gt;
+                &lt;ref bean=&quot;log-filter&quot; /&gt;
+                &lt;ref bean=&quot;stat-filter&quot; /&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+        &lt;!-- 配置监控统计日志的输出间隔，单位毫秒，每次输出所有统计数据会重置，酌情开启 --&gt;
+        &lt;property name=&quot;timeBetweenLogStatsMillis&quot; value=&quot;120000&quot; /&gt;
+    &lt;/bean&gt;
+</code></pre>
     </div>
 
     <div class="post-footer">   
@@ -193,8 +272,8 @@
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/01/01/论如何打印日志/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
+        <a href="/2018/01/03/docker-introduction/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
