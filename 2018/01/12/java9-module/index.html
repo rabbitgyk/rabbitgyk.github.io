@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>论如何打印日志 | rabbitGYK&#39;s blog</title>
+<title>java9 module | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -141,9 +141,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="论如何打印日志">
+        <h1 id="java9 module">
             
-            论如何打印日志
+            java9 module
             
         </h1>
         <div class="post-meta">
@@ -167,7 +167,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/01</span>
+        <span class="date-meta">2018/01/12</span>
     </span>
 </div>
 
@@ -177,98 +177,114 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>日志满天飞总是不好的，代码是程序员的艺术品，日志也是其中一部分。</p>
+<p>随着 java 9 的正式发布，java生态又迎来了新的变革，模块化是最重要的变化。</p>
 </blockquote>
-<h1 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h1><p>程序员在程序中打印日志的目的一般有两个：<strong>定位问题</strong>和<strong>显示程序运行状态</strong>。试想有那么一个夜晚，突然手机响了，美梦中惊醒，报警短信，然后不到两分钟leader电话来了，你用快速又娴熟的动作爬起来，打开电脑当你打开日志文件准备查问题的时候，傻了，这日志谁写的，问题被杂乱的日志埋葬了，一时急火攻心，终于通过对照源代码和日志，在数小时之后解决了问题。可见日志的重要性。</p>
-<p>其实好的日志打印方式还有一个作用，能实现一些业务运营方面的统计工作，比如你在每个操作的关键位置都有对当前用户的操作记下一条日志，这样就能统计出，该业务功能走到每一步的用户数，从而能分辨出是在哪一步损失了用户，从而做相应的业务流程的优化。</p>
-<p>可能大家认为日志不管咋打印都不会影响功能逻辑，抛开影响系统性能不说，这有点高级了，其实从上面的话中也可以看出，日志其实很重要的，所以下面我将从几个方面讨论一下如何打印日志，以便理清我自己的思路，同时提醒程序员同行们，这样后面维护你的代码的程序员，少一点吃屎，更少一点对你的咒骂，为和谐美好的程序员天堂添砖加瓦（好伟大呀，哈哈）。</p>
-<h2 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h2><p><strong>1. 方便定位问题的日志如何打</strong><br><strong>2. 显示程序运行状态的日志如何打</strong><br><strong>3. 可以用作运营统计的日志如何打</strong><br><strong>4. 什么样的日志不应该打</strong></p>
-<h2 id="1-方便定位问题的日志"><a href="#1-方便定位问题的日志" class="headerlink" title="1. 方便定位问题的日志"></a>1. 方便定位问题的日志</h2><p>这是日志的最主要的用途。</p>
-<ul>
-<li>日志明确标志属于哪次请求<br>打印的每一条日志中尽量包含请求流水号，以便区分这条日志是属于哪次请求的日志，日志样例：</li>
-</ul>
-<pre><code class="java">log.warn(&quot;账户创建和升级功能，无法识别操作类型（0：创建，1：升级），请求流水号：{}，当前值：{}&quot; , flowNo, operType);
-</code></pre>
-<p>如果获取不到流水号，则需要打印明确能缩小日志归属范围的字段信息，如用户号、协议号、手机号等。</p>
-<ul>
-<li>在对外提供的接口入口处打印一条日志<br>打印接口的唯一标识和中文（如果你English enough可以打英文）简短描述，并且要将调用方传入的参数原样打印出来。这样当系统出现问题时，你就能很容易的判断出是否是调用方出现了问题。日志样例：<pre><code>log.info(&quot;addUpAccount&amp;账户创建和升级接口，外部系统入参：{}&quot; , JSONObject.toJSONString(request));
-</code></pre></li>
-<li>在调用其它系统接口的前后各打印一条日志<br>打印所调用接口的系统名称/接口名称和传入参数/响应参数，这样能方便做问题定界，通过这两条日志可以清楚地看出是否是所调用的系统出现了问题，传染到我了。日志样例：<pre><code>log.info(&quot;调用cif业务订购，bcc入参：{}&quot;  , JSONObject.toJSONString(request));
-log.info(&quot;调用cif业务订购，cif响应：{}&quot;  , JSONObject.toJSONString(cifResponse));
-</code></pre></li>
-<li>不符合业务逻辑预期打印一条日志<br>打印关键的参数，要能从这些参数中清楚地看出，谁的操作与预期不符，为什么与预期不符。并且唯一定位到这条日志，要包含用户id或者流水号。日志样例：<pre><code class="java">// 校验重复签约
-int count = agreementService.countSignAndPre(externalUserId, userInfo.getUserId(), agreementType);
-if (count == 1) {
-  // 已经签约过，不允许重复签约
-  log.warn(&quot;签约失败，不允许重复签约！用户信息：{}，协议类型：{}，来源系统：{}，外部系统用户号：{}&quot;,
-      JSONObject.toJSONString(userInfo), agreementType, systemCode, externalUserId);
+<p><img src="/2018/01/12/java9-module/java9.png" alt="java 9"></p>
+<p>由于Jigsaw项目Java 9 跳票了很多次，你可能已经听说过很多关于模块、模块化和其他的一些东西，而这些都是什么？模块化是什么鬼？模块化平台对我们来说意味什么？什么是java平台模块化系统（JPMS）？它将在java生态中带来什么革命性变化？</p>
+<p> 这篇文章是我对JDK中关于模块化系统发生的重要变化的探索。我将解释什么是模块化，你为什么需要它，你怎么样能创建自己的模块化项目。</p>
+<p><img src="/2018/01/12/java9-module/jpms.png" alt="JPMS"></p>
+<h2 id="What-amp-Why"><a href="#What-amp-Why" class="headerlink" title="What &amp; Why"></a>What &amp; Why</h2><p>可维护性是软件设计和演进的过程中最重要的问题，我们想要一个松耦合、高内聚、高可读性并且一眼就能理解的代码库。我们以package的形式设计和组织类文件，到目前为止还不错，但是当我们有数百个package的时候，它们之间的依赖关系一眼是看不完的。因此我们需要比package更多的组织代码库的方法，来提高代码库的可维护性。</p>
+<p>另外一个问题是java classpath，它是如何运行我们的代码的，所有的jar类和类库都是堆积在classpath中。当这些jar文件中的类在运行的时候有多个版本的时候，java的ClassLoader仅能加载那个类的一个版本。在这种情形下，你的程序的运行就会有歧义，歧义是一件非常坏的事情。这个问题是频繁出现的，它被称为是“<a href="https://dzone.com/articles/what-is-jar-hell" target="_blank" rel="noopener">JAR Hell</a>”。</p>
+<p>另外一个关于classpath的问题是，它不遵循“Fail First”原则。你可能会丢失一些类文件，这些文件存在于classpath中但是在生产环境不存在，这个问题只能在运行时报出JavaClassDefError异常的时候，你才能确定缺失了什么类文件。最后，classpath的最大问题在于“封装”，在classpath中的每个类互相访问，这是违反“封装”特性的。我们想隐藏内部的API，这就是我们为什么需要另一个级别的封装（更强的封装），并且对package中的类的访问做控制。</p>
+<p>模块就是修复这些问题的，什么是模块？每个模块都有一个名字，它将相关代码组合在一起，是自包含的。模块中明确地描述了它需要的其他模块，以及自己对其他模块可见的部分。在这种方式下，模块之间的依赖是非常清晰的。我们有更强的封装性，这意味着我们可以隐藏内部的API，并且现在我们也遵循“Fail First”原则，因此当有模块缺失或者冲突的时候，你将得到一个错误。</p>
+<p><img src="/2018/01/12/java9-module/modules-everywhere.png" alt="模块无处不在"></p>
+<p>模块化的JDK允许JDK的开发者管理庞大复杂的自己。如果你在开发一个小而简单的应用，并不使用RMI、CORBA、JavaEE和其他的东西，那你为什么需要一个完整的、巨大而又重的Java运行环境呢？只使用包含你需要的模块的JDK，岂不是明智的。现在的模块化平台是这种情形成为可能。</p>
+<p>这是现在的JDK看起来的样子。在最底部是“<strong>java.base</strong>”模块，每一个其它的模块都显式或隐式地依赖于它。正如你看到的这样，依赖关系图是一个有向无环图，这意味着不允许出现循环依赖。</p>
+<p><img src="/2018/01/12/java9-module/modules-relationship.png" alt="模块依赖关系图"></p>
+<p>下图基本上展示了模块是什么，每一个模块都有一个描述模块的文件，叫做“module-info.java”。</p>
+<p><img src="/2018/01/12/java9-module/what-is-module.png" alt="什么是模块"></p>
+<p>在文件“module-info.java”中你描述了模块的名字、运行需要的模块和其中对外可见的包。例如，你可以看到java.sql模块中对外暴露了哪些包和它需要哪些模块。</p>
+<p><img src="/2018/01/12/java9-module/java-sql.png" alt="java.sql"></p>
+<p>因此简化一下，module-info.java 的内容看起来像下面这样子：</p>
+<p><img src="/2018/01/12/java9-module/module-info-java.png" alt="module-info.java"></p>
+<p>下面我们将介绍如何使用这些模块和创建自己的模块。</p>
+<h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><p>首先，你需要下载和安装JDK 9，你可以在<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">这里</a>找到它。</p>
+<p>Java Version</p>
+<pre><code>$ java -version
+java version &quot;9&quot;
+Java(TM) SE Runtime Environment (build 9+181)
+Java HotSpot(TM) 64-Bit Server VM (build 9+1
+</code></pre><p>下面我们在IntelliJ IDEA中构建一个项目：</p>
+<p><img src="/2018/01/12/java9-module/creat-project.png" alt="创建java项目"></p>
+<p>下面介绍如何创建一个模块：</p>
+<p><img src="/2018/01/12/java9-module/creat-module.png" alt="创建模块"></p>
+<p>创建模块之后，你需要在模块下的src下创建一个module-info.java文件：</p>
+<p><img src="/2018/01/12/java9-module/creat-module-info.png" alt="创建module-info.java"></p>
+<p>我已经构建了一个项目包含两个模块：“com.rabbit”和“com.rabbit.log”，你可以看到项目的结构如下图：</p>
+<p><img src="/2018/01/12/java9-module/project-struct.png" alt="项目结构"></p>
+<p>在模块 com.rabbit.log 中有两个类：InternalHello和Hello。</p>
+<p>InternalHello.java</p>
+<pre><code class="java">package hello.log.internals;
+
+public class InternalHello {
+    public static String sayHello(String name){
+        return &quot;Hello, This Greeting is internal dear &quot;+ name;
+    }
 }
 </code></pre>
-</li>
-<li>业务处理出现异常打印一条日志<br>主要打印异常信息和业务逻辑描述。日志样例：<pre><code class="java">try {
-  //业务逻辑处理
-} catch (BizException e) {
-  log.warn(&quot;账户升级过程中出现业务异常&quot;, e);
-}catch (Exception e) {
-  log.error(&quot;账户升级过程中出现无法识别的异常&quot;, e);
+<p>Hello.java</p>
+<pre><code class="java">package hello.log;
+
+public class Hello {
+    public static String sayHello(String name){
+        return &quot;Hello, &quot; + name;
+    }
 }
 </code></pre>
-</li>
-<li>极少出现的else情况打印一条日志<br>打印业务功能描述和该极少出现的参数值，还有唯一定位一次请求的请求流水号。日志样例：<pre><code class="java">if(&quot;0&quot;.equals(operType)){ 
-  //创建账户
-}else if(&quot;1&quot;.equals(operType)){ 
-  //升级账户
-}else{
-  log.warn(&quot;账户创建和升级功能，无法识别操作类型（0：创建，1：升级），请求流水号：{}，当前值：{}&quot; , flowNo, operType);
+<p>在模块 com.rabbit.log 的modu-info.java中，写入如下所示：</p>
+<pre><code class="java">module com.rabbit.log {
+    exports hello.log;
 }
 </code></pre>
-</li>
-</ul>
-<h2 id="2-显示程序运行状态的日志"><a href="#2-显示程序运行状态的日志" class="headerlink" title="2. 显示程序运行状态的日志"></a>2. 显示程序运行状态的日志</h2><p>系统程序日复一日/月复一月/年复一年的运行着，查看系统的运行状态是必不可少的，比如一些可能和耗时的业务处理，批处理，IO操作等。</p>
-<ul>
-<li>耗时（可能出现超时）业务逻辑处理时间打印一条日志<br>打印业务逻辑描述和处理时间。日志样例：<pre><code class="java">long startTime = System.currentTime();  
-//业务逻辑处理
-log.info(&quot;绑定银行卡总耗时 : &quot;  +  (System.currentTime() - startTime) + &quot;ms&quot;);
-</code></pre>
-</li>
-<li>批量处理大量数据时显示处理进度打印n条日志<br>在夜间做对账处理时，一般都是批量处理大量数据，这是应打印的日志包括：对账功能描述和处理进度，每处理1000（视情况而定）条打印一条。日志样例：<pre><code class="java">log.info(&quot;业务开通状态对账功能处理中，总数据量：{}，当前处理到：{}&quot;, total, current);
-</code></pre>
-</li>
-</ul>
-<h2 id="3-可用作运营统计的日志"><a href="#3-可用作运营统计的日志" class="headerlink" title="3. 可用作运营统计的日志"></a>3. 可用作运营统计的日志</h2><p>从业务上来说，一个大的功能往往是由多个小功能组成，这些大的功能组成一个完整的系统。比如一个系统包括注册用户/开通某项业务/绑定银行卡/消费下单，从而达到一个电商类系统的最终目的。针对这个系统运营人员经常会要一些数据如多少注册用户，多少开通业务用户，多少绑卡用户，多少下过单的用户，如果是这样的粗粒度的统计需求，可能写几条sql搂一下数据库就搞定了。但是如果需要更加细致统计，如绑卡功能分为这样几步：用户实名校验，银行卡校验，发送短信验证码，校验短信验证码，签协议绑卡。日志样例：</p>
-<pre><code class="java">...
-log.info(&quot;用户绑卡，实名校验，用户信息：{}&quot;, JSONObject.toJSONString(userInfo));
-...
-log.info(&quot;用户绑卡，银行卡校验，用户信息：{}&quot;, JSONObject.toJSONString(userInfo));
-...
-log.info(&quot;用户绑卡，发送短信验证码，用户信息：{}&quot;, JSONObject.toJSONString(userInfo));
-...
-log.info(&quot;用户绑卡，校验短信验证码，用户信息：{}&quot;, JSONObject.toJSONString(userInfo));
-...
-log.info(&quot;用户绑卡，签协议绑卡，用户信息：{}&quot;, JSONObject.toJSONString(userInfo));
-...
-</code></pre>
-<p>通过后台日志可以做到细粒度的运营统计分析，当然还有其他更专业的技术实现这种运营分析的功能，这种方法可以作为一个过渡期的方法。只要有一个好的打印日志的习惯，通过大数据的分析，日志还有其它的价值。</p>
-<h2 id="4-不应该打印的日志"><a href="#4-不应该打印的日志" class="headerlink" title="4. 不应该打印的日志"></a>4. 不应该打印的日志</h2><ul>
-<li>无意义的日志<br>日志样例：<pre><code class="java">log.info(&quot;调用客户系统开始...&quot;);
-...
-log.info(&quot;调用客户系统结束...&quot;);
-...
-log.info(&quot;用户签约失败...&quot;);
-</code></pre>
-</li>
-</ul>
-<p>当我们看到这样的日志的时候，没有包含任何有意义的信息。调用开始，我想知道谁调用的，入参是啥；调用结束，我想知道调用结果，出参是啥，调用成功还是失败；同样，用户签约失败，我想知道的是哪个用户失败，为什么失败；显然都没展示，所以这样的日志是没有任何意义的。</p>
-<ul>
-<li>混淆信息的日志<br>所打印出来的日志都应该是清楚准确的表达，当你不能确定具体原因的时候，不能在日志中只是展示一种可能的情况，这样会影响对问题的判断，这样的日志千万不能打。日志样例：<pre><code class="java">Connection connection = ConnectionFactory.getConnection();  
-if (connection == null) {  
-  log.warn(&quot;System initialized unsuccessfully&quot;);  
+<p>这意味着package hello.log 在该模块外可见的，而package hello.log.internals是不可见的。</p>
+<p>RabbitMain是一个简单的JavaFX程序：</p>
+<pre><code class="java">package com.rabbit;
+
+import hello.log.Hello;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class RabbitMain  extends Application {
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Label label = new Label(Hello.sayHello(&quot;Hossein&quot;));
+        StackPane pane = new StackPane();
+        pane.getChildren().add(label);
+        Scene scene = new Scene(pane);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 }
 </code></pre>
-</li>
-</ul>
+<p>这个模块看起来不需要暴露任何package，它需要 <strong>javafx.base</strong> 和 <strong>javafx.controls</strong>两个模块，为了使用<strong>Hello</strong>类还需要模块<strong>com.rabbit.log</strong>。因此模块 com.rabbit 的module-info.java看起来是下面这样子：</p>
+<pre><code class="java">module com.rabbit {
+    requires javafx.base;
+    requires javafx.controls;
+    requires com.rabbit.log;
+}
+</code></pre>
+<p>当我们运行这个应用时，出现了如下的错误：</p>
+<pre><code>Caused by: java.lang.IllegalAccessException: class com.sun.javafx.application.LauncherImpl (in module javafx.graphics) cannot access class com.rabbit.RabbitMain (in module com.rabbit) because module com.rabbit does not export com.rabbit to module javafx.graphics
+    at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:361)
+    at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:589)
+</code></pre><p>这个错误很明显地告诉我们，需要将package com.rabbit暴露出去。意思是 javafx.graphics 是需要使用RabbitMain启动主窗口的，所以你需要暴露你的package给 javafx.graphics（主要：你可以暴露一个package给指定的模块而不是暴露给所有的模块）。</p>
+<p>因此，现在的 module-info.java 是下面的样子：</p>
+<pre><code class="java">module com.rabbit {
+    requires javafx.base;
+    requires javafx.controls;
+    requires com.rabbit.log;
+
+    exports com.rabbit to javafx.graphics;
+}
+</code></pre>
+<p>在java 9中实现的javaFX看起来好像有bug（注意黄色的圈），下面就是我们的javaFX程序的运行结果：</p>
+<p><img src="/2018/01/12/java9-module/result.png" alt="运行结果"></p>
+<p>这个故事到这里并没有结束，关于模块以及它们之间的依赖关系的更加完整详细的介绍可以阅读书籍 <a href="http://www.apress.com/us/book/9781484225912" target="_blank" rel="noopener">Java 9 Revealed</a> 或者 <a href="http://shop.oreilly.com/product/0636920049494.do" target="_blank" rel="noopener">Java 9 Modularity</a> 。</p>
 <blockquote>
-<p>结束lala</p>
+<p>参考的<a href="https://www.javacodegeeks.com/2017/09/java-9-jigsaw-jpms-modules-personal-exploration.html" target="_blank" rel="noopener">原文链接</a>。</p>
 </blockquote>
 
     </div>
@@ -287,10 +303,8 @@ if (connection == null) {
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/01/01/how-to-build-microservice/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
-    
-        <a href="/2018/01/01/happy-new-year-2018/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+        <a href="/2018/01/04/druid-configuration/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
