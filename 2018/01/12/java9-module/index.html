@@ -12,7 +12,7 @@
     <meta name="format-detection" content="telephone=no,email=no,adress=no">
     <meta name="browsermode" content="application">
     <meta name="screen-orientation" content="portrait">
-    <link rel="dns-prefetch" href="https://rabbitgyk.github.io">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
     <!--SEO-->
 
 <meta name="description" content="一个程序员的修行之路"/>
@@ -182,24 +182,24 @@
         <blockquote>
 <p>随着 java 9 的正式发布，java生态又迎来了新的变革，模块化是最重要的变化。</p>
 </blockquote>
-<p><img src="/2018/01/12/java9-module/java9.png" alt="java 9"></p>
+<p><img src="java9-module/java9.png" alt="java 9"></p>
 <p>由于Jigsaw项目Java 9 跳票了很多次，你可能已经听说过很多关于模块、模块化和其他的一些东西，而这些都是什么？模块化是什么鬼？模块化平台对我们来说意味什么？什么是java平台模块化系统（JPMS）？它将在java生态中带来什么革命性变化？</p>
 <p> 这篇文章是我对JDK中关于模块化系统发生的重要变化的探索。我将解释什么是模块化，你为什么需要它，你怎么样能创建自己的模块化项目。</p>
-<p><img src="/2018/01/12/java9-module/jpms.png" alt="JPMS"></p>
+<p><img src="java9-module/jpms.png" alt="JPMS"></p>
 <h2 id="What-amp-Why"><a href="#What-amp-Why" class="headerlink" title="What &amp; Why"></a>What &amp; Why</h2><p>可维护性是软件设计和演进的过程中最重要的问题，我们想要一个松耦合、高内聚、高可读性并且一眼就能理解的代码库。我们以package的形式设计和组织类文件，到目前为止还不错，但是当我们有数百个package的时候，它们之间的依赖关系一眼是看不完的。因此我们需要比package更多的组织代码库的方法，来提高代码库的可维护性。</p>
 <p>另外一个问题是java classpath，它是如何运行我们的代码的，所有的jar类和类库都是堆积在classpath中。当这些jar文件中的类在运行的时候有多个版本的时候，java的ClassLoader仅能加载那个类的一个版本。在这种情形下，你的程序的运行就会有歧义，歧义是一件非常坏的事情。这个问题是频繁出现的，它被称为是“<a href="https://dzone.com/articles/what-is-jar-hell" target="_blank" rel="noopener">JAR Hell</a>”。</p>
 <p>另外一个关于classpath的问题是，它不遵循“Fail First”原则。你可能会丢失一些类文件，这些文件存在于classpath中但是在生产环境不存在，这个问题只能在运行时报出JavaClassDefError异常的时候，你才能确定缺失了什么类文件。最后，classpath的最大问题在于“封装”，在classpath中的每个类互相访问，这是违反“封装”特性的。我们想隐藏内部的API，这就是我们为什么需要另一个级别的封装（更强的封装），并且对package中的类的访问做控制。</p>
 <p>模块就是修复这些问题的，什么是模块？每个模块都有一个名字，它将相关代码组合在一起，是自包含的。模块中明确地描述了它需要的其他模块，以及自己对其他模块可见的部分。在这种方式下，模块之间的依赖是非常清晰的。我们有更强的封装性，这意味着我们可以隐藏内部的API，并且现在我们也遵循“Fail First”原则，因此当有模块缺失或者冲突的时候，你将得到一个错误。</p>
-<p><img src="/2018/01/12/java9-module/modules-everywhere.png" alt="模块无处不在"></p>
+<p><img src="java9-module/modules-everywhere.png" alt="模块无处不在"></p>
 <p>模块化的JDK允许JDK的开发者管理庞大复杂的自己。如果你在开发一个小而简单的应用，并不使用RMI、CORBA、JavaEE和其他的东西，那你为什么需要一个完整的、巨大而又重的Java运行环境呢？只使用包含你需要的模块的JDK，岂不是明智的。现在的模块化平台是这种情形成为可能。</p>
 <p>这是现在的JDK看起来的样子。在最底部是“<strong>java.base</strong>”模块，每一个其它的模块都显式或隐式地依赖于它。正如你看到的这样，依赖关系图是一个有向无环图，这意味着不允许出现循环依赖。</p>
-<p><img src="/2018/01/12/java9-module/modules-relationship.png" alt="模块依赖关系图"></p>
+<p><img src="java9-module/modules-relationship.png" alt="模块依赖关系图"></p>
 <p>下图基本上展示了模块是什么，每一个模块都有一个描述模块的文件，叫做“module-info.java”。</p>
-<p><img src="/2018/01/12/java9-module/what-is-module.png" alt="什么是模块"></p>
+<p><img src="java9-module/what-is-module.png" alt="什么是模块"></p>
 <p>在文件“module-info.java”中你描述了模块的名字、运行需要的模块和其中对外可见的包。例如，你可以看到java.sql模块中对外暴露了哪些包和它需要哪些模块。</p>
-<p><img src="/2018/01/12/java9-module/java-sql.png" alt="java.sql"></p>
+<p><img src="java9-module/java-sql.png" alt="java.sql"></p>
 <p>因此简化一下，module-info.java 的内容看起来像下面这样子：</p>
-<p><img src="/2018/01/12/java9-module/module-info-java.png" alt="module-info.java"></p>
+<p><img src="java9-module/module-info-java.png" alt="module-info.java"></p>
 <p>下面我们将介绍如何使用这些模块和创建自己的模块。</p>
 <h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><p>首先，你需要下载和安装JDK 9，你可以在<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">这里</a>找到它。</p>
 <p>Java Version</p>
@@ -208,13 +208,13 @@ java version &quot;9&quot;
 Java(TM) SE Runtime Environment (build 9+181)
 Java HotSpot(TM) 64-Bit Server VM (build 9+1
 </code></pre><p>下面我们在IntelliJ IDEA中构建一个项目：</p>
-<p><img src="/2018/01/12/java9-module/creat-project.png" alt="创建java项目"></p>
+<p><img src="java9-module/creat-project.png" alt="创建java项目"></p>
 <p>下面介绍如何创建一个模块：</p>
-<p><img src="/2018/01/12/java9-module/creat-module.png" alt="创建模块"></p>
+<p><img src="java9-module/creat-module.png" alt="创建模块"></p>
 <p>创建模块之后，你需要在模块下的src下创建一个module-info.java文件：</p>
-<p><img src="/2018/01/12/java9-module/creat-module-info.png" alt="创建module-info.java"></p>
+<p><img src="java9-module/creat-module-info.png" alt="创建module-info.java"></p>
 <p>我已经构建了一个项目包含两个模块：“com.rabbit”和“com.rabbit.log”，你可以看到项目的结构如下图：</p>
-<p><img src="/2018/01/12/java9-module/project-struct.png" alt="项目结构"></p>
+<p><img src="java9-module/project-struct.png" alt="项目结构"></p>
 <p>在模块 com.rabbit.log 中有两个类：InternalHello和Hello。</p>
 <p>InternalHello.java</p>
 <pre><code class="java">package hello.log.internals;
@@ -284,7 +284,7 @@ public class RabbitMain  extends Application {
 }
 </code></pre>
 <p>在java 9中实现的javaFX看起来好像有bug（注意黄色的圈），下面就是我们的javaFX程序的运行结果：</p>
-<p><img src="/2018/01/12/java9-module/result.png" alt="运行结果"></p>
+<p><img src="java9-module/result.png" alt="运行结果"></p>
 <p>这个故事到这里并没有结束，关于模块以及它们之间的依赖关系的更加完整详细的介绍可以阅读书籍 <a href="http://www.apress.com/us/book/9781484225912" target="_blank" rel="noopener">Java 9 Revealed</a> 或者 <a href="http://shop.oreilly.com/product/0636920049494.do" target="_blank" rel="noopener">Java 9 Modularity</a> 。</p>
 <blockquote>
 <p>参考的<a href="https://www.javacodegeeks.com/2017/09/java-9-jigsaw-jpms-modules-personal-exploration.html" target="_blank" rel="noopener">原文链接</a>。</p>
