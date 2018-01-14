@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>标签: 日志 | rabbitGYK&#39;s blog</title>
+<title>构建docker镜像部署spring-boot项目 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,7 +37,11 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -136,38 +140,145 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content ">
-                    <h3> 
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="构建docker镜像部署spring-boot项目">
+            
+            构建docker镜像部署spring-boot项目
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>Docker</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            docker
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/14</span>
+    </span>
+</div>
 
-    日志 
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>学习了docker基本操作之后，我的最终目的是部署微服务项目，这里就记录一下我是如何为一个spring boot项目构建docker镜像的。</p>
+</blockquote>
+<h2 id="00-提前准备"><a href="#00-提前准备" class="headerlink" title="00 提前准备"></a>00 提前准备</h2><p>首先需要准备好docker的构建环境，然后需要有一个spring boot项目。由于我是基于ubuntu16.04的镜像，因此还需要准备jdk1.8的安装包。</p>
+<ol>
+<li>docker环境，参见<a href="http://rabbitgyk.com/2018/01/03/docker-introduction/">docker入门体验</a>。</li>
+<li>创建一个spring boot项目，访问 <a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io</a> 站点，根据需要建立自己的应用。</li>
+<li>下载jdk1.8，并解压，备用。</li>
+</ol>
+<h2 id="01-构建docker镜像"><a href="#01-构建docker镜像" class="headerlink" title="01 构建docker镜像"></a>01 构建docker镜像</h2><p>构建docker镜像的一个主要步骤就是编写Dockerfile文件，Dockerfile文件一共分为四个部分，分别是：注释信息、基础镜像、创建者信息、构建镜像所需的命令。其中命令主要是安装依赖软件，指定运行入口。<br>一般步骤如下：</p>
+<ol>
+<li>创建一个文件夹：mkdir docker</li>
+<li>将jdk解压放在该文件夹下。</li>
+<li>将打包好的spring boot应用也放在该文件夹下。</li>
+<li>在该目录下创建Dockerfile文件。</li>
+<li>编写Dockerfile文件。</li>
+<li>执行命令：<code>docker build -t rabbitgyk/boot-test ./</code>，如果在最后终端输出：Successfully built 1fe159bc3118，说明镜像构建成功。</li>
+</ol>
+<p><img src="/2018/01/14/docker-spring-boot/folder-content.png" alt="文件夹内容"></p>
+<pre><code>#Build java web app container image
+FROM ubuntu:16.04
+MAINTAINER rabbitGYK &quot;guo_yankui@163.com&quot;
 
+#Make java and tomcat install directory
+RUN mkdir /opt/logs
+RUN mkdir /opt/soft
+RUN mkdir /opt/soft/java8
+RUN mkdir /opt/soft/apps
 
-</h3>
+#Copy jre and tomcat into image
+ADD jdk8u102 /opt/soft/java8
+COPY boot-test-0.0.1-SNAPSHOT.jar /opt/soft/apps
 
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/01/论如何打印日志/">论如何打印日志</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月01日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-日志满天飞总是不好的，代码是程序员的艺术品，日志也是其中一部分。
+ENV PATH $PATH:/opt/soft/java8/bin
 
-写在前面的话程序员在程序中打印日志的目的一般有两个：定位问题和显示程序运行状态。试想有那么一个夜晚，突然手机响了，美梦中惊醒，报警短信，然后不到两分钟leader电...
-            </p> 
+WORKDIR /opt/soft/apps
+#Expose http port
+EXPOSE 8099
+
+ENTRYPOINT java -jar boot-test-0.0.1-SNAPSHOT.jar
+</code></pre><p>上面是Dockerfile的内容。</p>
+<p>到这里一个spring boot应用的镜像就构建出来了，镜像的名称：rabbitgyk/boot-test。</p>
+<h2 id="02-运行一个该镜像的容器"><a href="#02-运行一个该镜像的容器" class="headerlink" title="02 运行一个该镜像的容器"></a>02 运行一个该镜像的容器</h2><p>镜像构建出来之后，我们基于刚才构建出来的镜像启动一个容器，已达到部署我们的spring boot应用的目的。<br>启动容器的命令：<br><code>docker run --name spring-boot-test -v /home/rabbit/docker/logs:/opt/logs -p 8092:8099 rabbitgyk/boot-test</code><br>参数解释：</p>
+<ul>
+<li>–name 为启动的容器指定一个名字。</li>
+<li>-v 宿主机目录:容器内目录，为容器挂载宿主机目录。</li>
+<li>-p 宿主机端口:容器端口，端口映射。</li>
+</ul>
+<p>我们启动的这个容器，挂载了文件目录，目的是为了将应用的日志能保存下来，而不是随着容器的销毁而丢失。映射端口是为了避免应用端口在宿主机已经被占用。</p>
+<blockquote>
+<p>到此为止，一个spring boot应用在docker中就部署好了。这里的各种细节内容并没有描述，需要你这种尝试之后才能记忆深刻，开始你的docker实验吧。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
         </div>
-    </article>
- 
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/12/java9-module/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
 
 
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
 
 
 
