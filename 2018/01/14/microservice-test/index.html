@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>druid连接池推荐配置 | rabbitGYK&#39;s blog</title>
+<title>微服务的测试 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -144,9 +144,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="druid连接池推荐配置">
+        <h1 id="微服务的测试">
             
-            druid连接池推荐配置
+            微服务的测试
             
         </h1>
         <div class="post-meta">
@@ -154,7 +154,7 @@
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <span>工具</span>
+        <span>微服务</span>
     </span>
     
     
@@ -162,7 +162,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            java
+            微服务
             
         </span>
     </span>
@@ -170,7 +170,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/04</span>
+        <span class="date-meta">2018/01/14</span>
     </span>
 </div>
 
@@ -180,95 +180,81 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>Druid是阿里巴巴开源平台上的一个项目，整个项目由数据库连接池、插件框架和SQL解析器组成。该项目主要是为了扩展JDBC的一些限制，可以让程序员实现一些特殊的需求，比如向密钥服务请求凭证、统计SQL信息、SQL性能收集、SQL注入检查、SQL翻译等，程序员可以通过定制来实现自己需要的功能。<br>本文的配置是摘自公司内部的实践出来的druid连接池最佳配置，拿去使用的时候，个别参数需要根据自己公司的环境情况进行调整，以达到最佳的效果。</p>
+<p>简化微服务的测试，设计思路呈现。前面有一篇文章《<a href="http://rabbitgyk.com/2018/01/01/how-to-build-microservice/">如何构建微服务架构</a>》，其中介绍了微服务架构生态的很多方面，本文是从其中引发出来的一个话题。</p>
 </blockquote>
-<h2 id="1-监控"><a href="#1-监控" class="headerlink" title="1. 监控"></a>1. 监控</h2><p>配置Filters(日志、统计等)</p>
-<pre><code>&lt;property name=&quot;proxyFilters&quot;&gt;
-    &lt;list&gt;
-        &lt;ref bean=&quot;log-filter&quot; /&gt;
-        &lt;ref bean=&quot;stat-filter&quot; /&gt;
-    &lt;/list&gt;
-&lt;/property&gt;
-</code></pre><p>Slow Query监控</p>
-<pre><code>&lt;bean id=&quot;stat-filter&quot; class=&quot;com.alibaba.druid.filter.stat.StatFilter&quot;&gt;
-    &lt;property name=&quot;slowSqlMillis&quot; value=&quot;10000&quot; /&gt;
-    &lt;property name=&quot;logSlowSql&quot; value=&quot;true&quot; /&gt;
-&lt;/bean&gt;
-</code></pre><p>Sql合并</p>
-<pre><code>&lt;bean id=&quot;stat-filter&quot; class=&quot;com.alibaba.druid.filter.stat.StatFilter&quot;&gt;
-    &lt;property name=&quot;mergeSql&quot; value=&quot;true&quot; /&gt;
-&lt;/bean&gt;
-</code></pre><p>打印Sql</p>
-<pre><code>&lt;bean id=&quot;log-filter&quot; class=&quot;com.alibaba.druid.filter.logging.Slf4jLogFilter&quot;&gt;
-    &lt;property name=&quot;statementExecutableSqlLogEnable&quot; value=&quot;true&quot; /&gt;
-&lt;/bean&gt;
-</code></pre><p>周期性输出统计信息到日志中</p>
-<pre><code>&lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot; init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt; 
-    &lt;property name=&quot;timeBetweenLogStatsMillis&quot; value=&quot;300000&quot; /&gt;
-&lt;/bean&gt;
-</code></pre><h2 id="2-Druid-推荐配置"><a href="#2-Druid-推荐配置" class="headerlink" title="2. Druid 推荐配置"></a>2. Druid 推荐配置</h2><pre><code>    &lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot;
-        init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt;
-        &lt;!-- 基本属性 url、user、password --&gt;
-        &lt;property name=&quot;url&quot; value=&quot;${jdbc_url}&quot; /&gt;
-        &lt;property name=&quot;username&quot; value=&quot;${jdbc_user}&quot; /&gt;
-        &lt;property name=&quot;password&quot; value=&quot;${jdbc_password}&quot; /&gt;
+<p><img src="/2018/01/14/microservice-test/test.png" alt="测试"></p>
+<h2 id="00-测试概述"><a href="#00-测试概述" class="headerlink" title="00 测试概述"></a>00 测试概述</h2><p>软件测试的目的是，保证程序员编写的程序达到他的预期结果，保证发布的产品是产品经理（产品设计人员）的真实意愿表现。这些都需要软件测试来监督实现，避免将有缺陷的软件发布到生产环境。</p>
+<p>软件测试种类有很多，粗略的划分为：单元测试、集成测试、端到端测试。从其他的角度来说，又有回归测试、自动化测试、性能测试等。当我们项目进行服务化改造之后，尤其是进行了微服务设计之后，测试的工作就更加困难了。很多项目都是以独立服务的形式发布的，这些服务的发布怎么能保证是进行了充分测试了的？测试的入口应该是哪里？是直接进行集成测试，还是做端到端的用户体验测试，好像都不太合适。按照分层测试的思想，于是就有服务测试的话题。服务的测试理论和其他的测试应该是大体类似的，其中比较特殊的是，如何提供方便快捷的服务测试入口。</p>
+<h2 id="01-微服务测试"><a href="#01-微服务测试" class="headerlink" title="01 微服务测试"></a>01 微服务测试</h2><p>目前常见的微服务设计都是会采用一些分布式服务框架，这些框架从通信协议上分有两种：</p>
+<ol>
+<li>公共标准的HTTP协议的；</li>
+<li>基于私有的RPC调用协议。</li>
+</ol>
+<p>第一种http协议的微服务接口，比如使用spring boot开发的服务，这样的服务的测试工具应该有很多，postman是一个常用的工具。如果想为测试人员做点事情的话，可以根据服务注册中心做个所有服务的列表。</p>
+<p>第二种以私有协议暴露的服务的测试是非常麻烦的，也是本文主要讨论的解决办法。最初我们为了打通服务接口和测试人员之间的屏障，为了能让测试人员方便地测试到RPC协议的服务接口，我们为每个服务接口写了一个客户端，将其转换为http协议暴露，这是一种解决办法。但是，这样无形中增加了很多开发人员的工作量，而且测试服务的质量还依赖于客户端编写的质量，明显的是费力不讨好工作。</p>
+<p>作为程序员，懒惰是其本性，于是就想办法改变这种微服务测试苦难的现状。怎么能构建一个项目，它能提供所有服务的客户端，新开发一个服务只需要做极少的工作就能生成一个服务的测试客户端，快速的将接口提交测试？这是我们下面讨论的问题（开始造轮子）。</p>
+<h2 id="02-基于RPC协议的微服务测试的设计思路"><a href="#02-基于RPC协议的微服务测试的设计思路" class="headerlink" title="02 基于RPC协议的微服务测试的设计思路"></a>02 基于RPC协议的微服务测试的设计思路</h2><p>微服务设计的项目一般都是基于分布式服务的注册和发现机制的，所有的服务都是在一个注册中心集中存储的。而且一般的分布式服务框架都支持丰富的服务调用方式，有基于Spring xml配置的、Spring 注解、和API等调用方法，为我们编写公共的服务测试工具提供了便利的条件。</p>
+<p>我们设计的服务测试工具在整个分布式服务架构中所扮演的角色就是如下图所示，是所有的服务提供者的公共客户端。</p>
+<p><img src="/2018/01/14/microservice-test/tool-role.png" alt="服务测试工具的角色"></p>
+<p>根据上述服务测试工具的定位，我们开始设计该测试工具，主要的宗旨是：</p>
+<ol>
+<li>简化测试人员工作。</li>
+<li>简化服务开发人员工作。</li>
+<li>保证测试质量。</li>
+</ol>
+<p>下面描述一下我们的微服务测试工具的设计思路，主要分为如下几步：</p>
+<p><img src="/2018/01/14/microservice-test/tool-flow.png" alt="服务测试工具的处理流程"></p>
+<p>第一步是从服务注册中心获取到所有的服务接口，并将这些接口可视化地展示给测试人员，测试人员可以选择需要测试的服务接口。</p>
+<p><img src="/2018/01/14/microservice-test/service-list.png" alt="服务列表"></p>
+<p>第二步就是将服务的每个接口以一种易读易用的方式暴露给测试人员，目前能想到的就是将接口的请求参数转化为xml或者json的形式展示给测试人员，方便他们填写测试用例。我们采用的是xml格式，示例如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;java.util.List&gt;
+   &lt;com.unicom.front.model.MucfcBussOrderRequest&gt;
+      &lt;systemCode&gt;0&lt;/systemCode&gt;
+      &lt;flowNo&gt;0&lt;/flowNo&gt;
+      &lt;charSet&gt;0&lt;/charSet&gt;
+      &lt;requestTime&gt;0&lt;/requestTime&gt;
+      &lt;signType&gt;0&lt;/signType&gt;
+      &lt;signMsg&gt;0&lt;/signMsg&gt;
+      &lt;operatorName&gt;0&lt;/operatorName&gt;
+      &lt;operatorId&gt;0&lt;/operatorId&gt;
+      &lt;orderId&gt;0&lt;/orderId&gt;
+      &lt;woAccountId&gt;0&lt;/woAccountId&gt;
+      &lt;serialNumber&gt;0&lt;/serialNumber&gt;
+      &lt;certType&gt;0&lt;/certType&gt;
+      &lt;certCode&gt;0&lt;/certCode&gt;
+      &lt;expandAttribute&gt;
+         &lt;entry&gt;
+            &lt;java.lang.Object&gt;0&lt;/java.lang.Object&gt;
+            &lt;java.lang.Object&gt;0&lt;/java.lang.Object&gt;
+         &lt;/entry&gt;
+         &lt;entry&gt;
+            &lt;java.lang.Object&gt;0&lt;/java.lang.Object&gt;
+            &lt;java.lang.Object&gt;0&lt;/java.lang.Object&gt;
+         &lt;/entry&gt;
+      &lt;/expandAttribute&gt;
+   &lt;/com.unicom.front.model.MucfcBussOrderRequest&gt;
+&lt;/java.util.List&gt;
+</code></pre><p>第三步，将测试人员提交的服务测试请求中的参数转换为xml报文参数转换为请求对象，以便使用统一的API接口，调用到后端服务。</p>
+<p>第四步，发起服务调用，这一步一般使用API的方式来调用服务，这是因为我们做的工具是统一的服务调用入口，能够根据请求参数动态地调用不同的服务。</p>
+<p>第五步，将服务的响应参数再次转换为xml或者json展示给测试人员查看，这时候可以顺便返回一些调用耗时等附加数据，帮助测试人员判断服务的效率等情况。</p>
+<p><img src="/2018/01/14/microservice-test/response-request-example.png" alt="请求和响应示例"></p>
+<h2 id="03-微服务测试拓展功能"><a href="#03-微服务测试拓展功能" class="headerlink" title="03 微服务测试拓展功能"></a>03 微服务测试拓展功能</h2><p>遵循着我们设计这个服务测试系统的宗旨，尽可能的简化一切服务测试过程。其中还有一些服务测试基础功能之外的拓展功能：</p>
+<ol>
+<li>有规律（规则）请求参数的自动化生成，例如请求流水号、请求时间、手机号、身份证号等，减少测试人员的填写参数时间。</li>
+<li>后台保存服务测试的请求参数和响应参数，方便回归测试。</li>
+<li>实现了回归测试，在服务代码有变动之后，可根据保存的请求参数进行回归测试，并且可以和之前的响应参数进行对比，以便验证是否影响到当前测试服务接口。</li>
+<li>服务的并发测试，在提交测试请求的时候可以指定每个服务测试请求的测试次数，这时后台会模拟多线程调用服务，可实现对服务接口的并发测试。</li>
+<li>多个测试环境自由切换，通过选择不同环境的注册中心，来实现其他环境的测试，如集成、系统等环境。</li>
+<li>服务测试出现异常的时候，将异常堆栈信息直接展示在测试人员面前，方便他排查问题。</li>
+<li>实现定时回归测试，有时候我们的测试环境也需要保持一定的稳定性，因为经常会有别的系统发起联调测试。定时回归测试，既能及时发现后端系统对我们服务的影响，又能保证我们服务的持续稳定地对外提供服务。</li>
+<li>开发公共的mock测试服务（<em>未实现</em>），有些时间避免后端未开发完成的服务耽误我们服务的测试，有时候也需要mock掉后端服务，这看起来更像是单元测试，但是实际的开发测试环境是复杂的，这种情况也是时常发生的。但是每个服务都要单独开发的话，又有些麻烦，于是就想设计一个万能的mock服务。</li>
+</ol>
+<h2 id="04-结束语"><a href="#04-结束语" class="headerlink" title="04 结束语"></a>04 结束语</h2><p>上面的介绍的微服务测试工具和其中一些思想，都是我厂几个同事一起讨论实践过程，在此分享出来希望能对各位有帮助，最好能减少我们这类程序员们的一些疑惑。</p>
+<blockquote>
+<p>作为一个开发人员说起测试显得有些不够专业，如果有哪些地方描述的不合适的，请各位测试专业大神指点，欢迎拍砖。</p>
+</blockquote>
 
-        &lt;!-- 配置初始化大小、最小、最大 --&gt;
-        &lt;property name=&quot;initialSize&quot; value=&quot;5&quot; /&gt;
-        &lt;property name=&quot;minIdle&quot; value=&quot;5&quot; /&gt;
-        &lt;property name=&quot;maxActive&quot; value=&quot;10&quot; /&gt;
-        &lt;!-- 配置从连接池获取连接等待超时的时间 --&gt;
-        &lt;property name=&quot;maxWait&quot; value=&quot;10000&quot; /&gt;
-
-        &lt;!-- 配置间隔多久启动一次DestroyThread，对连接池内的连接才进行一次检测，单位是毫秒。
-            检测时:1.如果连接空闲并且超过minIdle以外的连接，如果空闲时间超过minEvictableIdleTimeMillis设置的值则直接物理关闭。2.在minIdle以内的不处理。
-        --&gt;
-        &lt;property name=&quot;timeBetweenEvictionRunsMillis&quot; value=&quot;600000&quot; /&gt;
-        &lt;!-- 配置一个连接在池中最大空闲时间，单位是毫秒 --&gt;
-        &lt;property name=&quot;minEvictableIdleTimeMillis&quot; value=&quot;300000&quot; /&gt;
-        &lt;!-- 设置从连接池获取连接时是否检查连接有效性，true时，每次都检查;false时，不检查 --&gt;
-        &lt;property name=&quot;testOnBorrow&quot; value=&quot;false&quot; /&gt;
-        &lt;!-- 设置往连接池归还连接时是否检查连接有效性，true时，每次都检查;false时，不检查 --&gt;
-        &lt;property name=&quot;testOnReturn&quot; value=&quot;false&quot; /&gt;
-        &lt;!-- 设置从连接池获取连接时是否检查连接有效性，true时，如果连接空闲时间超过minEvictableIdleTimeMillis进行检查，否则不检查;false时，不检查 --&gt;
-        &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;
-        &lt;!-- 检验连接是否有效的查询语句。如果数据库Driver支持ping()方法，则优先使用ping()方法进行检查，否则使用validationQuery查询进行检查。(Oracle jdbc Driver目前不支持ping方法) --&gt;
-        &lt;property name=&quot;validationQuery&quot; value=&quot;select 1 from dual&quot; /&gt;
-        &lt;!-- 单位：秒，检测连接是否有效的超时时间。底层调用jdbc Statement对象的void setQueryTimeout(int seconds)方法 --&gt;
-        &lt;!-- &lt;property name=&quot;validationQueryTimeout&quot; value=&quot;1&quot; /&gt;  --&gt;
-
-        &lt;!-- 打开后，增强timeBetweenEvictionRunsMillis的周期性连接检查，minIdle内的空闲连接，每次检查强制验证连接有效性. 参考：https://github.com/alibaba/druid/wiki/KeepAlive_cn --&gt;
-        &lt;property name=&quot;keepAlive&quot; value=&quot;true&quot; /&gt;  
-
-        &lt;!-- 连接泄露检查，打开removeAbandoned功能 , 连接从连接池借出后，长时间不归还，将触发强制回连接。回收周期随timeBetweenEvictionRunsMillis进行，如果连接为从连接池借出状态，并且未执行任何sql，并且从借出时间起已超过removeAbandonedTimeout时间，则强制归还连接到连接池中。 --&gt;
-        &lt;property name=&quot;removeAbandoned&quot; value=&quot;true&quot; /&gt; 
-        &lt;!-- 超时时间，秒 --&gt;
-        &lt;property name=&quot;removeAbandonedTimeout&quot; value=&quot;80&quot;/&gt;
-        &lt;!-- 关闭abanded连接时输出错误日志，这样出现连接泄露时可以通过错误日志定位忘记关闭连接的位置 --&gt;
-        &lt;property name=&quot;logAbandoned&quot; value=&quot;true&quot; /&gt;
-
-        &lt;!-- 根据自身业务及事务大小来设置 --&gt;
-        &lt;property name=&quot;connectionProperties&quot;
-            value=&quot;oracle.net.CONNECT_TIMEOUT=2000;oracle.jdbc.ReadTimeout=10000&quot;&gt;&lt;/property&gt;
-
-        &lt;!-- 打开PSCache，并且指定每个连接上PSCache的大小，Oracle等支持游标的数据库，打开此开关，会以数量级提升性能，具体查阅PSCache相关资料 --&gt;
-        &lt;property name=&quot;poolPreparedStatements&quot; value=&quot;true&quot; /&gt;
-        &lt;property name=&quot;maxPoolPreparedStatementPerConnectionSize&quot;
-            value=&quot;20&quot; /&gt;   
-
-        &lt;!-- 配置监控统计拦截的filters --&gt;
-        &lt;!-- &lt;property name=&quot;filters&quot; value=&quot;stat,slf4j&quot; /&gt; --&gt;
-
-        &lt;property name=&quot;proxyFilters&quot;&gt;
-            &lt;list&gt;
-                &lt;ref bean=&quot;log-filter&quot; /&gt;
-                &lt;ref bean=&quot;stat-filter&quot; /&gt;
-            &lt;/list&gt;
-        &lt;/property&gt;
-        &lt;!-- 配置监控统计日志的输出间隔，单位毫秒，每次输出所有统计数据会重置，酌情开启 --&gt;
-        &lt;property name=&quot;timeBetweenLogStatsMillis&quot; value=&quot;120000&quot; /&gt;
-    &lt;/bean&gt;
-</code></pre>
     </div>
 
     <div class="post-footer">   
@@ -285,10 +271,8 @@
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/01/12/java9-module/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
-    
-        <a href="/2018/01/03/docker-introduction/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+        <a href="/2018/01/14/microservice-improve-architecture/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
