@@ -1,0 +1,408 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>构建微服务：API网关 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="构建微服务：API网关">
+            
+            构建微服务：API网关
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            API Gateway
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/14</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>在nginx官网的blog中，作者Chris Richardson关于微服务的文章有七篇：<br><a href="https://www.nginx.com/blog/introduction-to-microservices/" target="_blank" rel="noopener">1. Introduction to Microservices（微服务介绍）</a><br><a href="https://www.nginx.com/blog/building-microservices-using-an-api-gateway/" target="_blank" rel="noopener">2. Building Microservices: Using an API Gateway（<strong>构建微服务：API网关</strong>）</a><br><a href="https://www.nginx.com/blog/building-microservices-inter-process-communication/" target="_blank" rel="noopener">3. Building Microservices: Inter-Process Communication in a Microservices Architecture（构建微服务：微服务架构中的进程间通信）</a><br><a href="https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/" target="_blank" rel="noopener">4. Service Discovery in a Microservices Architecture（微服务架构中的服务发现）</a><br><a href="https://www.nginx.com/blog/event-driven-data-management-microservices/" target="_blank" rel="noopener">5. Event-Driven Data Management for Microservices</a>（<a href="http://www.jianshu.com/p/120e026a2e4c" target="_blank" rel="noopener">微服务中基于事件驱动的数据管理</a>）<br><a href="https://www.nginx.com/blog/deploying-microservices/" target="_blank" rel="noopener">6. Choosing a Microservices Deployment Strategy（微服务部署策略）</a><br><a href="https://www.nginx.com/blog/refactoring-a-monolith-into-microservices/" target="_blank" rel="noopener">7. Refactoring a Monolith into Microservices（重构单体应用为微服务）</a><br>本篇文章翻译的是其中的第二篇，关于微服务中的API网关。</p>
+</blockquote>
+<h2 id="00-写在前面的话"><a href="#00-写在前面的话" class="headerlink" title="00 写在前面的话"></a>00 写在前面的话</h2><p>当你选择使用一系列的微服务来构建你的应用的时候，你需要决定你的应用如何与这些微服务进行交互。在单体应用中仅仅是一些端点（通常是重复的、负载均衡的），然而在微服务架构中每个微服务都暴露一系列细粒度的端点。在这篇文章中，我们将研究这个问题对客户端和应用之间通信的影响，然后提出一个解决办法，就是使用API网关。</p>
+<h2 id="01-简介"><a href="#01-简介" class="headerlink" title="01 简介"></a>01 简介</h2><p>假设你正在为购物应用开发一个手机客户端，好像你需要实现一个产品详情页，用来展示任何给定的产品的详细信息。</p>
+<p>举个例子，下图展示了你在Amazon的android手机客户端上滚动看到的产品详情页。</p>
+<p><img src="/2018/01/14/build-microservice-gateway/amazon-mobile-detail.png" alt="Amazon手机客户端上的产品详情页"></p>
+<p>即使这是一个智能手机上的应用，产品详情页一样展示了很多信息。例如，不仅有基本的产品信息（如名称、描述和价格），而且这个页面还展示了：</p>
+<ul>
+<li>购物车中的商品数量</li>
+<li>历史订单数</li>
+<li>用户评论</li>
+<li>低库存的预警</li>
+<li>发货选项</li>
+<li>各种推荐，包括经常和本产品一起被购买的其他产品，购买该产品的顾客购买的其他产品，还有购买该产品的顾客查看的其他产品</li>
+</ul>
+<p>当你使用单体应用架构时，手机客户端可以简单地通过一个REST接口（GET api.company.com/productdetails/productId）检索到该数据。一个负载均衡器将请求路由到N个相同的应用实例中的一个。然后这个应用实例查询多张数据库表，最后将数据响应给客户端。</p>
+<p>相反，当我们使用微服务架构之后，在产品详情页上展示的数据来自多个微服务。这里是一些可能拥有产品详情页数据的微服务：</p>
+<ul>
+<li>购物车服务 - 购物车中物品的数量</li>
+<li>订单服务 - 历史订单</li>
+<li>Catalog 服务 - 产品基本信息，如名称、图片和价格</li>
+<li>评论服务 - 用户的评论</li>
+<li>库存服务 - 低库存预警</li>
+<li>邮寄服务 - 发货选项，期限，来自各个邮寄提供商的API的成本</li>
+<li>推荐服务 - 推荐商品</li>
+</ul>
+<p><img src="/2018/01/14/build-microservice-gateway/much-microservice-data.png" alt="来自多个微服务的数据"></p>
+<p>我们需要决定手机客户端如何访问这些服务，让我们看看有几种选择。</p>
+<h2 id="02-客户端和微服务直接交互"><a href="#02-客户端和微服务直接交互" class="headerlink" title="02 客户端和微服务直接交互"></a>02 客户端和微服务直接交互</h2><p>理论上来说，客户端可以直接请求每个微服务，每个微服务都有一个公共的端点（<a href="https://serviceName.api.company.name）。这个URL会被映射到微服务的负载均衡器上，然后它再分发请求到可用的应用实例上。为了检索产品详情，客户端需要向上面列出的所有微服务发送请求。" target="_blank" rel="noopener">https://serviceName.api.company.name）。这个URL会被映射到微服务的负载均衡器上，然后它再分发请求到可用的应用实例上。为了检索产品详情，客户端需要向上面列出的所有微服务发送请求。</a></p>
+<p>可惜，这种方法实现起来是有困难和限制的。一个问题是，客户端需求和每个微服务暴露的细粒度的API是不匹配的。在这个例子中，客户端需要分别发送七次请求，在更复杂的应用中可能需要请求更多次。例如，Amazon介绍说，在他们的产品详情页上涉及到数百个微服务。虽然客户端在局域网上可以发起这么多的请求，但是在公网上可能效率太低，这在移动网络上是不符合实际的。而且这种方法也会使客户端的代码特别复杂。</p>
+<p>客户端直接调用微服务的另外一个问题是，一些微服务使用的协议不是web友好的。一个服务使用的是Thrift RPC的二进制协议，而另一个服务可能使用的是AMQP消息协议，这两个协议对浏览器和防火墙都是不友好的，最好是在内部使用。一个应用应该使用例如 HTTP 和 WebSocket 这样能穿透防火墙的协议。</p>
+<p>这个方法的另外一个缺点是，它会使微服务的重构比较苦难。随着时间的推移，我们可能需要将某个系统拆分成服务。例如，我们可能将两个服务合并成一个，或者将一个服务拆分成两个甚至更多的服务。不管怎样，如果客户端和很多服务之间都是直接通信，这样的重构可能是极端困难。</p>
+<p>由于以上这些问题，客户端很少会和微服务直接通信。</p>
+<h2 id="03-API网关"><a href="#03-API网关" class="headerlink" title="03 API网关"></a>03 API网关</h2><p>通常情况下，更好的方法是使用所谓的<a href="http://microservices.io/patterns/apigateway.html" target="_blank" rel="noopener">API网关</a>。API网关是一个系统的一个入口，它类似于面向对象设计中的外观模式。API网关封装了内部系统架构，为每个客户端单独提供一个API。API网关可能还有其他的职责，例如授权、监控、负载均衡、缓存、请求的修改和管理、静态响应的处理。</p>
+<p>下图展示了一个API网关通常适合的架构：</p>
+<p><img src="/2018/01/14/build-microservice-gateway/api-gateway-architecture.png" alt="API网关所适合的架构"></p>
+<p>API网关负责请求的路由、组合和协议转换，所有来自客户端的请求首先都要经过API网关，然后它再路由请求到合适的微服务。API网关处理请求的方式通常是，调用多个微服务，然后合并响应结果。API网关可以在web协议（如HTTP、WebSocket）和内部使用的web不友好的协议之间做转换。</p>
+<p>API网关也可以为每个客户端提供一个特定的API，它通常会为手机客户端暴露一些粗粒度的API，例如在产品详情的场景下，API网关可以提供一个端点（/productdetails?productid=xxx），这样手机客户端发送一个请求就能检索到产品的所有信息。API网关处理这个请求调用了多个服务（产品信息、推荐、评论等），然后合并响应结果。</p>
+<p><a href="http://techblog.netflix.com/2013/02/rxjava-netflix-api.html" target="_blank" rel="noopener">Netflix API 网关</a>是一个非常好的例子，Netflix的流服务支撑着数百种设备，包括电视、机顶盒、智能手机、游戏系统、平板电脑等等。最初，Netflix试图给所有的设备提供统一的API服务，然而他们发现效果不是很好，因为各种各样的设备都有独特的需求。现在他们使用API网关为每种设备提供定制化的API，通过执行特定设备的适配器代码实现的。通常每个适配器处理一个请求平均要调用后端六七个服务。Netflix的API网关每天处理数十亿的请求。</p>
+<h2 id="04-API网关的优点和缺点"><a href="#04-API网关的优点和缺点" class="headerlink" title="04 API网关的优点和缺点"></a>04 API网关的优点和缺点</h2><p>正如你期待的那样，API网关既有优点也有缺点。使用API网关的一个主要优点就是，它封装了应用的内部架构，客户端不需要调用特定的服务，而只需要与网关通信。API网关给每一种客户端都提供了特定的API，这简化了客户端与应用之间的通信往返次数，也简化了客户端代码。</p>
+<p>API网关也有一些缺点，这又是一个高可用的组件，需要开发、部署和管理。API网关成为开发的瓶颈，这也是有风险的。开发人员为了暴露每个微服务的端点必须更新API网关，更新API网关的过程尽量轻量化也是很重要的，否则开发人员将在更新API网关的过程上被迫排队。尽管有这么多的缺点，但是在现实中的应用上使用API网关还是有意义的。</p>
+<h2 id="05-API网关的实现"><a href="#05-API网关的实现" class="headerlink" title="05 API网关的实现"></a>05 API网关的实现</h2><p>我们已经看到了使用API网关的动机和一些利弊权衡，现在让我们看一下你需要考虑的各种设计问题。</p>
+<h3 id="05-1-性能和伸缩性"><a href="#05-1-性能和伸缩性" class="headerlink" title="05.1 性能和伸缩性"></a>05.1 性能和伸缩性</h3><p>只有少数的公司有Netflix的运营规模，每天需要处理数十亿的请求，然而对于大多数的应用程序来说，API网关的性能和伸缩性是非常重要的。因此，在构建API网关的时候使用异步调用和非阻塞I/O是非常有意义的。有很多种不同的技术都可以用来实现可伸缩的API网关，在JVM平台中你可以使用Netty、Vertx、Spring Reactor 或者 JBoss Undertow等这些机遇NIO的框架，在非JVM的平台中流行的技术是Node.js，它是运行在chrome的JavaScript引擎中的，另一个选择是Nginx Plus，Nginx Plus提供了一个成熟的、可扩展的、高性能的Web服务器，并且还提供了易于部署、配置和编程的反向代理，Nginx Plus可以管理授权、访问控制、请求的负载均衡、响应的缓存，并提供了应用本身的健康检查和监控。</p>
+<h3 id="05-2-使用响应式编程模型"><a href="#05-2-使用响应式编程模型" class="headerlink" title="05.2 使用响应式编程模型"></a>05.2 使用响应式编程模型</h3><p>API网关处理一些请求的方式是，简单将他们路由到合适的后端服务；处理其它请求的方式是，调用多个后端服务，然后将它们的响应结果聚合在一起。对于某些请求，如产品详情的请求，它的后端服务都是彼此独立的，为了减少响应时间，API网关应该并行地执行这些独立的请求。然而，有时候一些请求之间是彼此依赖的。API网关在将请求路由到后端服务之前，可能需要调用身份验证服务来验证请求。类似地，在获取顾客需要的产品列表时，API网关必须首先检索顾客需要的产品概要信息，然后才能检索每个产品的详细信息。另外一个有趣的API组合的示例是 <a href="http://techblog.netflix.com/2013/02/rxjava-netflix-api.html" target="_blank" rel="noopener">Netflix Video Grid</a>。</p>
+<p>使用传统的异步回调的方法编写API组合的代码，很快就会将你带到回调的地狱，代码将会变得混乱、难于理解并且易于出错。一个更好的实现API网关的方法是，使用响应式编程方法来实现声明式的API网关代码。响应式概念的例子有Scala中的<a href="http://docs.scala-lang.org/overviews/core/futures.html" target="_blank" rel="noopener">Future</a>，Java 8 中的 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html" target="_blank" rel="noopener">CompletableFuture</a>，JavaScript中的 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener">Promise</a>。也还有<a href="http://reactivex.io/" target="_blank" rel="noopener">Reactive Extensions</a>，也叫 Rx 或者 ReactiveX，最初是微软为 .Net 平台开发的；Netflix创建了JVM平台的 RxJava，并将它使用在他们的API网关上；也有 JavaScript 上的 RxJS，它运行在浏览器或者Node.js上。使用响应式方法编写API网关的代码简单又高效。</p>
+<h3 id="05-3-服务调用"><a href="#05-3-服务调用" class="headerlink" title="05.3 服务调用"></a>05.3 服务调用</h3><p>基于微服务的应用是一个分布式系统，必须使用进程间通信机制。进程间通信有两种方式：一种是异步的、基于消息的机制，有些是用消息中间件（JMS or AMQP）实现的，其它的是直接与服务通信的无中间件模式，如Zeromq；进程间通信的另外一种方式是采用同步机制，如HTTP或者Thrift。通常一个系统会同时使用同步和异步方式，甚至会使用每种方式的不同实现形式，因此API网关必须支持多种通信机制。</p>
+<h3 id="05-4-服务发现"><a href="#05-4-服务发现" class="headerlink" title="05.4 服务发现"></a>05.4 服务发现</h3><p>API网关需要知道要调用的每个微服务的位置（IP地址和端口号），在传统的应用中，你可能需要硬性地配置各个微服务的位置，但现在的基于云的微服务应用中就很简单了。基础设施服务，例如消息中间件，通常都是一个静态的位置，可以通过操作系统的环境变量来指定。然而，确定一个应用服务的位置不是那么简单的，应用服务是动态分配位置的，并且一个服务的实例集合也是动态改变的，这是因为一些自动的扩缩容和升级。因此，API网关要像其他的服务客户端一样，需要使用系统的服务发现机制：<a href="http://microservices.io/patterns/server-side-discovery.html" target="_blank" rel="noopener">Server‑Side Discovery</a> 或者 <a href="http://microservices.io/patterns/client-side-discovery.html" target="_blank" rel="noopener">Client‑Side Discovery</a>。在后面的文章中，将详细地介绍服务发现。现在需要我们注意的是，如果系统使用的是客户端侧的发现，API网关必须能够查询到服务注册中心，它是所有微服务实例和对应位置的数据库存储。</p>
+<h3 id="05-5-部分失败的处理"><a href="#05-5-部分失败的处理" class="headerlink" title="05.5 部分失败的处理"></a>05.5 部分失败的处理</h3><p>在实现API网关的时候必须解决的一个问题是部分失败问题。这个问题在所有的分布式系统中都会出现，因为一个服务调用另外的服务时有可能响应慢或者服务不可用。API网关决不能由于等待下游服务而被无限期的阻塞下去，例如在产品详情的场景中，如果推荐服务未响应，API网关应该将其余的产品详情信息返回给客户端，因为这些东西仍然对用户是有用的，这时的推荐内容是空的或者被其他的内容代替，例如top 10的产品。但是如果产品信息服务未响应，API网关应该返回错误给客户端。</p>
+<p>如果后端服务不可用，API网关也可以返回缓存数据，例如，因为产品价格是很少改变的，如果产品价格服务不可用，API网关可以返回缓存的价格数据。数据可以被缓存在API网关本身，也可以缓存在外部，如Redis或者Memcached。API网关在后端系统调用失败的时候通过返回默认数据和缓存数据来确保不影响用户体验。</p>
+<p><a href="https://github.com/Netflix/Hystrix" target="_blank" rel="noopener">Netflix Hystrix</a>是一个在调用远程服务时非常有用的编码库，Hystrix调用时间超过某个设定的阈值，就是所谓的超时，它是实现了断路器模式的，这时它会阻止客户端对不响应的服务的不必要等待。如果一个服务的错误率超过指定的阈值，然后Hystrix就会触发断路器，然后所有的请求在一个时间区间内都会立即失败。Hystrix会让你定义一个请求失败后的返回函数，例如从缓存读取数据或者返回默认值。如果你正在使用JVM的平台，你应该考虑使用Hystrix。如果在使用非JVM平台你应该等效的类库。</p>
+<h2 id="06-总结"><a href="#06-总结" class="headerlink" title="06 总结"></a>06 总结</h2><p>对于大多数基于微服务的应用，实现一个API网关都是非常有意义的，它是一个系统的唯一入口。API网关负责请求路由、组合服务和协议转换。它为应用的每个客户端提供定制化的API，API网关也可以通过返回缓存或默认数据来屏蔽调用后端服务失败。在这个系列的下一篇文章中，我们将介绍服务之间的通信。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/14/microservice-test/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">13</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 16.67px;">Dockerfile</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>

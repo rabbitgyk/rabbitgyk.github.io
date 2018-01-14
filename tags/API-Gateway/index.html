@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>docker 入门体验 | rabbitGYK&#39;s blog</title>
+<title>标签: API Gateway | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,11 +37,7 @@
     
 
 
-    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
-
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -140,132 +136,36 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content m-post">
-                    <p id="process"></p>
-<article class="post">
-    <div class="post-head">
-        <h1 id="docker 入门体验">
-            
-            docker 入门体验
-            
-        </h1>
-        <div class="post-meta">
-    
-    
-    <span class="categories-meta fa-wrap">
-        <i class="fa fa-folder-open-o"></i>
-        <span>Docker</span>
-    </span>
-    
-    
-    <span class="fa-wrap">
-        <i class="fa fa-tags"></i>
-        <span class="tags-meta">
-            
-            docker
-            
-        </span>
-    </span>
-    
-    
-    <span class="fa-wrap">
-        <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/03</span>
-    </span>
-</div>
+                <main class="col-md-8 main-content ">
+                    <h3> 
 
-            
-            
-    </div>
-    
-    <div class="post-body post-content">
-        <blockquote>
-<p>在探讨微服务的路上，docker的概念也是经常出现，自己只是粗略的了解docker是个啥，现在是时候认真学习一下docker了，亲自操作一下才能更加深入的理解。</p>
-</blockquote>
-<h2 id="00-docker介绍"><a href="#00-docker介绍" class="headerlink" title="00. docker介绍"></a>00. docker介绍</h2><p>docker是开源的一个基于轻量级虚拟化技术的容器引擎项目。它通过分层镜像标准化和内核虚拟化技术，使得应用开发者和运维工程师可以以统一的方式跨平台发布应用，并且以几乎没有额外开销的情况下提供资源隔离的应用运行环境。</p>
-<p>docker有三个核心概念：</p>
-<ul>
-<li>镜像<br>docker镜像，是一个只读的镜像，位于第1层，它不能被修改或不能保存状态。<br>一个docker镜像可以构建于另一个docker镜像之上，这种层叠关系可以是多层的。第1层的镜像层我们称之为基础镜像（Base Image），其他层的镜像（除了最顶层）我们称之为父层镜像（Parent Image）。这些镜像继承了他们的父层镜像的所有属性和设置，并在Dockerfile中添加了自己的配置。<br>镜像是用来创建Docker容器的。一个镜像可以包含一个完整的操作系统环境和用户需要的其它应用程序。在docker hub 里面有大量现成的镜像提供下载。一个镜像可以创建多个容器。</li>
-<li>容器<br>容器是使用docker镜像创建的。<br>它会在所有的镜像层之上增加一个可写层。这个可写层有运行在CPU上的进程，而且有两个不同的状态：运行态（Running）和退出态（Exited）。这就是Docker容器。当我们使用docker run启动容器，Docker容器就进入运行态，当我们停止Docker容器时，它就进入退出态。<br>当我们有一个正在运行的Docker容器时，从运行态到停止态，我们对它所做的一切变更都会永久地写到容器的文件系统中。要切记，对容器的变更是写入到容器的文件系统的，而不是写入到Docker镜像中的。<br>我们可以用同一个镜像启动多个Docker容器，这些容器启动后都是活动的，彼此还是相互隔离的。我们对其中一个容器所做的变更只会局限于那个容器本身。</li>
-<li>仓库<br>仓库是集中存放镜像文件的地方。<br>每个仓库中又包含了多个镜像，每个镜像有不同的标签（tag）。<br>最大的公开仓库是DockerHub，存放了数量庞大的镜像供用户下载。国内的公开仓库包括DockerPool等，可以提供大陆用户更稳定快速的访问。当然，用户也可以在本地网络内创建一个私有仓库。</li>
-</ul>
-<h2 id="01-docker准备"><a href="#01-docker准备" class="headerlink" title="01. docker准备"></a>01. docker准备</h2><p>准备一个能够连接互联网的Ubuntu操作系统，Ubuntu是安装docker最好的环境。docker是在ubuntu的环境下开发的，测试也是最充分的环境。</p>
-<ul>
-<li><p>安装docker<br>这里的安装docker指的是安装docker的后台守护进程，安装docker的方式有两种，在线安装和离线安装。我使用的是在线安装的方式，命令如下：<br><code>sudo apt install docker.io</code>。</p>
-</li>
-<li><p>免sudo使用docker命令<br>安装完成docker的守护进程之后，默认服务是启动。但是此时我们在使用各种docker命令的时候都需要使用sudo权限，这样显然是有些麻烦的，下面一系列命令帮你免sudo使用docker命令：<br><code>sudo groupadd docker</code><br><code>sudo gpasswd -a ${USER} docker</code><br><code>sudo service docker restart</code><br><code>newgrp - docker</code></p>
-</li>
-<li><p>配置docker加速器<br>由于国内用户访问docker hub缓慢的问题，下载镜像速度很慢，需要配置一下加速器，国内很多docker平台都提供了加速器服务，这些服务一般都是免费的。我这里使用的是DaoCloud的加速器服务，配置方法很简单：<br><code>curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://475d9f5e.m.daocloud.io</code><br>使用<code>cat /etc/docker/daemon.json</code>查看是否配置成功，输出如下为成功：<br>{“registry-mirrors”: [“<a href="http://475d9f5e.m.daocloud.io&quot;]}" target="_blank" rel="noopener">http://475d9f5e.m.daocloud.io&quot;]}</a><br>更详细的配置方法见<a href="http://guide.daocloud.io/dcs/daocloud-9153151.html" target="_blank" rel="noopener">链接</a>。</p>
-</li>
-</ul>
-<h2 id="02-docker体验"><a href="#02-docker体验" class="headerlink" title="02. docker体验"></a>02. docker体验</h2><ol>
-<li>查看docker的版本：<code>docker --version</code></li>
-<li>从仓库种搜索一个镜像：<code>docker search tomcat</code></li>
-<li>挑选一个镜像下载：<code>docker pull tomcat</code>，这里选的是镜像名为tomcat的镜像。</li>
-<li>查看拥有的镜像：<code>docker images</code></li>
-<li>删除一个镜像：<code>docker rmi &lt;image id&gt;</code></li>
-<li>创建一个tomcat的docker容器：<code>docker run -p 8080:8080 tomcat</code>，这里的<code>-p</code>参数是映射主机端口和容器端口。</li>
-<li>查看正在运行的容器：<code>docker ps</code></li>
-<li>查看所有的容器：<code>docker ps -a</code></li>
-<li>停止一个正在运行的容器：<code>docker stop 容器名（容器id前四位）</code></li>
-<li>启动一个已创建的容器：<code>docker start 容器名（容器id前四位）</code></li>
-<li>重启一个正在运行的容器：<code>docker restart 容器名（容器id前四位）</code></li>
-<li>删除一个已创建的容器：<code>docker rm 容器名（容器id前四位）</code></li>
-<li>一个复杂点的命令：<br><code>docker run -i -t --name hello_tomcat -p 8081:8080 tomcat /bin/bash</code>，其中<code>-i -t</code>是进入到容器的交互式的窗口，<code>--name</code>为容器指定一个名字。</li>
-</ol>
-<blockquote>
-<p>到这里为止，就简单体验了一把docker容器的基本操作。</p>
-</blockquote>
-
-    </div>
-
-    <div class="post-footer">   
-        <div>
-            
-                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
-            
-        </div>
-        <div>
-            
-        </div>  
-    </div>
-</article>
-
-<div class="article-nav prev-next-wrap clearfix">
-    
-        <a href="/2018/01/04/druid-configuration/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
-    
-    
-        <a href="/2018/01/01/how-to-build-microservice/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
-    
-</div>
+    API Gateway 
 
 
-    <div id="comments">
+</h3>
+
+    <article class="post">
         
-    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-    <script>
-    var gitment = new Gitment({
-        id: window.location.pathname,
-        owner:"rabbitgyk",
-        repo:"rabbitgyk.github.io",
-        oauth: {
-          client_id:"7a93c03ab378debc7255",
-          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
-        },
-        perPage:"10",
-    });
-    gitment.render('comments');
-    </script>
+        <div class="post-content">
+            <div class="post-head home-post-head">
+                <h1 class="post-title"> 
+                    <a href="/2018/01/14/build-microservice-gateway/">构建微服务：API网关</a>
+                </h1>
+                <div class="post-meta">  &bull;
+                    <time class="post-date" datetime="" title="">
+                        2018年01月14日
+                    </time>
+                </div>
+            </div>
+            <p class="brief">
+                
+在nginx官网的blog中，作者Chris Richardson关于微服务的文章有七篇：1. Introduction to Microservices（微服务介绍）2. Building Microservices: Using...
+            </p> 
+        </div>
+    </article>
+ 
 
 
-
-
-
-
-
-
-    </div>
 
 
 
