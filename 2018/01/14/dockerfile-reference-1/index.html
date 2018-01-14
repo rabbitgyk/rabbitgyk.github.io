@@ -1,0 +1,587 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>dockerfile reference 1 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="dockerfile reference 1">
+            
+            dockerfile reference 1
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>Docker</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            Dockerfile
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/14</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>最近学习docker过程中，发现Dockerfile是一个非常重要的文档，本文系统学习一下。<br>文档是基于Docker v17.09 版本。<br>翻译作品，原文请见<a href="https://docs.docker.com/engine/reference/builder/" target="_blank" rel="noopener">官网英文文档</a>。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>Docker可以读取<code>Dockerfile</code>中的指令自动构建镜像，<code>Dockerfile</code>是一个文本文件，它包含很多命令，用户可以在命令行上调用这些命令组装镜像。用户可以使用<code>docker build</code>来自动构建镜像，它可以连续执行若干命令行指令。</p>
+<p>本文将介绍在<code>Dockerfile</code>中你可以使用命令，你读完这篇文章之后，<a href="https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/" target="_blank" rel="noopener"><code>Dockerfile</code><br> Best Practices</a> 是另一篇很好的指导。</p>
+<h2 id="01-用法"><a href="#01-用法" class="headerlink" title="01 用法"></a>01 用法</h2><p><code>docker build</code>命令根据<code>Dockerfile</code>和上下文来构建镜像，构建过程的上下文是通过<code>PATH</code>或者<code>URL</code>指定的一系列文件。<code>PATH</code>是一个本地文件系统的目录，<code>URL</code>是一个Git仓库的位置。</p>
+<p>上下文是一个递归的处理过程。因此，PATH<code>可以包含任何的子目录，</code>URL`包括仓库和它的子模块。下面是一个构建镜像的命令的示例，使用当前目录作为上下文：</p>
+<pre><code>$ docker build .
+Sending build context to Docker daemon  6.51 MB
+...
+</code></pre><p>Build是通过Docker daemon（docker 守护进程），而不是 CLI（命令行界面）执行的。Build过程要做的第一件事是发送整个上下文（递归）到Docker的守护进程。最佳实践是，开始创建一个空的文件夹作为上下文，然后将你的Dockerfile文件放在那个文件夹下，仅添加一些你在编译Dockerfile过程中需要的文件。</p>
+<blockquote>
+<p>注意：千万不要使用根路径 <code>/</code> 作为<code>PATH</code>，这将导致Build会发送你的硬盘上的所有内容到Docker的守护进程。</p>
+</blockquote>
+<p>在Build的上下文中为了使用Dockerfile中指定的一个文件，这个文件是某个指令（例如<code>COPY</code>指令）用到的。为了提高Build的性能，通过添加<code>.dockerignore</code>文件，可以排除上下文目录中的某些文件和目录，关于如何创建<code>.dockerignore</code>文件更多信息见本文的下面章节。</p>
+<p>一般认为，<code>Dockerfile</code>文件都应该位于上下文的根目录下，你可以在<code>docker build</code>后使用<code>-f</code>标识来指定你的文件系统中任意位置的Dockerfile文件。</p>
+<pre><code>$ docker build -f /path/to/a/Dockerfile .
+</code></pre><p>你还可以指定用来存储成功编译的镜像文件的仓库和标签：</p>
+<pre><code>$ docker build -t shykes/myapp .
+</code></pre><p>Build的时候也可以为镜像添加多个仓库标签，在你执行Build命令的时候添加多个<code>-t</code>参数即可：</p>
+<pre><code>$ docker build -t shykes/myapp:1.0.2 -t shykes/myapp:latest .
+</code></pre><p>Docker守护进程在执行<code>Dockerfile</code>中的指令之前，会首先对<code>Dockerfile</code>做一个初步校验，如果有语法错误，它会返回一个错误：</p>
+<pre><code>$ docker build -t test/myapp .
+Sending build context to Docker daemon 2.048 kB
+Error response from daemon: Unknown instruction: RUNCMD
+</code></pre><p>Docker守护进程是逐步执行<code>Dockerfile</code>中的指令的，如果需要的话，会提交每个指令的结果到新的镜像中，最后输出新镜像的的ID。Docker的守护进程也会自动清除你发送的上下文。</p>
+<p>注意，每一条指令都是独立执行的，因此在创建一个镜像的时候，<code>RUN cd /tmp</code>这条指令不会对下一条指令有任何影响。</p>
+<p>无论任何可能的时候，Docker都将会重用中间状态（缓存）的镜像，这样能够明显地加速<code>docker build</code>的过程，这是通过控制台输出的信息<code>Using cache</code>来标识的。（更多信息参见，在<code>Dockerfile</code>的最佳实践指导中的<a href="https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#build-cache" target="_blank" rel="noopener">Build cache section</a>）：</p>
+<pre><code>$ docker build -t svendowideit/ambassador .
+Sending build context to Docker daemon 15.36 kB
+Step 1/4 : FROM alpine:3.2
+ ---&gt; 31f630c65071
+Step 2/4 : MAINTAINER SvenDowideit@home.org.au
+ ---&gt; Using cache
+ ---&gt; 2a1c91448f5f
+Step 3/4 : RUN apk update &amp;&amp;      apk add socat &amp;&amp;        rm -r /var/cache/
+ ---&gt; Using cache
+ ---&gt; 21ed6e7fbb73
+Step 4/4 : CMD env | grep _TCP= | (sed &#39;s/.*_PORT_\([0-9]*\)_TCP=tcp:\/\/\(.*\):\(.*\)/socat -t 100000000 TCP4-LISTEN:\1,fork,reuseaddr TCP4:\2:\3 \&amp;/&#39; &amp;&amp; echo wait) | sh
+ ---&gt; Using cache
+ ---&gt; 7ea8aef582cc
+Successfully built 7ea8aef582cc
+</code></pre><p>仅在编译那些有具有本地主链的镜像时使用缓存，意思是这些镜像的创建依赖前面的Build，或者整个镜像链都已经通过<code>docker load</code>加载进来了。如果你希望对一个指定镜像使用build cache，你可以使用<code>--cache-from</code>来指定，通过<code>--cache-from</code>指定的镜像不需要有一个主链，也可能是从其他的中心拉取的。</p>
+<p>当你编译完成的时候，你该学习 <a href="https://docs.docker.com/engine/tutorials/dockerrepos/#/contributing-to-docker-hub" target="_blank" rel="noopener"><em>Pushing a repository to its registry</em></a>。</p>
+<h2 id="02-格式"><a href="#02-格式" class="headerlink" title="02 格式"></a>02 格式</h2><p>下面是<code>Dockerfile</code>文件的格式：</p>
+<pre><code># Comment
+INSTRUCTION arguments
+</code></pre><p>指令对字母大小写是不敏感的，但是，习惯上将它们大写，以便容易和参数区分开。</p>
+<p>Docker是按照顺序来执行<code>Dockerfile</code>中的指令的。一个<code>Dockerfile</code>文件必须以<code>FROM</code>指令开始，<code>FROM</code>指令指定了你正在编译镜像的<em>基础镜像</em>。在<code>Dockerfile</code>文件中，<code>FROM</code>指令的前面仅可以是一个或者多个<code>ARG</code>指令，这些声明的参数被用于<code>FROM</code>指令。</p>
+<p>Docker认为以<code>#</code>开头的行是注释，除非这一行是一个有效的转义的指令。<code>#</code>标识出现在一行的任何其它地方，都会被认为是一个参数。就像下面这段：</p>
+<pre><code># Comment
+RUN echo &#39;we are running some # of cool things&#39;
+</code></pre><p>注释中不支持继续字符。</p>
+<h2 id="03-转义指令"><a href="#03-转义指令" class="headerlink" title="03 转义指令"></a>03 转义指令</h2><p>转义指令是可选的，它会影响在<code>Dockerfile</code>中后续行的处理方式。转义指令并不会添加任何层到构建的镜像中，也不会作为构建一个步骤展示，转义指令是被写作一个特殊类型的注释，形式为<code># directive=value</code>，一个指令可能只会被使用一次。</p>
+<p>一旦有一行注释、空行或者编译指令被执行，Docker就不会再检查转义指令了，而是将任何格式的转义指令认为是注释，不会尝试去验证它是否是转义指令。因此所有的转义指令必须放在<code>Dockerfile</code>文件的第一行。</p>
+<p>转义指令不是大小写敏感的，但是通常使用小写的形式，习惯上任何的转义指令后面都跟一个空行。转义指令不支持续行符。</p>
+<p>根据上面这些规则，下面是一些无效的转义指令的例子：</p>
+<p>由于续行符，导致无效：</p>
+<pre><code># direc \
+tive=value
+</code></pre><p>由于出现两次，导致无效：</p>
+<pre><code># directive=value1
+# directive=value2
+
+FROM ImageName
+</code></pre><p>由于出现在了编译指令之后，被当作了注释：</p>
+<pre><code>FROM ImageName
+# directive=value
+</code></pre><p>由于出现在了注释之后，被当作了注释，而不是转义指令：</p>
+<pre><code># About my dockerfile
+# directive=value
+FROM ImageName
+</code></pre><p>未知的指令由于无法识别被当作了注释，另外一个已知的指令由于出现在了注释的后面，被当作了注释而不是转义指令。</p>
+<pre><code># unknowndirective=value
+# knowndirective=value
+</code></pre><p>转义指令中允许出现非断行的空格，所以下面几行都是相同的：</p>
+<pre><code>#directive=value
+# directive =value
+#    directive= value
+# directive = value
+#      dIrEcTiVe=value
+</code></pre><p>下面的转义指令是支持的：<br><code>escape</code></p>
+<h2 id="04-转义符指令"><a href="#04-转义符指令" class="headerlink" title="04 转义符指令"></a>04 转义符指令</h2><pre><code># escape=\ (backslash)
+</code></pre><p>或者</p>
+<pre><code># escape=` (backtick)
+</code></pre><p><code>escape</code>指令是用来设置Dockerfile中转义字符的字符，如果不指定的话，默认的转义字符是<code>\</code>。</p>
+<p>转义字符不仅用在一行中的转义字符上，也用在开启一个新行。<code>Dockerfile</code>中指令允许是多行的。注意，无论在<code>Dockerfile</code>中是否包含<code>escape</code>转义指令，在<code>RUN</code>命令中是不会执行转义的，除非是在一行的末尾。</p>
+<p>在Windows环境下，设置转义字符为 <code>`</code> ，是非常有用的，由于<code>\</code>是目录路径的分隔符，<code>`</code>和windows下的转义字符是一致的。</p>
+<p>考虑下面的一个例子，在windows环境下是失败的，在第二行的第二个<code>\</code>被解释成了换行的转义符，而不是被第一个<code>\</code>转义了的目标，同样的，在第三行末尾的<code>\</code>也是，它们被认作是一个指令，<code>\</code>被认为是续行符。这个Dockerfile的结果就是第二行和第三行被认为是一行指令：</p>
+<pre><code>FROM microsoft/nanoserver
+COPY testfile.txt c:\\
+RUN dir c:\
+</code></pre><p>结果是：</p>
+<pre><code>PS C:\John&gt; docker build -t cmd .
+Sending build context to Docker daemon 3.072 kB
+Step 1/2 : FROM microsoft/nanoserver
+ ---&gt; 22738ff49c6d
+Step 2/2 : COPY testfile.txt c:\RUN dir c:
+GetFileAttributesEx c:RUN: The system cannot find the file specified.
+PS C:\John&gt;
+</code></pre><p>一个解决办法是，上面都使用<code>/</code>作为<code>COPY</code>指令和<code>dir</code>的目标。然而，最好的情况下，这只是看着windows下的路径不自然，最坏的情况下，并不是所有的windows命令都支持<code>/</code>作为路径分隔符。</p>
+<p>另一种解决办法，添加一个<code>escape</code>转义指令，下面的<code>Dockerfile</code>成功的执行，如预期的一样<code>windows</code>平台很自然路径表示语义：</p>
+<pre><code># escape=`
+
+FROM microsoft/nanoserver
+COPY testfile.txt c:\
+RUN dir c:\
+</code></pre><p>结果是：</p>
+<pre><code>PS C:\John&gt; docker build -t succeeds --no-cache=true .
+Sending build context to Docker daemon 3.072 kB
+Step 1/3 : FROM microsoft/nanoserver
+ ---&gt; 22738ff49c6d
+Step 2/3 : COPY testfile.txt c:\
+ ---&gt; 96655de338de
+Removing intermediate container 4db9acbb1682
+Step 3/3 : RUN dir c:\
+ ---&gt; Running in a2c157f842f5
+ Volume in drive C has no label.
+ Volume Serial Number is 7E6D-E0F7
+
+ Directory of c:\
+
+10/05/2016  05:04 PM             1,894 License.txt
+10/05/2016  02:22 PM    &lt;DIR&gt;          Program Files
+10/05/2016  02:14 PM    &lt;DIR&gt;          Program Files (x86)
+10/28/2016  11:18 AM                62 testfile.txt
+10/28/2016  11:20 AM    &lt;DIR&gt;          Users
+10/28/2016  11:20 AM    &lt;DIR&gt;          Windows
+           2 File(s)          1,956 bytes
+           4 Dir(s)  21,259,096,064 bytes free
+ ---&gt; 01c7f3bef04f
+Removing intermediate container a2c157f842f5
+Successfully built 01c7f3bef04f
+PS C:\John&gt;
+</code></pre><h2 id="05-环境变量占位符"><a href="#05-环境变量占位符" class="headerlink" title="05 环境变量占位符"></a>05 环境变量占位符</h2><p>环境变量（ENV声明）可以被用在某些指令中作为变量（可以被Dockerfile解释）。转义指令也可以用于处理语句中包含类似变量的语法。</p>
+<p>环境变量在<code>Dockerfile</code>中表示为<code>$variable_name</code> 或者 <code>${variable_name}</code>，他们是等效的，大括号的语法通常用来强调没有空格的变量名，例如<code>${foo}_bar</code>。<code>${variable_name}</code>语法也支持一些标准的<code>bash</code>修饰符，例如下面：</p>
+<ul>
+<li><code>${variable:-word}</code>意思是，如果<code>variable</code>被设置了，结果将是那个值，如果<code>variable</code>没被设置，那个<code>word</code>就是结果。</li>
+<li><code>${variable:+word}</code>意思是，如果<code>variable</code>被设置了，<code>word</code>就是结果，否则结果就是空。</li>
+</ul>
+<p>以上所有情形，<code>word</code>可以是任何字符串，包括其它的环境变量。</p>
+<p>转义可以在变量之前添加<code>\</code>：例如，<code>\$foo</code>或者<code>\${foo}</code>将被转义为<code>$foo</code> 和<code>${foo}</code>两个常量。</p>
+<p>举个例子（转义之后的结果展示在<code>#</code>的后面）：</p>
+<pre><code>FROM busybox
+ENV foo /bar
+WORKDIR ${foo}   # WORKDIR /bar
+ADD . $foo       # ADD . /bar
+COPY \$foo /quux # COPY $foo /quux
+</code></pre><p>环境变量在下面这些<code>Dockerfile</code>指令中都是支持的：</p>
+<ul>
+<li><code>ADD</code></li>
+<li><code>COPY</code></li>
+<li><code>ENV</code></li>
+<li><code>EXPOSE</code></li>
+<li><code>FROM</code></li>
+<li><code>LABEL</code></li>
+<li><code>STOPSIGNAL</code></li>
+<li><code>USER</code></li>
+<li><code>VOLUME</code></li>
+<li><code>WORKDIR</code></li>
+</ul>
+<p>此外还有：</p>
+<ul>
+<li><code>ONBUILD</code>（当与上面任何一个指令结合时）</li>
+</ul>
+<blockquote>
+<p>注意：在1.4版本之前，<code>ONBUILD</code>是不支持环境变量的，即使与上面列出的指令结合时。</p>
+</blockquote>
+<p>在整个指令中环境变量的替换值都是用同一个值，换句话说，就是下面的例子：</p>
+<pre><code>ENV abc=hello
+ENV abc=bye def=$abc
+ENV ghi=$abc
+</code></pre><p>结果是，<code>def</code>的值是<code>hello</code>，而不是<code>bye</code>，<code>ghi</code>的值是<code>bye</code>，因为它不是设置<code>abc</code>为<code>bye</code>的指令的一部分。</p>
+<h2 id="06-dockerignore文件"><a href="#06-dockerignore文件" class="headerlink" title="06 .dockerignore文件"></a>06 .dockerignore文件</h2><p>在docker命令行界面中发送上下文到docker的守护进程之前，它会检查上下文目录根路径下名为<code>.dockerignore</code>的文件，如果这个文件存在，命令行界面会修改上下文，排除那些被<code>.dockerignore</code>中的模式匹配到的文件和目录。这有助于避免一些不必要的（大的或者敏感的文件和目录）发送到守护进程，还能避免一些潜在的使用<code>ADD</code> 或者 <code>COPY</code>添加文件和目录到镜像中。</p>
+<p>命令行解释<code>.dockerignore</code>文件为一个换行符分割的模式列表，类似于Unix shell的glob文件。由于这个匹配的目的，上下文的根被认为是工作目录和根目录。例如，模式 <code>/foo/bar</code> 和<code>foo/bar</code>都是在排除目录<code>foo</code>下面一个叫<code>bar</code>的文件或者目录，目录<code>foo</code>是<code>PATH</code>的子目录或者<code>URL</code>指定的git仓库下的子目录。不排除任何其它的。</p>
+<p>如果在<code>.dockerignore</code>文件中有一行以<code>#</code>开头，那么这一行被认为是注释，命令行解释之前为忽略它。</p>
+<p>下面是一个<code>.dockerignore</code>文件的例子：</p>
+<pre><code># comment
+*/temp*
+*/*/temp*
+temp?
+</code></pre><p>这个文件将引发下面的构建行为：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code># comment</code></td>
+<td>忽略。</td>
+</tr>
+<tr>
+<td><code>*/temp*</code></td>
+<td>排除根目录下的子目录中任何以<code>temp</code>开头的文件和目录，例如，<code>/somedir/temporary.txt</code> 这个文本文件会被排除，<code>/somedir/temp</code>这个目录也会被排除。</td>
+</tr>
+<tr>
+<td><code>*/*/temp*</code></td>
+<td>排除来自子目录的任何以<code>temp</code>开头的文件和目录，这个子目录是根目录下两层，例如，<code>/somedir/subdir/temporary.txt</code>被排除的。</td>
+</tr>
+<tr>
+<td><code>temp?</code></td>
+<td>排除那些根目录下名字以<code>temp</code>开始拓展一个字符的文件和目录，例如，<code>/tempa</code> 和 <code>/tempb</code>是被排除的。</td>
+</tr>
+</tbody>
+</table>
+<p>完成这个匹配使用的是<a href="http://golang.org/pkg/path/filepath#Match" target="_blank" rel="noopener">Go语言的文件路径匹配规则</a>，在预处理步骤中会去除掉开头和结尾的空格，并清除<code>.</code>和<code>..</code>元素，在这个过程中使用的是<a href="http://golang.org/pkg/path/filepath/#Clean" target="_blank" rel="noopener">Go语言的文件路径清理方法</a>，预处理过程中会忽略掉空白行。</p>
+<p>在Go语言的文件路径匹配规则之外，Docker还支持一个特殊的通配符<code>**</code>，用于匹配任意数量的目录（包括零），例如，<code>**/*.go</code>将排除所有以<code>.go</code>结尾的文件，它会在编译上下文的根目录的所有目录中找。</p>
+<p>以感叹号<code>!</code>开始的行被用于标出排除中的异常文件，下面的这个<code>.dockerignore</code>文件的例子就使用了这种机制：</p>
+<pre><code>*.md
+!README.md
+</code></pre><p>在上下文中除了<code>README.md</code>之外，所有markdown文件都会被排除。</p>
+<p>异常规则<code>!</code>的位置影响行为：<code>.dockerignore</code>文件的最后一行匹配一个特定文件，它是包含还是排除呢？看下面的例子：</p>
+<pre><code>*.md
+!README*.md
+README-secret.md
+`
+</code></pre><p>除了README 文件之外，没有任何markdown文件被包含进上下文，并没有<code>README-secret.md</code>。</p>
+<p>现在看这个例子：</p>
+<pre><code>*.md
+README-secret.md
+!README*.md
+</code></pre><p>所有的README文件都会被包含进去，中间一行是没有任何影响的，因为<code>!README*.md</code> 能够匹配 <code>README-secret.md</code>，并且在后面。</p>
+<p>你甚至可以用<code>.dockerignore</code>来排除<code>Dockerfile</code>文件和<code>.dockerignore</code>，这些文件仍然是会被送到守护进程的，因为需要它们做这些工作，但是<code>ADD</code>和<code>COPY</code>指令是不会copy它们到镜像中去的。</p>
+<p>最后，你可能想要指定文件包含进上下文，而不是排除它们，为了实现这个目的，可以使用<code>*</code>作为第一个模式，下面使用一个或者多个<code>!</code>异常模式。</p>
+<blockquote>
+<p>注意：由于历史原因，模式<code>.</code>是被忽略的。</p>
+<p>到此为止介绍Dockerfile文件中工作原理和一些语法，以及相关的一些东西，其中03和04节不太常用，翻译不是太好，请高手指正。Dockerfile中常用的指令下一篇文章再介绍。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/14/docker-spring-boot/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">8</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/微服务/" style="font-size: 10px;">微服务</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>

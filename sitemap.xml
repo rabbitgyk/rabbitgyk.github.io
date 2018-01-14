@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rabbitgyk.com/2018/01/14/dockerfile-reference-1/</loc>
+    
+    <lastmod>2018-01-14T08:34:41.363Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rabbitgyk.com/2018/01/14/docker-spring-boot/</loc>
     
     <lastmod>2018-01-14T08:03:07.490Z</lastmod>
