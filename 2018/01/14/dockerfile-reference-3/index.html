@@ -1,0 +1,836 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Dockerfile 参考手册（三）：指令介绍 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Dockerfile 参考手册（三）：指令介绍">
+            
+            Dockerfile 参考手册（三）：指令介绍
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>Docker</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            Dockerfile
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/14</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>接着上一篇《<a href="http://rabbitgyk.com/2018/01/14/dockerfile-reference-2/">Dockerfile 参考手册（二）：指令介绍</a>》继续介绍Dockerfile相关指令。文档是基于Docker v17.09 版本。<br>文章内容完全是翻译<a href="https://docs.docker.com/engine/reference/builder/#from" target="_blank" rel="noopener">官方文档</a></p>
+</blockquote>
+<h3 id="01-10-ENTRYPOINTY"><a href="#01-10-ENTRYPOINTY" class="headerlink" title="01.10 ENTRYPOINTY"></a>01.10 ENTRYPOINTY</h3><p>ENTRYPOINT 有两种形式：</p>
+<ul>
+<li><code>ENTRYPOINT [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code>（exec形式，推荐）</li>
+<li><code>ENTRYPOINT command param1 param2</code>（shell形式）</li>
+</ul>
+<p><code>ENTRYPOINT</code>可以让你的容器功能表现得像一个可执行程序一样。</p>
+<p>例如下面的命令将使用默认的内容启动nginx，监听端口为80：</p>
+<pre><code>docker run -i -t --rm -p 80:80 nginx
+</code></pre><p><code>docker run &lt;image&gt;</code>的所有参数被追加到exec形式的<code>ENTRYPOINT</code>之后，并且会覆盖所有的<code>CMD</code>参数。entry point也可以从外部传入参数，例如，<code>docker run &lt;image&gt; -d</code>将传递<code>-d</code>的参数到entry point。你也可以使用<code>docker run --entrypoint</code>覆盖<code>ENTRYPOINT</code>指令。</p>
+<p>shell形式不能使用<code>CMD</code>或者<code>RUN</code>命令的任何参数，但是也有一个优势是，你的<code>ENTRYPOINT</code>是作为<code>/bin/sh -c</code>的子命令启动的，它是不能传递信号的，这就意味着此程序不是容器的<code>PID 1</code>，不能接收Unix信号，因此你的程序是不能接收到<code>docker stop &lt;container&gt;</code>的终止信号。</p>
+<p>在一个<code>Dockerfile</code>中只有最后一个<code>ENTRYPOINT</code>指令是有效的。</p>
+<h4 id="01-10-1-exec形式的ENTRYPOINTY示例"><a href="#01-10-1-exec形式的ENTRYPOINTY示例" class="headerlink" title="01.10.1 exec形式的ENTRYPOINTY示例"></a>01.10.1 exec形式的ENTRYPOINTY示例</h4><p>你可以使用<code>ENTRYPOINT</code>指令的exec形式设置非常稳定的默认命令和参数，然后使用<code>CMD</code>指令设置其它很可能需要改变的参数。</p>
+<pre><code>FROM ubuntu
+ENTRYPOINT [&quot;top&quot;, &quot;-b&quot;]
+CMD [&quot;-c&quot;]
+</code></pre><p>当你启动容器的时候，你可以通过<code>top</code>命令看到这是唯一的进程：</p>
+<pre><code>$ docker run -it --rm --name test  top -H
+top - 08:25:00 up  7:27,  0 users,  load average: 0.00, 0.01, 0.05
+Threads:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.1 us,  0.1 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem:   2056668 total,  1616832 used,   439836 free,    99352 buffers
+KiB Swap:  1441840 total,        0 used,  1441840 free.  1324440 cached Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+    1 root      20   0   19744   2336   2080 R  0.0  0.1   0:00.04 top
+</code></pre><p>进一步检查结果，你可以使用<code>docker exec</code>：</p>
+<pre><code>$ docker exec -it test ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  2.6  0.1  19752  2352 ?        Ss+  08:24   0:00 top -b -H
+root         7  0.0  0.1  15572  2164 ?        R+   08:25   0:00 ps aux
+</code></pre><p>你可以使用<code>docker stop test</code>优雅地将<code>top</code>进程关闭。</p>
+<p>在下面的<code>Dokcerfile</code>中展示了，使用<code>ENTRYPOINT</code>在前台运行一个Apache的例子（例如，<code>PID 1</code>）：</p>
+<pre><code>FROM debian:stable
+RUN apt-get update &amp;&amp; apt-get install -y --force-yes apache2
+EXPOSE 80 443
+VOLUME [&quot;/var/www&quot;, &quot;/var/log/apache2&quot;, &quot;/etc/apache2&quot;]
+ENTRYPOINT [&quot;/usr/sbin/apache2ctl&quot;, &quot;-D&quot;, &quot;FOREGROUND&quot;]
+</code></pre><p>如果你需要为这个独立的程序写一个启动脚本，你可以确保最后的程序能依靠<code>exec</code>和<code>gosu</code>指令接收到Unix信号：</p>
+<pre><code>#!/usr/bin/env bash
+set -e
+
+if [ &quot;$1&quot; = &#39;postgres&#39; ]; then
+    chown -R postgres &quot;$PGDATA&quot;
+
+    if [ -z &quot;$(ls -A &quot;$PGDATA&quot;)&quot; ]; then
+        gosu postgres initdb
+    fi
+
+    exec gosu postgres &quot;$@&quot;
+fi
+
+exec &quot;$@&quot;
+</code></pre><p>最后，如果你需要在关闭的时候做一些额外的清理（或者和其他的容器通信），或者协调多个程序，你可能需要确保<code>ENTRYPOINT</code>脚本能够接收到Unix信号，传递过去之后能做更多的工作：</p>
+<pre><code>#!/bin/sh
+# Note: I&#39;ve written this using sh so it works in the busybox container too
+
+# USE the trap if you need to also do manual cleanup after the service is stopped,
+#     or need to start multiple services in the one container
+trap &quot;echo TRAPed signal&quot; HUP INT QUIT TERM
+
+# start service in background here
+/usr/sbin/apachectl start
+
+echo &quot;[hit enter key to exit] or run &#39;docker stop &lt;container&gt;&#39;&quot;
+read
+
+# stop service and clean up here
+echo &quot;stopping apache&quot;
+/usr/sbin/apachectl stop
+
+echo &quot;exited $0&quot;
+</code></pre><p>如果你使用命令<code>docker run -it --rm -p 80:80 --name test apache</code>运行这个镜像，然后你可以使用<code>docker exec</code>或者<code>docker top</code>检查容器的进程，也可以调用脚本停止Apache：</p>
+<pre><code>$ docker exec -it test ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.1  0.0   4448   692 ?        Ss+  00:42   0:00 /bin/sh /run.sh 123 cmd cmd2
+root        19  0.0  0.2  71304  4440 ?        Ss   00:42   0:00 /usr/sbin/apache2 -k start
+www-data    20  0.2  0.2 360468  6004 ?        Sl   00:42   0:00 /usr/sbin/apache2 -k start
+www-data    21  0.2  0.2 360468  6000 ?        Sl   00:42   0:00 /usr/sbin/apache2 -k start
+root        81  0.0  0.1  15572  2140 ?        R+   00:44   0:00 ps aux
+$ docker top test
+PID                 USER                COMMAND
+10035               root                {run.sh} /bin/sh /run.sh 123 cmd cmd2
+10054               root                /usr/sbin/apache2 -k start
+10055               33                  /usr/sbin/apache2 -k start
+10056               33                  /usr/sbin/apache2 -k start
+$ /usr/bin/time docker stop test
+test
+real    0m 0.27s
+user    0m 0.03s
+sys    0m 0.03s
+</code></pre><blockquote>
+<p>注意：你可以使用<code>--entrypoint</code>覆盖<code>ENTRYPOINT</code>，但是仅能为exec形式设置二进制程序（不能使用<code>sh -c</code>）。</p>
+<p>注意：exec形式会被解析为JSON数组，这意味着，你必须使用双引号（”）包围单词，而不是使用单引号（’）。</p>
+<p>注意：不像shell形式那样，exec形式不能调用一个shell命令，这意味着不能做正常的shell处理过程，例如，<code>ENTRYPOINT [ &quot;echo&quot;, &quot;$HOME&quot; ]</code>在<code>$HOME</code>上不会做变量替换。如果你想使用shell处理，要么使用shell的形式，要么直接执行一个shell，例如：<code>ENTRYPOINT [ &quot;sh&quot;, &quot;-c&quot;, &quot;echo $HOME&quot; ]</code>。当使用exec形式直接执行一个shell命令的时候，这和shell形式是一样的，它是一个正在做环境变量扩展的shell，而不是docker。</p>
+</blockquote>
+<h4 id="01-10-2-shell形式的ENTRYPOINTY示例"><a href="#01-10-2-shell形式的ENTRYPOINTY示例" class="headerlink" title="01.10.2 shell形式的ENTRYPOINTY示例"></a>01.10.2 shell形式的ENTRYPOINTY示例</h4><p>可以为<code>ENTRYPOINT</code>指令指定一个普通字符串，它将会在<code>/bin/sh -c</code>中被执行，这种形式使用shell进程替换shell的环境变量，并且也会忽略<code>CMD</code>或者<code>docker run</code>的命令行参数。为了确保<code>docker stop</code>能够正确地通知任何长期运行的<code>ENTRYPOINT</code>程序，你需要在启动的时候使用<code>exec</code>：</p>
+<pre><code>FROM ubuntu
+ENTRYPOINT exec top -b
+</code></pre><p>当你运行这个镜像的时候，你将看到唯一的一个进程<code>PID 1</code>：</p>
+<pre><code>$ docker run -it --rm --name test top
+Mem: 1704520K used, 352148K free, 0K shrd, 0K buff, 140368121167873K cached
+CPU:   5% usr   0% sys   0% nic  94% idle   0% io   0% irq   0% sirq
+Load average: 0.08 0.03 0.05 2/98 6
+  PID  PPID USER     STAT   VSZ %VSZ %CPU COMMAND
+    1     0 root     R     3164   0%   0% top -b
+</code></pre><p>执行<code>docker stop</code>，进程会整齐地退出：</p>
+<pre><code>$ /usr/bin/time docker stop test
+test
+real    0m 0.20s
+user    0m 0.02s
+sys    0m 0.04s
+</code></pre><p>如果你在<code>ENTRYPOINT</code>的前面忘记了添加<code>exec</code>：</p>
+<pre><code>FROM ubuntu
+ENTRYPOINT top -b
+CMD --ignored-param1
+</code></pre><p>这时运行它（给它一个下一步中使用的名字）：</p>
+<pre><code>$ docker run -it --name test top --ignored-param2
+Mem: 1704184K used, 352484K free, 0K shrd, 0K buff, 140621524238337K cached
+CPU:   9% usr   2% sys   0% nic  88% idle   0% io   0% irq   0% sirq
+Load average: 0.01 0.02 0.05 2/101 7
+  PID  PPID USER     STAT   VSZ %VSZ %CPU COMMAND
+    1     0 root     S     3168   0%   0% /bin/sh -c top -b cmd cmd2
+    7     1 root     R     3164   0%   0% top -b
+</code></pre><p>你可以从<code>top</code>命令的输出中看到，<code>ENTRYPOINT</code>设定的进程号不是<code>PID 1</code>。这时如果你运行<code>docker stop test</code>，容器不会整齐地退出，超时之后<code>stop</code>命令会被强制发送一个<code>SIGKILL</code>：</p>
+<pre><code>$ docker exec -it test ps aux
+PID   USER     COMMAND
+    1 root     /bin/sh -c top -b cmd cmd2
+    7 root     top -b
+    8 root     ps aux
+$ /usr/bin/time docker stop test
+test
+real    0m 10.19s
+user    0m 0.04s
+sys    0m 0.03s
+</code></pre><h4 id="01-10-3-理解CMD怎么和ENTRYPOINTY交互"><a href="#01-10-3-理解CMD怎么和ENTRYPOINTY交互" class="headerlink" title="01.10.3 理解CMD怎么和ENTRYPOINTY交互"></a>01.10.3 理解CMD怎么和ENTRYPOINTY交互</h4><p><code>CMD</code>和<code>ENTRYPOINT</code>指令定义的都是在容器启动的时候执行什么命令。有一些规则是描述它们之间的协作的。</p>
+<ol>
+<li>Dockerfile文件中至少要设置一个<code>CMD</code> 或者 <code>ENTRYPOINT</code>指令。</li>
+<li>当容器被作为一个程序使用的时候，<code>ENTRYPOINT</code>指令应该被定义。</li>
+<li><code>CMD</code>应该被用作为<code>ENTRYPOINT</code>命令定义默认参数的一种方式，或者是在容器中执行的临时命令。</li>
+<li>当运行容器的时候使用替换参数的时候，<code>CMD</code>指令将会被覆盖。</li>
+</ol>
+<p>下表展示了在不同的<code>ENTRYPOINT</code> / <code>CMD</code>组合时，执行什么命令：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>No ENTRYPOINT</th>
+<th>ENTRYPOINT exec_entry p1_entry</th>
+<th>ENTRYPOINT [“exec_entry”, “p1_entry”]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>No CMD</strong></td>
+<td>error, not allowed</td>
+<td>/bin/sh -c exec_entry p1_entry</td>
+<td>exec_entry p1_entry</td>
+</tr>
+<tr>
+<td><strong>CMD [“exec_cmd”, “p1_cmd”]</strong></td>
+<td>exec_cmd p1_cmd</td>
+<td>/bin/sh -c exec_entry p1_entry</td>
+<td>exec_entry p1_entry exec_cmd p1_cmd</td>
+</tr>
+<tr>
+<td><strong>CMD [“p1_cmd”, “p2_cmd”]</strong></td>
+<td>p1_cmd p2_cmd</td>
+<td>/bin/sh -c exec_entry p1_entry</td>
+<td>exec_entry p1_entry p1_cmd p2_cmd</td>
+</tr>
+<tr>
+<td><strong>CMD exec_cmd p1_cmd</strong></td>
+<td>/bin/sh -c exec_cmd p1_cmd</td>
+<td>/bin/sh -c exec_entry p1_entry</td>
+<td>exec_entry p1_entry /bin/sh -c exec_cmd p1_cmd</td>
+</tr>
+</tbody>
+</table>
+<h3 id="01-11-VOLUME"><a href="#01-11-VOLUME" class="headerlink" title="01.11 VOLUME"></a>01.11 VOLUME</h3><pre><code>VOLUME [&quot;/data&quot;]
+</code></pre><p><code>VOLUME</code>指令使用指定名字创建了一个挂载点，并将它标记为一个来自本地宿主机或者其它容器的外部挂载卷。这个值是一个JSON数组，<code>VOLUME [&quot;/var/log/&quot;]</code>，或者是一个多参数的普通字符串，例如：<code>VOLUME /var/log</code> 或者 <code>VOLUME /var/log /var/db</code>。更多的信息和示例以及Docker客户端中的挂载指令，参见<a href="https://docs.docker.com/engine/tutorials/dockervolumes/#/mount-a-host-directory-as-a-data-volume" target="_blank" rel="noopener"><em>Share Directories via Volumes</em></a> 文档。</p>
+<p><code>docker run</code>命令会新创建一个数据卷，其中包含在基础镜像中指定位置的所有数据，例如下面这个Dockerfile片段：</p>
+<pre><code>FROM ubuntu
+RUN mkdir /myvol
+RUN echo &quot;hello world&quot; &gt; /myvol/greeting
+VOLUME /myvol
+</code></pre><p>这个Dockerfile文件的结果是，<code>docker run</code>启动的这个镜像会创建一个新的挂载点<code>/myvol</code>，并且会复制<code>greeting</code>文件到新创建的数据卷。</p>
+<h4 id="关于指定卷的注意事项"><a href="#关于指定卷的注意事项" class="headerlink" title="关于指定卷的注意事项"></a>关于指定卷的注意事项</h4><p>关于在<code>Dockerfile</code>中的volume，请记住以下事项：</p>
+<ul>
+<li><strong>基于windows的容器的数据卷</strong>：当使用基于windows的容器时，容器中的数据卷的目标路径必须是下面的其中之一：<br>1： 一个不存在的或者空的目录。<br>2： 一个除 C: 之外的驱动。</li>
+<li><strong>Dockerfile内部改变数据卷</strong>：数据卷声明之后，如果任何编译步骤修改数据卷内部的数据，这些改变都是会被丢弃的。</li>
+<li><strong>JSON格式</strong>：这个列表时作为JSON数组解析的，你必须使用双引号（<code>&quot;</code>）包围单词，而不是单引号（<code>&#39;</code>）。</li>
+<li><strong>主机目录在容器运行时声明</strong>：按照其特性，主机目录（挂载点）是依赖主机的，这是为了保持镜像的可移植性。因为给定的一个主机目录，并不能保证在所有主机上都是可用的。由于这个原因，你不能在Dockerfile中挂载一个主机目录。<code>VOLUME</code>指令不支持指定一个<code>host-dir</code>参数，你必须在容器创建或者运行的时候指定挂载点。</li>
+</ul>
+<h3 id="01-12-USER"><a href="#01-12-USER" class="headerlink" title="01.12 USER"></a>01.12 USER</h3><pre><code>USER &lt;user&gt;[:&lt;group&gt;] or
+USER &lt;UID&gt;[:&lt;GID&gt;]
+</code></pre><p><code>USER</code>指令是用来指定用户名（或者UID），用户分组（或者GID，可选的），这个用户是在启动镜像的时候，Dockerfile中的<code>RUN</code>, <code>CMD</code> 和 <code>ENTRYPOINT</code>指令使用的。</p>
+<blockquote>
+<p>警告：当一个用户确实没有基本的分组，镜像（下一条指令）将使用<code>root</code>分组来执行。</p>
+</blockquote>
+<h3 id="01-13-WORKDIR"><a href="#01-13-WORKDIR" class="headerlink" title="01.13 WORKDIR"></a>01.13 WORKDIR</h3><pre><code>WORKDIR /path/to/workdir
+</code></pre><p><code>WORKDIR</code>为Dockerfile中的其它指令（<code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>COPY</code> 和 <code>ADD</code>）设置工作目录，如果<code>WORKDIR</code>指定的目录不存在，它将会被创建，即使在<code>Dockerfile</code>中的后续指令不使用它。</p>
+<p>在<code>Dockerfile</code>中<code>WORKDIR</code>指令可能被使用多次，如果提供的是一个相对路径，它是相对于前面的<code>WORKDIR</code>指令中的路径，例如：</p>
+<pre><code>WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+</code></pre><p>在<code>Dockerfile</code>中，最后<code>pwd</code>命令的输出将是<code>/a/b/c</code>。</p>
+<p><code>WORKDIR</code>指令可以解析前面使用<code>ENV</code>设置的环境变量，你仅可以使用在<code>Dockerfile</code>中显示设置的环境变量，例如：</p>
+<pre><code>ENV DIRPATH /path
+WORKDIR $DIRPATH/$DIRNAME
+RUN pwd
+</code></pre><p>在<code>Dockerfile</code>中，最后<code>pwd</code>命令的输出将是<code>/path/$DIRNAME</code>。</p>
+<h3 id="01-14-ARG"><a href="#01-14-ARG" class="headerlink" title="01.14 ARG"></a>01.14 ARG</h3><pre><code>ARG &lt;name&gt;[=&lt;default value&gt;]
+</code></pre><p><code>ARG</code>指令定义了一个变量，用户可以在<code>docker build</code>的编译期间使用<code>--build-arg &lt;varname&gt;=&lt;value&gt;</code>标识给编译器传递参数。如果用户指定了一个编译参数，但是在Dockerfile中没有定义，编译的时候会输出一个警告：</p>
+<pre><code>[Warning] One or more build-args [foo] were not consumed.
+</code></pre><p>在一个Dockerfile中可以包含一个或多个<code>ARG</code>指令，例如下面就是有效的Dockerfile：</p>
+<pre><code>FROM busybox
+ARG user1
+ARG buildno
+...
+</code></pre><blockquote>
+<p>警告：不推荐在编译期间的命令行传递密码如github密钥，用户凭证等数据。编译期间设置的变量对镜像的任何用户都是可见的，可以通过docker history命令来查看。</p>
+</blockquote>
+<h4 id="01-14-01-默认值"><a href="#01-14-01-默认值" class="headerlink" title="01.14.01 默认值"></a>01.14.01 默认值</h4><p><code>ARG</code>指令可以包含一个默认值（可选的）：</p>
+<pre><code>FROM busybox
+ARG user1=someuser
+ARG buildno=1
+...
+</code></pre><p>如果一个<code>ARG</code>指令有一个默认值，并且在编译期间没有传值，编译器会使用这个默认值。</p>
+<h4 id="01-14-02-作用域"><a href="#01-14-02-作用域" class="headerlink" title="01.14.02 作用域"></a>01.14.02 作用域</h4><p>定义好的一个<code>ARG</code>变量是从<code>Dockerfile</code>中定义它的那一行开始生效的，而不是从使用它的命令行或者其他地方开始的。例如，下面这个Dockerfile：</p>
+<pre><code>1 FROM busybox
+2 USER ${user:-some_user}
+3 ARG user
+4 USER $user
+...
+</code></pre><p>用户使用下面的命令编译这个文件：</p>
+<pre><code>$ docker build --build-arg user=what_user .
+</code></pre><p>在第二行的<code>USER</code>的值是<code>some_user</code>，因为<code>user</code>变量是在下面的第三行定义的。在第四行的<code>USER</code>的值是<code>what_user</code>，也就是<code>user</code>变量定义的，<code>what_user</code>是由命令行传入的。在<code>ARG</code>指令定义变量之前，任何使用变量的结果都是空值。</p>
+<p><code>ARG</code>指令在被定义的编译阶段结束之后，就到了它的作用域之外，为了在多个阶段使用一个arg，需要在每个阶段都包含<code>ARG</code>指令。</p>
+<pre><code>FROM busybox
+ARG SETTINGS
+RUN ./run/setup $SETTINGS
+
+FROM busybox
+ARG SETTINGS
+RUN ./run/other $SETTINGS
+</code></pre><h4 id="01-14-03-ARG变量的用法"><a href="#01-14-03-ARG变量的用法" class="headerlink" title="01.14.03 ARG变量的用法"></a>01.14.03 ARG变量的用法</h4><p>你可以使用<code>ARG</code>或者<code>ENV</code>指令定义变量，这些变量对<code>RUN</code>指令都是可用的。使用<code>ENV</code>指令定义的环境变量总是能覆盖<code>ARG</code>指令设定的同名的变量。考虑下面这个使用了<code>ENV</code>和<code>ARG</code>指令的Dockerfile：</p>
+<pre><code>1 FROM ubuntu
+2 ARG CONT_IMG_VER
+3 ENV CONT_IMG_VER v1.0.0
+4 RUN echo $CONT_IMG_VER
+</code></pre><p>然后，使用下面的命令构建这个镜像：</p>
+<pre><code>$ docker build --build-arg CONT_IMG_VER=v2.0.1 .
+</code></pre><p>在这种情况下，<code>RUN</code>指令使用的是<code>v1.0.0</code>，而不是用户通过<code>ARG</code>指令设置的<code>v2.0.1</code>。这个行为和shell脚本很类似，一个当前作用域的变量会覆盖传递参数的变量，或者从环境和定义的变量中继承的。</p>
+<p>上面用法的示例如下（但是有一个不一样的<code>ENV</code>，你可以创建更多的<code>ARG</code>和<code>ENV</code>指令之间有用的交互）：</p>
+<pre><code>1 FROM ubuntu
+2 ARG CONT_IMG_VER
+3 ENV CONT_IMG_VER ${CONT_IMG_VER:-v1.0.0}
+4 RUN echo $CONT_IMG_VER
+</code></pre><p>和<code>ARG</code>指令不一样的是，<code>ENV</code>的值是可以被持久化到构建的镜像中的。考虑，docker镜像编译的阶段没有使用<code>--build-arg</code>标识：</p>
+<pre><code>$ docker build .
+</code></pre><p>这个Dockerfile中示例的用法，<code>CONT_IMG_VER</code>仍会被持久化到镜像中，但是它的值是<code>v1.0.0</code>，因为它是第三行中<code>ENV</code>指令设置的默认值。</p>
+<p>在这个示例的变量拓展技术，允许你从命令行传递参数，然后通过改变<code>ENV</code>指令将它们持久化到镜像中。变量拓展仅支持<a href="https://docs.docker.com/engine/reference/builder/#environment-replacement" target="_blank" rel="noopener">a limited set of Dockerfile instructions.</a>。</p>
+<h4 id="01-14-04-预定义的ARG变量"><a href="#01-14-04-预定义的ARG变量" class="headerlink" title="01.14.04 预定义的ARG变量"></a>01.14.04 预定义的ARG变量</h4><p>Docker有一些预先定义好的<code>ARG</code>变量，在Dockerfile中，你可以在没有<code>ARG</code>指令定义的情况下使用它。</p>
+<ul>
+<li><code>HTTP_PROXY</code></li>
+<li><code>http_proxy</code></li>
+<li><code>HTTPS_PROXY</code></li>
+<li><code>https_proxy</code></li>
+<li><code>FTP_PROXY</code></li>
+<li><code>ftp_proxy</code></li>
+<li><code>NO_PROXY</code></li>
+<li><code>no_proxy</code></li>
+</ul>
+<p>使用它们，只需要简单在命令行使用标识传值即可：</p>
+<pre><code>--build-arg &lt;varname&gt;=&lt;value&gt;
+</code></pre><p>默认情况下，这些预定义的变量是不会出现在<code>docker history</code>的输出中。排除它们可以减小变量<code>HTTP_PROXY</code>中敏感认证信息泄露的风险。</p>
+<p>例如，考虑使用<code>--build-arg HTTP_PROXY=http://user:pass@proxy.lon.example.com</code>编译下面的Dockerfile：</p>
+<pre><code>FROM ubuntu
+RUN echo &quot;Hello World&quot;
+</code></pre><p>在这个示例中，<code>HTTP_PROXY</code>变量的值在<code>docker history</code>中是不可见的，并且也不会被缓存。如果你改变位置和你的代理服务器为<code>http://user:pass@proxy.sfo.example.com</code>，后续的编译不会导致缓存的丢失。</p>
+<p>如果你想覆盖这个行为，你可以像下面这样在Dockerfile中添加<code>ARG</code>指令的声明：</p>
+<pre><code>FROM ubuntu
+ARG HTTP_PROXY
+RUN echo &quot;Hello World&quot;
+</code></pre><p>当编译这个Dockerfile的时候，<code>HTTP_PROXY</code>变量的值是被保存在<code>docker history</code>中的，并且改变它的值，使编译缓存作废。</p>
+<h4 id="01-14-05-ARG对编译缓存的影响"><a href="#01-14-05-ARG对编译缓存的影响" class="headerlink" title="01.14.05 ARG对编译缓存的影响"></a>01.14.05 ARG对编译缓存的影响</h4><p><code>ARG</code>变量不能像<code>ENV</code>变量那样，能持久化到编译的镜像中，然而，<code>ARG</code>变量确实有类似的方式影响编译缓存。如果一个Dockerfile中定义了一个<code>ARG</code>变量，它的值和前一层的编译中不一样，然后就会遇到“缓存丢失”。尤其，所有带有<code>ARG</code>指令的<code>RUN</code>指令都隐式地使用一个<code>ARG</code>变量（作为一个环境变量），这样就可能导致缓存丢失。所有预定义的<code>ARG</code>变量都不会有缓存，除非在<code>Dockerfile</code>中有一个同名的<code>ARG</code>声明。</p>
+<p>例如，考虑这两个Dockerfile：</p>
+<pre><code>1 FROM ubuntu
+2 ARG CONT_IMG_VER
+3 RUN echo $CONT_IMG_VER
+</code></pre><pre><code>1 FROM ubuntu
+2 ARG CONT_IMG_VER
+3 RUN echo hello
+</code></pre><p>如果你在命令行指定<code>--build-arg CONT_IMG_VER=&lt;value&gt;</code>，在这两种情形下，第二行都不会引起缓存丢失，第三行会引起缓存丢失，<code>ARG CONT_IMG_VER</code>会使RUN那一行同样被认为运行<code>CONT_IMG_VER=&lt;value&gt;</code>，然后echo hello，因此如果<code>&lt;value&gt;</code>被改变，我们将会看到缓存丢失。</p>
+<p>考虑同一个命令行下的另外一个例子：</p>
+<pre><code>1 FROM ubuntu
+2 ARG CONT_IMG_VER
+3 ENV CONT_IMG_VER $CONT_IMG_VER
+4 RUN echo $CONT_IMG_VER
+</code></pre><p>在这个例子中，缓存丢失出现在第三行。这个丢失的原因是，<code>ENV</code>引用了<code>ARG</code>变量的的值，并且变量通过命令行被改变了。在这个例子中，<code>ENV</code>命令使用镜像包含了这个值。</p>
+<p>如果一个<code>ENV</code>指令覆盖了一个同名的<code>ARG</code>指令的值，像下面这个Dockerfile：</p>
+<pre><code>1 FROM ubuntu
+2 ARG CONT_IMG_VER
+3 ENV CONT_IMG_VER hello
+4 RUN echo $CONT_IMG_VER
+</code></pre><p>第三行不会引起缓存丢失，因为<code>CONT_IMG_VER</code>的值是一个常量（<code>hello</code>）。因此，在编译期间环境变量和<code>RUN</code>指令使用的值都不会改变。</p>
+<h3 id="01-15-ONBUILD"><a href="#01-15-ONBUILD" class="headerlink" title="01.15 ONBUILD"></a>01.15 ONBUILD</h3><pre><code>ONBUILD [INSTRUCTION]
+</code></pre><p><code>ONBUILD</code>指令为镜像添加了一个触发器指令，它在稍后的时间执行，即当这个镜像被当作另一个编译的镜像的基础镜像时执行，这个触发器在下游编译的上下文中被执行，在下游的Dockerfile中的<code>FROM</code>指令之后立即被执行，就像插入一个触发器一样。</p>
+<p>任何编译指令都可以都可能被注册为一个触发器。</p>
+<p>如果你正在编译一个其它镜像的基础镜像，这个是有用的，例如一个应用的编译环境，或者一个可以通过用户配置自定义的后台进程。</p>
+<p>例如，如果你的镜像是一个可重复使用的Python程序的编译器，它需要将应用的源代码添加到指定的目录，并且它可能也需要一个稍后被调用的编译脚本。你不可能现在就调用<code>ADD</code>和<code>RUN</code>，因为你不可能访问到应用的源代码，并且每个应用的编译都是不一样的。你可能会简单的提供一个模板化的<code>Dockerfile</code>给应用开发者，复制-粘贴到他们的应用中，但是这是低效的、易错的和难以更新的，因为它是和特定的代码混在一起的。</p>
+<p>这个解决办法就是使用<code>ONBUILD</code>提前注册一个指令，稍后再执行，也就是下一个编译阶段。</p>
+<p>这儿是它的工作原理：</p>
+<ol>
+<li>当编译器遇到一个<code>ONBUILD</code>指令的时候，它会添加一个触发器到正在编译的镜像的元数据中，这个指令不会影响当前的镜像编译过程。</li>
+<li>编译结束的时候，所有触发器的列表时存储在镜像的manifest中的，key值是<code>OnBuild</code>。它们可以使用<code>docker inspect</code>命令查看到。</li>
+<li>稍后这个镜像可能被用作一个新的编译过程的基础镜像，会使用<code>FROM</code>指令引用。作为<code>FROM</code>指令执行过程的一部分，下游编译器会查找<code>ONBUILD</code>触发器，然后会按照它们被注册的顺序依次执行。如果任何触发器执行失败，<code>FROM</code>指令会中止，反过来这就导致镜像编译失败。如果所有的触发器成功执行，<code>FROM</code>指令完成之后，编译过程照常继续。</li>
+<li>在最后的镜像中执行过的触发器会被清除，换句话说，它们不会在“父-子”的编译过程中被继承。</li>
+</ol>
+<p>例如，你可能像这样添加一些：</p>
+<pre><code>[...]
+ONBUILD ADD . /app/src
+ONBUILD RUN /usr/local/bin/python-build --dir /app/src
+[...]
+</code></pre><blockquote>
+<p>警告：如<code>ONBUILD ONBUILD</code>，这种<code>ONBUILD</code>指令的链式使用是不允许的。</p>
+<p>警告：<code>ONBUILD</code>指令不能设置<code>FROM</code> 或者 <code>MAINTAINER</code>指令为触发器。</p>
+</blockquote>
+<h3 id="01-16-STOPSIGNAL"><a href="#01-16-STOPSIGNAL" class="headerlink" title="01.16 STOPSIGNAL"></a>01.16 STOPSIGNAL</h3><pre><code>STOPSIGNAL signal
+</code></pre><p><code>STOPSIGNAL</code>指令是给系统发送退出信号（终止信号），该信号可以是与内核系统调用 “9”相似，或者是格式为SIGNAME的信号名称，例如SIGKILL。</p>
+<h3 id="01-17-HEALTHCHECK"><a href="#01-17-HEALTHCHECK" class="headerlink" title="01.17 HEALTHCHECK"></a>01.17 HEALTHCHECK</h3><p><code>HEALTHCHECK</code>指令有两种形式：</p>
+<ul>
+<li><code>HEALTHCHECK [OPTIONS] CMD command</code>（通过运行容器中的一个命令来检查容器的健康状态）</li>
+<li><code>HEALTHCHECK NONE</code>（禁用继承自基础镜像的任何健康检查）</li>
+</ul>
+<p><code>HEALTHCHECK</code>指令告诉Docker是如何测试一个容器，检查它是否是一致在工作。举一个web服务器探测的例子，即使服务器的进程一直是在运行的，但是它可能困在了无限的循环中，而不能接收新的连接。</p>
+<p>当一个容器指定了一个健康检查的话，它除了正常状态之外多了一个health状态。这个状态初始化为<code>starting</code>，无论什么时候一个健康检查通过了之后，它会变成<code>healthy</code>（无论之前是什么状态）。经过一定数量的连续故障之后，它会变成<code>unhealthy</code>。</p>
+<p>在<code>CMD</code>指令之前可以出现的选项：</p>
+<ul>
+<li><code>--interval=DURATION</code> (默认: <code>30s</code>)</li>
+<li><code>--timeout=DURATION</code> (默认: <code>30s</code>)</li>
+<li><code>--start-period=DURATION</code> (默认: <code>0s</code>)</li>
+<li><code>--retries=N</code> (默认: <code>3</code>)</li>
+</ul>
+<p>第一次执行健康检查是在容器启动之后的一个interval秒，然后在前一次检查完成之后的interval秒再次执行。</p>
+<p>如果有一个检查所花的时间超过了timeout秒，那么就认为这次检查失败了。</p>
+<p>如果连续retries次失败，就认为此容器状态为<code>unhealthy</code>。</p>
+<p><strong>start-period</strong>为需要时间引导的容器提供初始化的时间，探测故障期间的不被计入最大重试次数。然而，在<strong>start-period</strong>期间，如果一个健康检查成功，容器就被认为是启动成功的，并且之后所有的连续失败都会被计入最大重试次数。</p>
+<p>Dockerfile中仅可以有一个<code>HEALTHCHECK</code>指令，如果你列出了多个，仅有最后一个<code>HEALTHCHECK</code>指令是有效的。</p>
+<p><code>CMD</code>关键字之后的命令可以是一个shell命令（例如<code>HEALTHCHECK CMD /bin/check-running</code>），也可以是exec数组（像Dockerfile中其它的指令，详细的可参见<code>ENTRYPOINT</code>）。</p>
+<p>命令的退出状态表示着容器的健康状态，可能的值：</p>
+<ul>
+<li>0: success - 容器是健康的，可用的</li>
+<li>1: unhealthy - 容器不能正确工作的</li>
+<li>2: reserved - 不要使用这个退出码</li>
+</ul>
+<p>例如，每五分钟检查一次容器，确保web server能够在3秒内正常输出主页：</p>
+<pre><code>HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+</code></pre><p>为了方便调试探针失败原因，检查命令的标准输出或者标准错误输出(UTF-8编码)会写到health状态中，并且可以通过docker inspect查看。输出应该尽量短（目前仅能存储前4096字节）。</p>
+<p>当容器的健康状态变化的时候，<code>health_status</code>会生成一个新的状态。</p>
+<p>HEALTHCHECK功能是在Docker 1.12添加的。</p>
+<h3 id="01-18-SHELL"><a href="#01-18-SHELL" class="headerlink" title="01.18 SHELL"></a>01.18 SHELL</h3><pre><code>SHELL [&quot;executable&quot;, &quot;parameters&quot;]
+</code></pre><p><code>SHELL</code>指令可以覆盖命令的shell模式所使用的默认shell。Linux的默认shell是<code>[&quot;/bin/sh&quot;, &quot;-c&quot;]</code>，Windows的是<code>[&quot;cmd&quot;, &quot;/S&quot;, &quot;/C&quot;]</code>。在Dockerfile中SHELL指令必须以JSON格式编写。</p>
+<p><code>SHELL</code>指令在windows上特别有用，因为它有两个常用的且不太相同的本地shell：<code>cmd</code>和<code>powershell</code>，以及可选的<code>sh</code>的。</p>
+<p><code>SHELL</code>指令可以出现多次，每个<code>SHELL</code>指令都会覆盖之前的<code>SHELL</code>指令设置的shell，并影响后续的指令。例如：</p>
+<pre><code>FROM microsoft/windowsservercore
+
+# Executed as cmd /S /C echo default
+RUN echo default
+
+# Executed as cmd /S /C powershell -command Write-Host default
+RUN powershell -command Write-Host default
+
+# Executed as powershell -command Write-Host hello
+SHELL [&quot;powershell&quot;, &quot;-command&quot;]
+RUN Write-Host hello
+
+# Executed as cmd /S /C echo hello
+SHELL [&quot;cmd&quot;, &quot;/S&quot;&quot;, &quot;/C&quot;]
+RUN echo hello
+</code></pre><p>下面的指令都会被<code>SHELL</code>指令设置的shell影响，当在Dockerfile中这些指令<code>RUN</code>, <code>CMD</code>和<code>ENTRYPOINT</code>使用shell形式时，将使用<code>SHELL</code>指令设置的shell执行。</p>
+<p>以下的示例是windows常见的模式，可以使用<code>SHELL</code>指令精简：</p>
+<pre><code>...
+RUN powershell -command Execute-MyCmdlet -param1 &quot;c:\foo.txt&quot;
+...
+</code></pre><p>docker解析的命令将是：</p>
+<pre><code>cmd /S /C powershell -command Execute-MyCmdlet -param1 &quot;c:\foo.txt&quot;
+</code></pre><p>这个命令有两个低效的原因。首先，没有必要调用cmd.exe进程（aka shell）。第二，每个使用shell形式的<code>RUN</code>指令都需要一个额外的<code>powershell -command</code>放在命令前面。</p>
+<p>为了使它更加高效，有两个方法可以使用，其中之一是使用RUN命令的JSON形式，例如：</p>
+<pre><code>...
+RUN [&quot;powershell&quot;, &quot;-command&quot;, &quot;Execute-MyCmdlet&quot;, &quot;-param1 \&quot;c:\\foo.txt\&quot;&quot;]
+...
+</code></pre><p>虽然JSON形式是清晰的，未使用没有必要的cmd.exe，但是它需要更加冗长的表示，需要使用双引号和转义符。另一个方法就是使用<code>SHELL</code>指令和shell形式，使得windows用户可以使用更自然的语法，特别是与escape指令一起用时：</p>
+<pre><code># escape=`
+
+FROM microsoft/nanoserver
+SHELL [&quot;powershell&quot;,&quot;-command&quot;]
+RUN New-Item -ItemType Directory C:\Example
+ADD Execute-MyCmdlet.ps1 c:\example\
+RUN c:\example\Execute-MyCmdlet -sample &#39;hello world&#39;
+</code></pre><p>编译结果：</p>
+<pre><code>PS E:\docker\build\shell&gt; docker build -t shell .
+Sending build context to Docker daemon 4.096 kB
+Step 1/5 : FROM microsoft/nanoserver
+ ---&gt; 22738ff49c6d
+Step 2/5 : SHELL powershell -command
+ ---&gt; Running in 6fcdb6855ae2
+ ---&gt; 6331462d4300
+Removing intermediate container 6fcdb6855ae2
+Step 3/5 : RUN New-Item -ItemType Directory C:\Example
+ ---&gt; Running in d0eef8386e97
+
+
+    Directory: C:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----       10/28/2016  11:26 AM                Example
+
+
+ ---&gt; 3f2fbf1395d9
+Removing intermediate container d0eef8386e97
+Step 4/5 : ADD Execute-MyCmdlet.ps1 c:\example\
+ ---&gt; a955b2621c31
+Removing intermediate container b825593d39fc
+Step 5/5 : RUN c:\example\Execute-MyCmdlet &#39;hello world&#39;
+ ---&gt; Running in be6d8e63fe75
+hello world
+ ---&gt; 8e559e9bf424
+Removing intermediate container be6d8e63fe75
+Successfully built 8e559e9bf424
+PS E:\docker\build\shell&gt;
+</code></pre><p><code>SHELL</code>指令也可能使用在修改shell操作的方式，例如，在windows上使用<code>SHELL cmd /S /C /V:ON|OFF</code>，延迟环境变量的扩展语义可以被修改。</p>
+<p><code>SHELL</code>指令也可以在Linux上使用，有时候需要交替使用一些shell（例如<code>zsh</code>, <code>csh</code>, <code>tcsh</code>和其它的）。</p>
+<p><code>SHELL</code>功能是在Docker 1.12中添加的。</p>
+<h3 id="01-19-Dockerfile示例"><a href="#01-19-Dockerfile示例" class="headerlink" title="01.19 Dockerfile示例"></a>01.19 Dockerfile示例</h3><p>下面你可以看到一些Dockerfile语法的示例，如果你对一些更加实用的东西感兴趣，可以查看<a href="https://docs.docker.com/engine/examples/" target="_blank" rel="noopener">Dockerization examples</a>。</p>
+<pre><code># Nginx
+#
+# VERSION               0.0.1
+
+FROM      ubuntu
+LABEL Description=&quot;This image is used to start the foobar executable&quot; Vendor=&quot;ACME Products&quot; Version=&quot;1.0&quot;
+RUN apt-get update &amp;&amp; apt-get install -y inotify-tools nginx apache2 openssh-server
+</code></pre><pre><code># Firefox over VNC
+#
+# VERSION               0.3
+
+FROM ubuntu
+
+# Install vnc, xvfb in order to create a &#39;fake&#39; display and firefox
+RUN apt-get update &amp;&amp; apt-get install -y x11vnc xvfb firefox
+RUN mkdir ~/.vnc
+# Setup a password
+RUN x11vnc -storepasswd 1234 ~/.vnc/passwd
+# Autostart firefox (might not be the best way, but it does the trick)
+RUN bash -c &#39;echo &quot;firefox&quot; &gt;&gt; /.bashrc&#39;
+
+EXPOSE 5900
+CMD    [&quot;x11vnc&quot;, &quot;-forever&quot;, &quot;-usepw&quot;, &quot;-create&quot;]
+</code></pre><pre><code># Multiple images example
+#
+# VERSION               0.1
+
+FROM ubuntu
+RUN echo foo &gt; bar
+# Will output something like ===&gt; 907ad6c2736f
+
+FROM ubuntu
+RUN echo moo &gt; oink
+# Will output something like ===&gt; 695d7793cbe4
+
+# You&#39;ll now have two images, 907ad6c2736f with /bar, and 695d7793cbe4 with
+# /oink.
+</code></pre><h3 id="02-结束语"><a href="#02-结束语" class="headerlink" title="02 结束语"></a>02 结束语</h3><p>看完Dockerfile的参考手册，并将其翻译完，经历了一个完美提升的过程。从开始对docker仅仅是了解，到能够简单的构建docker镜像。要想能够对docker有更加深入的理解，好需要更多的实践过程，同时还需要了解docker周边的系统功能。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/14/dockerfile-reference-2/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">10</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/Dockerfile/" style="font-size: 20px;">Dockerfile</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/微服务/" style="font-size: 10px;">微服务</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
