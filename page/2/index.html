@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>构建docker镜像部署spring-boot项目 | rabbitGYK&#39;s blog</title>
+<title>rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,11 +37,7 @@
     
 
 
-    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
-
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -140,21 +136,48 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content m-post">
-                    <p id="process"></p>
+                <main class="col-md-8 main-content ">
+                    <div class="carousel">
+    <img src="/img/head-img.jpg">
+</div>
+
+
+
+
 <article class="post">
-    <div class="post-head">
-        <h1 id="构建docker镜像部署spring-boot项目">
+    
+        <div class="post-media">
+            <a href="javascript:">
+                <img class="img-ajax" src="/img/loading.gif"  data-src="/2018/01/01/happy-new-year-2018/2018.jpg"   alt="2018，新年快乐"> 
+            </a>
+        </div>
+    
+    <div class="post-content">
+        <div class="post-head home-post-head">
+            <h1 class="post-title">
+                <a href="/2018/01/01/happy-new-year-2018/">2018，新年快乐</a>
+            </h1>
+            <div class="post-meta">  &bull;
+                <time class="post-date" datetime="" title="">
+                    2018年01月01日
+                </time>
+            </div>
+        </div>
+        <p class="brief">
             
-            构建docker镜像部署spring-boot项目
-            
-        </h1>
-        <div class="post-meta">
+赶在新年的尾巴上，搭建了属于自己的博客，这里将会记录我在2018年的成长历程。新的一年，新的开始。
+
+回忆2017转眼，2017年就剩下几个小时了，用一个字描述一下我的感觉就是：快。这一年是在忙碌的工作和学习中度过的，其中也夹杂着一...
+        </p> 
+    </div>
+    <footer class="post-footer clearfix">
+        <div class="pull-left tag-list">
+            <div class="post-meta">
     
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <span>Docker</span>
+        <span>随笔</span>
     </span>
     
     
@@ -162,7 +185,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            docker
+            happy new year
             
         </span>
     </span>
@@ -170,119 +193,26 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/14</span>
+        <span class="date-meta">2018/01/01</span>
     </span>
 </div>
 
-            
-            
-    </div>
-    
-    <div class="post-body post-content">
-        <blockquote>
-<p>学习了docker基本操作之后，我的最终目的是部署微服务项目，这里就记录一下我是如何为一个spring boot项目构建docker镜像的。</p>
-</blockquote>
-<h2 id="00-提前准备"><a href="#00-提前准备" class="headerlink" title="00 提前准备"></a>00 提前准备</h2><p>首先需要准备好docker的构建环境，然后需要有一个spring boot项目。由于我是基于ubuntu16.04的镜像，因此还需要准备jdk1.8的安装包。</p>
-<ol>
-<li>docker环境，参见<a href="http://rabbitgyk.com/2018/01/03/docker-introduction/">docker入门体验</a>。</li>
-<li>创建一个spring boot项目，访问 <a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io</a> 站点，根据需要建立自己的应用。</li>
-<li>下载jdk1.8，并解压，备用。</li>
-</ol>
-<h2 id="01-构建docker镜像"><a href="#01-构建docker镜像" class="headerlink" title="01 构建docker镜像"></a>01 构建docker镜像</h2><p>构建docker镜像的一个主要步骤就是编写Dockerfile文件，Dockerfile文件一共分为四个部分，分别是：注释信息、基础镜像、创建者信息、构建镜像所需的命令。其中命令主要是安装依赖软件，指定运行入口。<br>一般步骤如下：</p>
-<ol>
-<li>创建一个文件夹：mkdir docker</li>
-<li>将jdk解压放在该文件夹下。</li>
-<li>将打包好的spring boot应用也放在该文件夹下。</li>
-<li>在该目录下创建Dockerfile文件。</li>
-<li>编写Dockerfile文件。</li>
-<li>执行命令：<code>docker build -t rabbitgyk/boot-test ./</code>，如果在最后终端输出：Successfully built 1fe159bc3118，说明镜像构建成功。</li>
-</ol>
-<p><img src="/2018/01/14/docker-spring-boot/folder-content.png" alt="文件夹内容"></p>
-<pre><code>#Build java web app container image
-FROM ubuntu:16.04
-MAINTAINER rabbitGYK &quot;guo_yankui@163.com&quot;
-
-#Make java and tomcat install directory
-RUN mkdir /opt/logs
-RUN mkdir /opt/soft
-RUN mkdir /opt/soft/java8
-RUN mkdir /opt/soft/apps
-
-#Copy jre and tomcat into image
-ADD jdk8u102 /opt/soft/java8
-COPY boot-test-0.0.1-SNAPSHOT.jar /opt/soft/apps
-
-ENV PATH $PATH:/opt/soft/java8/bin
-
-WORKDIR /opt/soft/apps
-#Expose http port
-EXPOSE 8099
-
-ENTRYPOINT java -jar boot-test-0.0.1-SNAPSHOT.jar
-</code></pre><p>上面是Dockerfile的内容。</p>
-<p>到这里一个spring boot应用的镜像就构建出来了，镜像的名称：rabbitgyk/boot-test。</p>
-<h2 id="02-运行一个该镜像的容器"><a href="#02-运行一个该镜像的容器" class="headerlink" title="02 运行一个该镜像的容器"></a>02 运行一个该镜像的容器</h2><p>镜像构建出来之后，我们基于刚才构建出来的镜像启动一个容器，已达到部署我们的spring boot应用的目的。<br>启动容器的命令：<br><code>docker run --name spring-boot-test -v /home/rabbit/docker/logs:/opt/logs -p 8092:8099 rabbitgyk/boot-test</code><br>参数解释：</p>
-<ul>
-<li>–name 为启动的容器指定一个名字。</li>
-<li>-v 宿主机目录:容器内目录，为容器挂载宿主机目录。</li>
-<li>-p 宿主机端口:容器端口，端口映射。</li>
-</ul>
-<p>我们启动的这个容器，挂载了文件目录，目的是为了将应用的日志能保存下来，而不是随着容器的销毁而丢失。映射端口是为了避免应用端口在宿主机已经被占用。</p>
-<blockquote>
-<p>到此为止，一个spring boot应用在docker中就部署好了。这里的各种细节内容并没有描述，需要你这种尝试之后才能记忆深刻，开始你的docker实验吧。</p>
-</blockquote>
-
-    </div>
-
-    <div class="post-footer">   
-        <div>
-            
-                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
-            
         </div>
-        <div>
-            
-        </div>  
-    </div>
+
+        <div class="post-permalink"> 
+            <a href="/2018/01/01/happy-new-year-2018/" class="btn btn-default">阅读全文</a>
+        </div>
+    </footer>
 </article>
 
-<div class="article-nav prev-next-wrap clearfix">
-    
-        <a href="/2018/01/14/dockerfile-reference-1/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
-    
-    
-        <a href="/2018/01/12/java9-module/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
-    
-</div>
-
-
-    <div id="comments">
-        
-    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-    <script>
-    var gitment = new Gitment({
-        id: window.location.pathname,
-        owner:"rabbitgyk",
-        repo:"rabbitgyk.github.io",
-        oauth: {
-          client_id:"7a93c03ab378debc7255",
-          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
-        },
-        perPage:"10",
-    });
-    gitment.render('comments');
-    </script>
 
 
 
-
-
-
-
-
-    </div>
-
-
+    <nav class="pagination" role="navigation">
+        <div id="page-nav">
+            <a class="extend prev" rel="prev" href="/"><i class='fa fa-angle-left'></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+        </div>
+    </nav>
 
 
 

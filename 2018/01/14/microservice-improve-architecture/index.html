@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>构建docker镜像部署spring-boot项目 | rabbitGYK&#39;s blog</title>
+<title>微服务改造—架构设计 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -144,9 +144,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="构建docker镜像部署spring-boot项目">
+        <h1 id="微服务改造—架构设计">
             
-            构建docker镜像部署spring-boot项目
+            微服务改造—架构设计
             
         </h1>
         <div class="post-meta">
@@ -154,7 +154,7 @@
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <span>Docker</span>
+        <span>微服务</span>
     </span>
     
     
@@ -162,7 +162,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            docker
+            微服务
             
         </span>
     </span>
@@ -180,56 +180,55 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>学习了docker基本操作之后，我的最终目的是部署微服务项目，这里就记录一下我是如何为一个spring boot项目构建docker镜像的。</p>
+<p>随着我厂业务需求的压力逐渐增长，同时基础设施的不断完善，系统架构的微服务改造被正式提上日程。从微服务改造的目标架构蓝图设计开始讨论，架构组进行了整整两天的激烈讨论，明确了很多的业务边界。在此过程中我学习到很多知识，结合之前的一些经验在此总结分享一下。</p>
 </blockquote>
-<h2 id="00-提前准备"><a href="#00-提前准备" class="headerlink" title="00 提前准备"></a>00 提前准备</h2><p>首先需要准备好docker的构建环境，然后需要有一个spring boot项目。由于我是基于ubuntu16.04的镜像，因此还需要准备jdk1.8的安装包。</p>
+<p><img src="/2018/01/14/microservice-improve-architecture/microservice-things.png" alt="微服务改造做的就是这件事"></p>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>至于为什么构建微服务架构的系统设计，<a href="http://rabbitgyk.com/2018/01/01/how-to-build-microservice/">如何构建微服务架构</a>，这些问题有很多文章介绍，我自己也有一篇文章介绍相关话题，感兴趣的同学可以翻看。</p>
+<p>本文的主题思想是，介绍一下如何在进行微服务改造的初始阶段构建一个完美的目标架构，未来的一切改造动作都向着这个目标靠近，目标架构对我们进行的微服务改造实施起到一个指引的作用。</p>
+<p>本文的素材来源是我厂的微服务改造目标架构产生的过程，记录下这个难忘又烧脑的过程，写完之后有可能就是一个流水账。希望微服务改造完成之后再看这篇文章时，发现开始的这些架构设计都落地了，简直就完美啦！！！</p>
+<p>本次讨论会的成员来自技术部门的架构组和各个业务能力开发组的主要开发人员，同时也邀请了华为的软件专家现场指导。从参与人员上来看，既有能够总览公司当前现状的架构师，也有开发经验开发的一线开发人员（覆盖多数的业务场景），在每个人的心中都有一个美好的愿景，大家的思想互相碰撞融合，吸收各自的优秀方案，最后形成了一个相对完善的目标架构。</p>
+<h2 id="01-微服务改造实施计划"><a href="#01-微服务改造实施计划" class="headerlink" title="01 微服务改造实施计划"></a>01 微服务改造实施计划</h2><p>微服务改造是一个漫长的过程，看过一些公司的改造历程，类似规模的系统改造下来需耗时2年左右。因此，为了保证整个微服务改造过程能够有条不紊的进行，必需一个可落地实施的规划。我们的计划如下：</p>
 <ol>
-<li>docker环境，参见<a href="http://rabbitgyk.com/2018/01/03/docker-introduction/">docker入门体验</a>。</li>
-<li>创建一个spring boot项目，访问 <a href="http://start.spring.io/" target="_blank" rel="noopener">http://start.spring.io</a> 站点，根据需要建立自己的应用。</li>
-<li>下载jdk1.8，并解压，备用。</li>
+<li>给出公司目标架构蓝图。</li>
+<li>框架选型和基础设施的完善。</li>
+<li>制定出微服务改造的开发规范。</li>
+<li>典型项目实践，总结经验。</li>
+<li>修订架构规范。</li>
+<li>大规模微服务改造推行。</li>
 </ol>
-<h2 id="01-构建docker镜像"><a href="#01-构建docker镜像" class="headerlink" title="01 构建docker镜像"></a>01 构建docker镜像</h2><p>构建docker镜像的一个主要步骤就是编写Dockerfile文件，Dockerfile文件一共分为四个部分，分别是：注释信息、基础镜像、创建者信息、构建镜像所需的命令。其中命令主要是安装依赖软件，指定运行入口。<br>一般步骤如下：</p>
+<p>看起来这是一个相对稳妥的计划，经过这样一个微服务的改造过程之后，我们的所有业务系统结构更加合理，互相之间的耦合度降低，明确的业务边界，依赖关系接近一个从上到下的树形结构。</p>
+<h2 id="02-架构现状"><a href="#02-架构现状" class="headerlink" title="02 架构现状"></a>02 架构现状</h2><p>我们是一家第三方支付公司，同学们应该很容易能够想象到一个大致的业务系统范围，以及内部的系统组成架构。我们在网上也能够看到各大第三方支付公司的<a href="http://mp.weixin.qq.com/s/z8sHTaJXXfeOXKjDcio29Q" target="_blank" rel="noopener">系统架构图</a>，我们虽然是一家小的支付公司，但是麻雀虽小五脏俱全，应有尽有。只是由于在发展初期都是业务驱动，涌现出了很多系统，很多都是独立建设的，难免系统建设的有些臃肿，很多系统之间存在大量不合理的调用，画出调用关系图来看，显得非常凌乱。并且很多功能重复建设，浪费资源。</p>
+<p><img src="/2018/01/14/microservice-improve-architecture/microservice-fo.png" alt="全靠它"></p>
+<p>目前的这个架构中，有一部分系统是已经经过了重构的，但是这些重构也是相对的独立的进行的，而且没有统一的规范。重构系统的设计完全取决于主要设计人员的知识视野，以及他对业务的理解。在技术选型上也是各有不同，一般选择相对熟悉并且把握比较大框架。每个系统在架构设计上也各有不同，最近建设的几个系统基本都是采用了微服务设计模式，也有采用SOA架构的，也有仅仅是做了前后分离设计的系统，完全是单体结构的项目也有存在。</p>
+<p>虽然我们开始对系统建设有一定的规划，但是随着业务的快速野蛮发展，一味地追求快，迁就于业务设计。这样结果就是，不论是重构和改造的系统，还是新建的系统所包含的业务边界不明显，互相之间都存在重复的功能被开发，相对比较零散，建造系统的时候没有一种浑然天成的感觉。</p>
+<p>这样的现状引发的问题主要有：</p>
 <ol>
-<li>创建一个文件夹：mkdir docker</li>
-<li>将jdk解压放在该文件夹下。</li>
-<li>将打包好的spring boot应用也放在该文件夹下。</li>
-<li>在该目录下创建Dockerfile文件。</li>
-<li>编写Dockerfile文件。</li>
-<li>执行命令：<code>docker build -t rabbitgyk/boot-test ./</code>，如果在最后终端输出：Successfully built 1fe159bc3118，说明镜像构建成功。</li>
+<li>新产品构建缓慢，完全不能满足快速的业务发展。</li>
+<li>难以实现运维自动化。</li>
+<li>很难通过扩容来提高性能。</li>
 </ol>
-<p><img src="/2018/01/14/docker-spring-boot/folder-content.png" alt="文件夹内容"></p>
-<pre><code>#Build java web app container image
-FROM ubuntu:16.04
-MAINTAINER rabbitGYK &quot;guo_yankui@163.com&quot;
-
-#Make java and tomcat install directory
-RUN mkdir /opt/logs
-RUN mkdir /opt/soft
-RUN mkdir /opt/soft/java8
-RUN mkdir /opt/soft/apps
-
-#Copy jre and tomcat into image
-ADD jdk8u102 /opt/soft/java8
-COPY boot-test-0.0.1-SNAPSHOT.jar /opt/soft/apps
-
-ENV PATH $PATH:/opt/soft/java8/bin
-
-WORKDIR /opt/soft/apps
-#Expose http port
-EXPOSE 8099
-
-ENTRYPOINT java -jar boot-test-0.0.1-SNAPSHOT.jar
-</code></pre><p>上面是Dockerfile的内容。</p>
-<p>到这里一个spring boot应用的镜像就构建出来了，镜像的名称：rabbitgyk/boot-test。</p>
-<h2 id="02-运行一个该镜像的容器"><a href="#02-运行一个该镜像的容器" class="headerlink" title="02 运行一个该镜像的容器"></a>02 运行一个该镜像的容器</h2><p>镜像构建出来之后，我们基于刚才构建出来的镜像启动一个容器，已达到部署我们的spring boot应用的目的。<br>启动容器的命令：<br><code>docker run --name spring-boot-test -v /home/rabbit/docker/logs:/opt/logs -p 8092:8099 rabbitgyk/boot-test</code><br>参数解释：</p>
-<ul>
-<li>–name 为启动的容器指定一个名字。</li>
-<li>-v 宿主机目录:容器内目录，为容器挂载宿主机目录。</li>
-<li>-p 宿主机端口:容器端口，端口映射。</li>
-</ul>
-<p>我们启动的这个容器，挂载了文件目录，目的是为了将应用的日志能保存下来，而不是随着容器的销毁而丢失。映射端口是为了避免应用端口在宿主机已经被占用。</p>
+<p>借着微服务架构的设计思想，指导我们进行系统改造。将基础服务从各个业务系统中剥离，形成统一服务能力；各种支撑系统实现高性能、高可用的基础设施逐渐完善；让业务系统能够更加专注于业务逻辑实现。利用领域驱动设计的指导思想，划清各系统的业务边界。经过这样的一番规划和设计之后，应该能够实现系统架构的完美升级。</p>
+<h2 id="03-争论的主要问题"><a href="#03-争论的主要问题" class="headerlink" title="03 争论的主要问题"></a>03 争论的主要问题</h2><p>微服务架构只是在概念上给我们指明了方向，制定了几个重要的设计原则：<strong>服务尽可能小、可独立部署、自动化部署和运维</strong>。这些概念需要在落地实施，由于理解上的差异以及公司的现状各式各样，每个公司实施下来肯定各有不同，都是每个公司自己特色的微服务架构，毕竟架构设计是服务于业务模块的。所以我厂也在讨论符合我们自己公司特色的微服务架构如何实施。</p>
+<p>在讨论的过程中有几个争论的话题，在这里总结一下：</p>
+<ol>
+<li>底层能力和上层产品之间的边界在哪里？底层能力抽象到什么程度，要不要关心上层产品业务逻辑？</li>
+<li>拆分与合并的博弈。</li>
+<li>业务模块上的设计是否允许存在单点。</li>
+<li>组织结构与分工能够做出多大的改变。</li>
+</ol>
+<p>其实前面两点说的都是业务边界划分的问题，第一点是分层之后的纵向边界，第二点是横向边界。针对第一点，我们拿充值功能举例：</p>
+<p>标准的充值流程是1. 用户银行卡上扣钱（支付接口）；2. 用户内部账户记账。详细的步骤这里没有说明，熟悉支付业务的同学应该了解，支付有多种支付方式，内部账户也有多种（标准充值上账是用户的现金账户）。若是标准的充值，这两步分别走的也是标准流程；若是有特殊的业务，充值是充到佣金账户，这样的特定业务的充值是否要放到充值中心实现？在第三方支付公司待久了会发现，有各种标准产品，也有很多定制化的产品。</p>
+<p><strong>我们的结论是：标准化的功能，由底层服务为产品层提供标准能力支撑，具有强烈的个别业务特性化的功能，由产品层直接调用更底层的能力自己封装实现。</strong></p>
+<p>就第二点而言，可能有些同学会疑惑，微服务架构的原则不是将服务拆分的尽可能小，实现高内聚、低耦合吗？为什么还有合并呢？我的理解是，这个原则只是适用于完全的业务逻辑设计，在系统建设中也有一些基本业务无关的组件要实现，这些公共服务（如，统一流水号、统一session管理等）应该抽象出来统一实现，被业务系统调用。还有一些在管理方式和用途上都很类似的数据，这些数据可放在一起管理，统一提供服务。</p>
+<p>在做业务设计时，微服务的设计原则是避免单点模块，完全分布式、高内聚的服务好处很多，压力分散，互相之间影响较小，但是它们需要各自管理。其实这些好处都是相对的，在一个技术平均水平较高的公司里，内聚的系统相对较好，各种技术都能驾驭的很好。比如，支付订单系统是否要分散到各个产品系统中，还是统一做一个订单中心，这样在需要提高性能的时候，需要做一些异步化处理的时候，都能统一在一处实现性能提高。</p>
+<p>在Martin Fowler对微服务的论证中能够看到，微服务架构不仅仅是系统架构，也是人员组织架构的指导。团队要尽可能的全栈，实现高内聚、低耦合。为了减少部门组织交叉协作带来的低效，我们负责的是一个个产品，不是一个交付了就完事的项目，产品的整个生命周期都应该由这个团队维护。这样的话，原来的组织结构在微服务改造的实施下也需要做出调整，这是需要领导的支持力度的。</p>
+<p>在支撑系统和基础设施上，没有太多的讨论，这套底层运维服务相对比较标准，而且大部分已经建设完成，目前处于完善和优化的阶段。</p>
+<p>总结一下，架构设计本身就是一门博弈权衡的学问，无论是现在流行的微服务架构还是之前的SOA等其它架构，都无例外。最好的架构设计是要适合公司本身的业务发展和规划，以及组织结构，目前的这些可能会阻碍微服务化的进程，但是从实际出发，这些业务和组织能够为微服务化做出多大的改变，也是需要考虑的问题。我们不是在做大刀阔斧的改革，微服务化改造应该是一个水到渠成的、循序渐进的优化过程。</p>
+<p>第一次参与这么大范围的架构设计，发现需要权衡的东西太多了，有些设计原则是否需要坚持。</p>
+<h2 id="04-目标架构（蓝图）"><a href="#04-目标架构（蓝图）" class="headerlink" title="04 目标架构（蓝图）"></a>04 目标架构（蓝图）</h2><p>最终我根据大家讨论达成的共识，以及自己对业务的理解，做出了下面的架构设计图：</p>
+<p><img src="/2018/01/14/microservice-improve-architecture/microservice-new.png" alt="目标架构"></p>
 <blockquote>
-<p>到此为止，一个spring boot应用在docker中就部署好了。这里的各种细节内容并没有描述，需要你这种尝试之后才能记忆深刻，开始你的docker实验吧。</p>
+<p>本文是我对微服务改造和业务重构的理解，并不能代表公司的正式架构，有些设计并没有好与坏，权衡利弊、审时度势才是重点。</p>
 </blockquote>
 
     </div>
@@ -248,10 +247,8 @@ ENTRYPOINT java -jar boot-test-0.0.1-SNAPSHOT.jar
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/01/14/dockerfile-reference-1/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
-    
-        <a href="/2018/01/12/java9-module/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+        <a href="/2018/01/14/dockerfile-reference-3/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
