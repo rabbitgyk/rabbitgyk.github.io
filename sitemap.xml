@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rabbitgyk.com/2018/01/15/Event-Driven-Data-Management-for-Microservices/</loc>
+    
+    <lastmod>2018-01-15T15:47:31.562Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rabbitgyk.com/2018/01/14/build-microservice-gateway/</loc>
     
     <lastmod>2018-01-14T10:14:09.664Z</lastmod>
