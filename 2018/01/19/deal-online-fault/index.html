@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>探索Java 9的模块化 | rabbitGYK&#39;s blog</title>
+<title>处理线上故障的技术和基础设施储备 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -144,9 +144,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="探索Java 9的模块化">
+        <h1 id="处理线上故障的技术和基础设施储备">
             
-            探索Java 9的模块化
+            处理线上故障的技术和基础设施储备
             
         </h1>
         <div class="post-meta">
@@ -154,7 +154,7 @@
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <span>技术栈</span>
+        <span>工具</span>
     </span>
     
     
@@ -162,7 +162,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            java
+            故障
             
         </span>
     </span>
@@ -170,7 +170,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/12</span>
+        <span class="date-meta">2018/01/19</span>
     </span>
 </div>
 
@@ -180,115 +180,85 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>随着 java 9 的正式发布，java生态又迎来了新的变革，模块化是最重要的变化。</p>
+<p>由于最近出现了几次生产故障，处理的不是那么完美。于是leader组织了一次头脑风暴，讨论如何快速高效的处理生产故障问题，由此还引发了另外一个问题，如何有效地避免（或者说减少）生产故障的出现。本来打算好好地写一篇文章《软件开发运维中如何快速处理故障》，结果网上已经有一篇《<a href="http://www.cnblogs.com/daoqidelv/p/6785372.html" target="_blank" rel="noopener">如何快速处理线上故障</a>》，自我感觉这是一篇我无法超越的文章。于是改名了~</p>
 </blockquote>
-<p><img src="/2018/01/12/java9-module/java9.png" alt="java 9"></p>
-<p>由于Jigsaw项目Java 9 跳票了很多次，你可能已经听说过很多关于模块、模块化和其他的一些东西，而这些都是什么？模块化是什么鬼？模块化平台对我们来说意味什么？什么是java平台模块化系统（JPMS）？它将在java生态中带来什么革命性变化？</p>
-<p> 这篇文章是我对JDK中关于模块化系统发生的重要变化的探索。我将解释什么是模块化，你为什么需要它，你怎么样能创建自己的模块化项目。</p>
-<p><img src="/2018/01/12/java9-module/jpms.png" alt="JPMS"></p>
-<h2 id="What-amp-Why"><a href="#What-amp-Why" class="headerlink" title="What &amp; Why"></a>What &amp; Why</h2><p>可维护性是软件设计和演进的过程中最重要的问题，我们想要一个松耦合、高内聚、高可读性并且一眼就能理解的代码库。我们以package的形式设计和组织类文件，到目前为止还不错，但是当我们有数百个package的时候，它们之间的依赖关系一眼是看不完的。因此我们需要比package更多的组织代码库的方法，来提高代码库的可维护性。</p>
-<p>另外一个问题是java classpath，它是如何运行我们的代码的，所有的jar类和类库都是堆积在classpath中。当这些jar文件中的类在运行的时候有多个版本的时候，java的ClassLoader仅能加载那个类的一个版本。在这种情形下，你的程序的运行就会有歧义，歧义是一件非常坏的事情。这个问题是频繁出现的，它被称为是“<a href="https://dzone.com/articles/what-is-jar-hell" target="_blank" rel="noopener">JAR Hell</a>”。</p>
-<p>另外一个关于classpath的问题是，它不遵循“Fail First”原则。你可能会丢失一些类文件，这些文件存在于classpath中但是在生产环境不存在，这个问题只能在运行时报出JavaClassDefError异常的时候，你才能确定缺失了什么类文件。最后，classpath的最大问题在于“封装”，在classpath中的每个类互相访问，这是违反“封装”特性的。我们想隐藏内部的API，这就是我们为什么需要另一个级别的封装（更强的封装），并且对package中的类的访问做控制。</p>
-<p>模块就是修复这些问题的，什么是模块？每个模块都有一个名字，它将相关代码组合在一起，是自包含的。模块中明确地描述了它需要的其他模块，以及自己对其他模块可见的部分。在这种方式下，模块之间的依赖是非常清晰的。我们有更强的封装性，这意味着我们可以隐藏内部的API，并且现在我们也遵循“Fail First”原则，因此当有模块缺失或者冲突的时候，你将得到一个错误。</p>
-<p><img src="/2018/01/12/java9-module/modules-everywhere.png" alt="模块无处不在"></p>
-<p>模块化的JDK允许JDK的开发者管理庞大复杂的自己。如果你在开发一个小而简单的应用，并不使用RMI、CORBA、JavaEE和其他的东西，那你为什么需要一个完整的、巨大而又重的Java运行环境呢？只使用包含你需要的模块的JDK，岂不是明智的。现在的模块化平台是这种情形成为可能。</p>
-<p>这是现在的JDK看起来的样子。在最底部是“<strong>java.base</strong>”模块，每一个其它的模块都显式或隐式地依赖于它。正如你看到的这样，依赖关系图是一个有向无环图，这意味着不允许出现循环依赖。</p>
-<p><img src="/2018/01/12/java9-module/modules-relationship.png" alt="模块依赖关系图"></p>
-<p>下图基本上展示了模块是什么，每一个模块都有一个描述模块的文件，叫做“module-info.java”。</p>
-<p><img src="/2018/01/12/java9-module/what-is-module.png" alt="什么是模块"></p>
-<p>在文件“module-info.java”中你描述了模块的名字、运行需要的模块和其中对外可见的包。例如，你可以看到java.sql模块中对外暴露了哪些包和它需要哪些模块。</p>
-<p><img src="/2018/01/12/java9-module/java-sql.png" alt="java.sql"></p>
-<p>因此简化一下，module-info.java 的内容看起来像下面这样子：</p>
-<p><img src="/2018/01/12/java9-module/module-info-java.png" alt="module-info.java"></p>
-<p>下面我们将介绍如何使用这些模块和创建自己的模块。</p>
-<h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><p>首先，你需要下载和安装JDK 9，你可以在<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">这里</a>找到它。</p>
-<p>Java Version</p>
-<pre><code>$ java -version
-java version &quot;9&quot;
-Java(TM) SE Runtime Environment (build 9+181)
-Java HotSpot(TM) 64-Bit Server VM (build 9+1
-</code></pre><p>下面我们在IntelliJ IDEA中构建一个项目：</p>
-<p><img src="/2018/01/12/java9-module/creat-project.png" alt="创建java项目"></p>
-<p>下面介绍如何创建一个模块：</p>
-<p><img src="/2018/01/12/java9-module/creat-module.png" alt="创建模块"></p>
-<p>创建模块之后，你需要在模块下的src下创建一个module-info.java文件：</p>
-<p><img src="/2018/01/12/java9-module/creat-module-info.png" alt="创建module-info.java"></p>
-<p>我已经构建了一个项目包含两个模块：“com.rabbit”和“com.rabbit.log”，你可以看到项目的结构如下图：</p>
-<p><img src="/2018/01/12/java9-module/project-struct.png" alt="项目结构"></p>
-<p>在模块 com.rabbit.log 中有两个类：InternalHello和Hello。</p>
-<p>InternalHello.java</p>
-<pre><code class="java">package hello.log.internals;
-
-public class InternalHello {
-    public static String sayHello(String name){
-        return &quot;Hello, This Greeting is internal dear &quot;+ name;
-    }
-}
-</code></pre>
-<p>Hello.java</p>
-<pre><code class="java">package hello.log;
-
-public class Hello {
-    public static String sayHello(String name){
-        return &quot;Hello, &quot; + name;
-    }
-}
-</code></pre>
-<p>在模块 com.rabbit.log 的modu-info.java中，写入如下所示：</p>
-<pre><code class="java">module com.rabbit.log {
-    exports hello.log;
-}
-</code></pre>
-<p>这意味着package hello.log 在该模块外可见的，而package hello.log.internals是不可见的。</p>
-<p>RabbitMain是一个简单的JavaFX程序：</p>
-<pre><code class="java">package com.rabbit;
-
-import hello.log.Hello;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
-public class RabbitMain  extends Application {
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Label label = new Label(Hello.sayHello(&quot;Hossein&quot;));
-        StackPane pane = new StackPane();
-        pane.getChildren().add(label);
-        Scene scene = new Scene(pane);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-}
-</code></pre>
-<p>这个模块看起来不需要暴露任何package，它需要 <strong>javafx.base</strong> 和 <strong>javafx.controls</strong>两个模块，为了使用<strong>Hello</strong>类还需要模块<strong>com.rabbit.log</strong>。因此模块 com.rabbit 的module-info.java看起来是下面这样子：</p>
-<pre><code class="java">module com.rabbit {
-    requires javafx.base;
-    requires javafx.controls;
-    requires com.rabbit.log;
-}
-</code></pre>
-<p>当我们运行这个应用时，出现了如下的错误：</p>
-<pre><code>Caused by: java.lang.IllegalAccessException: class com.sun.javafx.application.LauncherImpl (in module javafx.graphics) cannot access class com.rabbit.RabbitMain (in module com.rabbit) because module com.rabbit does not export com.rabbit to module javafx.graphics
-    at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:361)
-    at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:589)
-</code></pre><p>这个错误很明显地告诉我们，需要将package com.rabbit暴露出去。意思是 javafx.graphics 是需要使用RabbitMain启动主窗口的，所以你需要暴露你的package给 javafx.graphics（主要：你可以暴露一个package给指定的模块而不是暴露给所有的模块）。</p>
-<p>因此，现在的 module-info.java 是下面的样子：</p>
-<pre><code class="java">module com.rabbit {
-    requires javafx.base;
-    requires javafx.controls;
-    requires com.rabbit.log;
-
-    exports com.rabbit to javafx.graphics;
-}
-</code></pre>
-<p>在java 9中实现的javaFX看起来好像有bug（注意黄色的圈），下面就是我们的javaFX程序的运行结果：</p>
-<p><img src="/2018/01/12/java9-module/result.png" alt="运行结果"></p>
-<p>这个故事到这里并没有结束，关于模块以及它们之间的依赖关系的更加完整详细的介绍可以阅读书籍 <a href="http://www.apress.com/us/book/9781484225912" target="_blank" rel="noopener">Java 9 Revealed</a> 或者 <a href="http://shop.oreilly.com/product/0636920049494.do" target="_blank" rel="noopener">Java 9 Modularity</a> 。</p>
-<blockquote>
-<p>参考的<a href="https://www.javacodegeeks.com/2017/09/java-9-jigsaw-jpms-modules-personal-exploration.html" target="_blank" rel="noopener">原文链接</a>。</p>
-</blockquote>
+<h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>读完《如何快速处理线上故障》作者的相关文章之后，对处理线上故障有了一定的认识，这不仅是一个技术活，而且还考验了团队的反应能力、决策能力、判定能力、组织能力，同时还检查了团队的各种基础设施是否健全。</p>
+<p>下面是文章《如何快速处理线上故障》的目录和总结性序列图：</p>
+<p><img src="/2018/01/19/deal-online-fault/article-list.png" alt="如何快速处理线上故障的目录"></p>
+<p><img src="/2018/01/19/deal-online-fault/deal-fault-summary.png" alt="线上排障总结"></p>
+<p>想进一步学习的请移步<a href="http://www.cnblogs.com/daoqidelv/p/6785372.html" target="_blank" rel="noopener">如何快速处理线上故障</a>，文章中还推荐了一本书goole出版的《Google SRE》，抽空要看一下，但是别忘了回来继续看~</p>
+<p>到此为止，我也思考自己和所在的团队是否具备线上排障的能力，需要的基础设施是否健全。下面我就这方面的内容展开介绍一下。</p>
+<h2 id="1-现状"><a href="#1-现状" class="headerlink" title="1. 现状"></a>1. 现状</h2><p>在生产环境遇到故障时，你们都是什么样的状况，是否会有下面描述的情形，如果是小公司的话，可能大部分都能遇到，这也是我们目前的现状：</p>
+<ol>
+<li>处理故障的责任人不明确，出现等待情况；</li>
+<li>支撑混乱，无统一资源调度；</li>
+<li>人员响应慢；</li>
+<li>无故障处理流程，方法论；</li>
+<li>应用日志输出不规范；</li>
+<li>故障处理时间长；</li>
+<li>无法复盘，找出问题根源；</li>
+<li>无总结知识，推而广之；</li>
+<li>消息发布无统一口径，影响团队信誉度；</li>
+</ol>
+<p>其中，有些是管理的问题，有些是技术和基础设施储备的问题。</p>
+<h2 id="2-原因"><a href="#2-原因" class="headerlink" title="2. 原因"></a>2. 原因</h2><p>导致当前现状的原因有哪些呢，讨论之后也总结了一些：</p>
+<ol>
+<li>业务逻辑不熟悉，难以定位问题；</li>
+<li>硬件及操作系统了解太少；</li>
+<li>部门协调慢；</li>
+<li>原因分析不明确，片面，限于表象；</li>
+<li>测试环境不具备调试条件；</li>
+<li>对于项目业务/技术不熟悉；</li>
+<li>人员分工不明确；</li>
+<li>缺乏配合人员信息（公司外部系统）；</li>
+<li>处理中缺乏消息沟通；</li>
+<li>不了解已发现的bug（排查方向）；</li>
+<li>监控和处理问题的人员缺少备份；</li>
+<li>责任心和对生产问题的重视程度有待提高；</li>
+</ol>
+<h2 id="3-应对措施"><a href="#3-应对措施" class="headerlink" title="3. 应对措施"></a>3. 应对措施</h2><p>针对上面的各种原因，我们可以采取一些措施来改善这种现状：</p>
+<ol>
+<li>优先恢复业务；</li>
+<li>明确当日值班人员及备份人员；</li>
+<li>制定常规的故障处理流程；</li>
+<li>制定故障排查顺序；</li>
+<li>总结归纳以往故障和问题，形成可查询的问题库（wiki）；</li>
+<li>处理故障时，采用约定分工，并行方式处理；</li>
+<li>健康性检查和业务拨测；</li>
+<li>做好例行检查，最好实现<strong>自动化</strong>检查；</li>
+<li>最好工具，防止误操作；</li>
+</ol>
+<h2 id="4-故障排查方法"><a href="#4-故障排查方法" class="headerlink" title="4. 故障排查方法"></a>4. 故障排查方法</h2><p>这里根据个人经验提供一个故障排查方法，希望能有作用。排查故障的时候，你的大脑再高速运转，思考相关怀疑点，然后进行一一排除，最终定位故障，排除故障。</p>
+<p><strong>常见怀疑点：</strong></p>
+<ol>
+<li>新版本发布</li>
+<li>相关设备或系统（数据库/网络设备/操作系统）升级变化</li>
+<li>激发潜在bug（高并发）</li>
+<li>业务量暴涨（机器扛不住压力）</li>
+<li>下游服务异常</li>
+<li>网络问题</li>
+<li>服务器故障</li>
+</ol>
+<p>有了这些故障怀疑点，这就是我们的目标，一个个排除，一般排除的时候也是按照这个顺序做。定位故障，需要一定的技术和工具辅助。</p>
+<h2 id="5-故障排查所需技术"><a href="#5-故障排查所需技术" class="headerlink" title="5. 故障排查所需技术"></a>5. 故障排查所需技术</h2><p>在实际的故障排除中需要全面的技术能力和完善的基础设施支撑。</p>
+<h3 id="5-1-技术能力"><a href="#5-1-技术能力" class="headerlink" title="5.1. 技术能力"></a>5.1. 技术能力</h3><ol>
+<li>linux命令的能力，常用ping、telnet、netstat、grep、less、top、df、ps等。</li>
+<li>jvm相关分析能力，dump内存分析，jstack打印线程堆栈等。</li>
+<li>掌握web服务器（tomcat、jetty、nginx、Apache等）。</li>
+<li>掌握网络设备（交换机、防火墙、F5等）和基础网络知识（七层协议栈、长连接、短连接等）。</li>
+<li>掌握数据库原理（连接池、数据库事务等）。</li>
+</ol>
+<h3 id="5-2-基础设施"><a href="#5-2-基础设施" class="headerlink" title="5.2. 基础设施"></a>5.2. 基础设施</h3><ol>
+<li>现在大部分系统都是分布式系统，部署的机器少则四五台，多则几十台。如果使用人肉支持查询日志，困难可想而知，这时需要<strong>日志集中收集平台</strong>，比如ELK。</li>
+<li>日志的质量问题，日志中必须有关键的信息能够将日志串联起来，单独的一条日志意义是不大的，系统需要<strong>引入标准的日志格式化定义</strong>。</li>
+<li>服务器监控指标，包括cpu、内存、io、tcp连接数、disk、线程数、GC、连接池等，比如工具zabbix和nagios。</li>
+<li>服务监控指标，一般使用了分布式服务框架的系统，都会有对服务维度的监控，包括调用服务的错误数、错误率、服务的时延、最大值、平均值、吞吐量等。<br><img src="/2018/01/19/deal-online-fault/service-monitor.png" alt="服务监控"></li>
+<li>服务治理，当遇到服务请求量暴增需要对非重点服务进行服务降级时，当遇到下游系统故障需要对服务降级或者隔离时，或者调整机器负载时，这时服务治理系统就派上用场了。<br><img src="/2018/01/19/deal-online-fault/service-government.png" alt="服务治理"></li>
+<li>业务监控指标，与服务监控相比这个的维度更大，从业务角度能看到公司全局的系统状况，有利于排查系统关联性故障，例如天旦系统。</li>
+<li>系统上线历史版本的维护，当遇到需要回退版本时使用，相关工具比如SVN（GIT）和Jenkins。</li>
+</ol>
+<p>拥有了这些技术和基础设施，可以帮助我们快速进行线上故障的定位和处理。</p>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>为了在遇到线上故障时能够完美地处理，需要各种能力储备。从管理流程到技术人员能力，再到基础运维设施建设都需要完善。想想我们这些系统基本已经健全，但是真正能够运用自如的技术人员好像极少，所以最后人是关键中的关键。</p>
 
     </div>
 
@@ -306,10 +276,8 @@ public class RabbitMain  extends Application {
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/01/14/docker-spring-boot/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
-    
-        <a href="/2018/01/04/druid-configuration/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+        <a href="/2018/01/15/Event-Driven-Data-Management-for-Microservices/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
