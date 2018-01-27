@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>标签: docker | rabbitGYK&#39;s blog</title>
+<title>《代码整洁之道 clean code》读书笔记 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,7 +37,11 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -136,60 +140,143 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content ">
-                    <h3> 
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="《代码整洁之道 clean code》读书笔记">
+            
+            《代码整洁之道 clean code》读书笔记
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>技术栈</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            clean code
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
 
-    docker 
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>《代码整洁之道 clean code》这本书已经关注很久，最近极其有欲望读一下她。主要是因为个人正儿八经写代码也有三年左右了，自己总结了一些代码规范和关于代码质量的理解，但是不能很好的说服团队严格遵守，于是乎想寻求正统的代码整洁之道，以提高代码质量。写文章只是想把书读薄，有摘抄也有感想。今天先记录第一篇，开始~</p>
+</blockquote>
+<p><img src="/2018/01/27/clean-code-read-note/clean-code.jpg" alt="clean code.jpg"></p>
+<h3 id="1-核心观念"><a href="#1-核心观念" class="headerlink" title="1 核心观念"></a>1 核心观念</h3><p><strong>代码质量与其整洁度成正比</strong>，个人非常认同，在工作中也有很痛的领悟。在本书的序中提到，软件开发工作中有百分之八十的时间是在对项目进行维护（修修补补），也就是说你写过的代码，会被反复的查看和修改（你自己或者他人）。因此代码的可读性和易修改性（不能牵一发而动全身）很重要。</p>
+<p>在汽车行业有<strong>5S</strong>原则，这是一套精益求精的规程：专注、镇定和思考，并非只关心实际作业，还要推动整个项目的快速高效运转。5S哲学包括以下概念：</p>
+<ul>
+<li>整理（或谓组织，sort-分类排序），搞清楚事物之所在很重要，比如通过恰当的命名之类的手段。</li>
+<li>整顿（或谓整齐，systematize-系统化），<strong>物皆有其位，而后物尽归其位</strong>（A place for everything, and everything in its place.）。每段代码都该在你希望它所在的地方。</li>
+<li>清洁（或谓shine-锃亮），对于那种四处遗弃的带注释的代码，以及反映过往或期望的无注释代码，应除之而后快。</li>
+<li>标准化，一个项目组内应该使用一贯的代码风格和实践手段。</li>
+<li>身美（或谓自律），在实践中贯彻规程，并时时体现于个人工作上，而且要乐于改进。</li>
+</ul>
+<p><strong>接受挑战吧~~</strong></p>
+<p><strong>Cleanliness is next to godliness（整洁近乎虔诚）</strong></p>
+<p><strong>He who is faithful in little is faithful in much（守小节者不亏大节）</strong></p>
+<p><strong>A stitch in time saves nine（及时一针省九针）</strong></p>
+<p><strong>The early bird catches the worm（早起的鸟儿有虫吃）</strong></p>
+<p><strong>Don’t put off until tomorrow what you can do today（今日事今日毕）</strong></p>
+<p><strong>Mighty oaks from little acorns grow（巨木生于树籽）</strong></p>
+<p><strong>An ounce of prevention is worth a pound of cure（防病好过治病）</strong></p>
+<p><strong>An apple a day keeps the doctor away（一天一个苹果，医生远离我）</strong><br>以上这些警句不管在东方还是西方都一定的影响，可以深思一下。</p>
+<h3 id="2-写糟糕代码的理由与代价"><a href="#2-写糟糕代码的理由与代价" class="headerlink" title="2 写糟糕代码的理由与代价"></a>2 写糟糕代码的理由与代价</h3><p>在写代码的时候，心里总是有两个“我”在争斗，是写得更完美一点呢？还是赶紧完成它，还有很多工作等着要做呢？这是每个程序员都遇到过的困境，在面对这个困扰的时候，你做出了什么样的选择？你自己心里清楚，扪心自问一下，舒服吗？</p>
+<p>当我 review 别人的代码时，我也问过他们，他们也承认自己写的时糟糕的代码，却总是说项目时间紧，赶时间，等有时间了再整理一下。这么回答就是没有认识到糟糕代码的危害力有多大，你现在节省的时间，会在你修改测试bug（甚至生产bug）的时候付出双倍的时间。</p>
+<p>还有就是你的代码一旦测试通过，就很少再动你的那些代码，即使你有时间，即使你想整理代码，也不敢，怕出新的bug。</p>
+<p>或许有一天你回头看看曾经写过的代码，自己都嫌弃。老板说在上面添加一个新功能，你来做吧，偷偷瞟一眼自己亲手造成的混乱，决定弃之不顾，努力去说服老板，咱们重新来过吧。你觉着老板心里会怎么想，这耗费的时间完全不是添加一个功能的时间，这得付出多大的代价。</p>
+<p>大家必须要认识到这么一个<strong>勒布朗（LeBlanc）法则</strong>：稍后等于永不（Later equals never）。</p>
+<p>有一定经验的开发者都知道，你顶着期限的压力，制造了混乱的代码，然后混乱的代码又拖住了你的后腿，接着就是你错过了期限。赶上期限的唯一方法就是始终尽可能的保持代码整洁。</p>
+<p>或许我们理由还有更多，比如需求变化背离了初期的设计，进度太紧张，没法好好干活，心里还骂那些愚蠢的经理、苛刻的用户、没用的营销方式。回头想想，是不是自作自受，不够专业？</p>
+<h3 id="3-什么是整洁代码"><a href="#3-什么是整洁代码" class="headerlink" title="3 什么是整洁代码"></a>3 什么是整洁代码</h3><p>代码作品就像艺术品一样，有不同的流派，在大师的眼里，对于优美与漂亮有不同的理解。关于什么是整洁代码书中讲述很多大师的观点，各个侧重点不同，总结一下：</p>
+<ol>
+<li>有意义的命名，代码应通过其字面表达含义；</li>
+<li>没有重复代码；</li>
+<li>全面覆盖的单元测试；</li>
+<li>提供清晰、尽量少的API；</li>
+<li>完美的错误处理代码，不要忽略细节；</li>
+<li>性能调至最优，省得引诱别人做没规矩的优化；</li>
+<li>尽量少的依赖关系，便于维护；</li>
+<li>尽量少的实体，比如类、方法、函数等；</li>
+<li>整洁的代码（类/函数/模块）只做好一件事；</li>
+<li>整洁的代码看起来专为解决那个问题而存在；</li>
+<li>整洁的代码简单直接，从不隐藏设计者的意图；</li>
+<li>整洁的代码看起来像是某位特别在意她的人写的，没有改进的余地；</li>
+<li>整洁的代码浅显易懂，绝不故作高深；</li>
+</ol>
+<p>通过一些“编辑器回放”工具统计发现，在写代码的时候，阅读其他模块代码的时间是你写代码所花费的时间的<strong>10倍</strong>，我们一直在阅读旧代码。在大部分情况下，我们不读周边的代码就没法写代码。编写代码的难度，取决于阅读周边代码的难度。因此，我们在编写代码的时候付出更多努力，使写出的代码阅读起来很轻松，是非常值得的。</p>
+<p>整洁代码如同优美的散文，读起来令人身心愉悦，深合己意。</p>
+<blockquote>
+<p>最后来一条美国童子军军规，非常符合我们的专业领域：<em>让营地比你来时更干净</em>。</p>
+</blockquote>
 
+    </div>
 
-</h3>
-
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/14/docker-spring-boot/">构建docker镜像部署spring-boot项目</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月14日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-学习了docker基本操作之后，我的最终目的是部署微服务项目，这里就记录一下我是如何为一个spring boot项目构建docker镜像的。
-
-00 提前准备首先需要准备好docker的构建环境，然后需要有一个spring boot...
-            </p> 
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
         </div>
-    </article>
- 
-    <article class="post">
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/elasticsearch-user-guide-2/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
         
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/03/docker-introduction/">docker 入门体验</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月03日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-在探讨微服务的路上，docker的概念也是经常出现，自己只是粗略的了解docker是个啥，现在是时候认真学习一下docker了，亲自操作一下才能更加深入的理解。
-
-00. docker介绍docker是开源的一个基于轻量级虚拟化技术...
-            </p> 
-        </div>
-    </article>
- 
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
 
 
+
+
+
+
+
+
+    </div>
 
 
 
