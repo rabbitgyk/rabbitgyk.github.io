@@ -205,7 +205,7 @@ public void scheduleAtFixedRate(TimerTask task, Date firstTime, long period);
 <p>3.2. 每一个任务节点的内部结构如下图：<br><img src="/2018/01/27/uncode-schedule-framework/worker-node.png" alt="worker node结构图"><br>执行任务的节点上支持的任务类型包括spring的封装的quartz任务和spring task；另外该框架还自定义了一种任务Uncode Task，实际上是一种由zookeeper存储调度信息的任务，最终还是由spring的调度器<code>ThreadPoolTaskScheduler</code>控制的，不过这种任务是可动态添加和删除的。</p>
 <p><strong>3. 使用方法</strong><br>Uncode-Schedule框架的使用方法是很简单的，而且我也没有对原作者的使用方法做修改，所以具体使用方法可参考github上的<a href="https://github.com/rabbitgyk/uncode-schedule" target="_blank" rel="noopener">README文档</a>。</p>
 <p>我根据对框架的功能完善，自己设计了一个任务的<a href="https://github.com/rabbitgyk/uncode-schedule-manage" target="_blank" rel="noopener">管理和监控平台</a>。主要在其中添加了手动执行的功能，其他的监控功能会进一步完善。</p>
-<p><strong>4. 源码分析</strong><br><a href="http://www.jianshu.com/p/4a7eb40f6852" target="_blank" rel="noopener">见下一篇文章</a>。</p>
+<p><strong>4. 源码分析</strong><br><a href="http://rabbitgyk.com/2018/01/27/uncode-schedule-source/">见下一篇文章</a>。</p>
 
     </div>
 
