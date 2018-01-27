@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>归档：2018 | rabbitGYK&#39;s blog</title>
+<title>九周九分布式服务-序 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,7 +37,11 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -136,81 +140,137 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content ">
-                    <div id="main">
-  <div id="post-list">
-    <ul class="archives-post-list">
-    	<h1 class="info">2018年 月</h1>
-        
-          <li class="post-items" _href="/2018/01/14/dockerfile-reference-3/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/14/dockerfile-reference-3/"> Dockerfile 参考手册（三）：指令介绍 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/14/dockerfile-reference-2/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/14/dockerfile-reference-2/"> Dockerfile 参考手册（二）：指令介绍 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/14/dockerfile-reference-1/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/14/dockerfile-reference-1/"> Dockerfile 参考手册（一） </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/14/docker-spring-boot/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/14/docker-spring-boot/"> 构建docker镜像部署spring-boot项目 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/12/java9-module/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/12/java9-module/"> 探索Java 9的模块化 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/04/druid-configuration/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/04/druid-configuration/"> druid连接池推荐配置 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/03/docker-introduction/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/03/docker-introduction/"> docker 入门体验 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/01/how-to-build-microservice/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/01/how-to-build-microservice/"> 如何构建微服务架构 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/01/论如何打印日志/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/01/论如何打印日志/"> 论如何打印日志 </a>
-            </h3>  
-          </li>
-        
-          <li class="post-items" _href="/2018/01/01/happy-new-year-2018/">
-            <h3 class="post-item-title">
-            	<a href="/2018/01/01/happy-new-year-2018/"> 2018，新年快乐 </a>
-            </h3>  
-          </li>
-        
-    </ul>
-  </div>
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="九周九分布式服务-序">
+            
+            九周九分布式服务-序
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            微服务
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
 </div>
 
-    <nav class="pagination" role="navigation">
-        <div id="page-nav">
-            <a class="extend prev" rel="prev" href="/archives/2018/"><i class='fa fa-angle-left'></i></a><a class="page-number" href="/archives/2018/">1</a><span class="page-number current">2</span>
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>由于第一次在生产项目中使用分布式服务框架，在这方面缺少经验。因此对分布式服务做了一些研究和实践，在此通过“九周九分布式服务”系列文章做一个总结和分享。为什么是叫“九周九分布式服务”呢？很简单，在模仿“七周七”系列丛书的命名。为什么我选择了“九”而不是其他的数字，因为“九九归一”有归根到底，探寻事物本质的意思，更能表达我对此系列文章的定位，希望能从更深层次上说清楚分布式服务。本文是序不算做其中一篇，未来九周会有九篇文章发布。下面先简单介绍一下分布式服务，并做一个简单预告。</p>
+</blockquote>
+<h3 id="分布式服务的前世今生"><a href="#分布式服务的前世今生" class="headerlink" title="分布式服务的前世今生"></a>分布式服务的前世今生</h3><p>随着公司业务的不断发展，和所有的公司一样到了一个阶段，分布式服务框架也逐渐被引入到项目开发中。一个公司系统应用的架构发展一般都是下面的一个历程：</p>
+<p><img src="/2018/01/27/distributed-service-xu/architecture-evolution.png" alt="架构演进"></p>
+<p>从一体化的垂直应用架构到业务分层的RPC架构再到面向服务的SOA架构，然后就是最近特别流行的架构风格微服务，未来可能还有智能化架构模型，也不一定。那时，程序员的大部分工作将自动化、智能化！相信未来是美好的！未来的事先放一放，说说为什么应用架构不断发展，其核心推动力是<strong>提高公共能力的重用性，减少重复劳动，满足人类的懒惰</strong>。</p>
+<h3 id="分布式服务框架的功能组成"><a href="#分布式服务框架的功能组成" class="headerlink" title="分布式服务框架的功能组成"></a>分布式服务框架的功能组成</h3><p>分布式服务架构是从传统RPC架构发展过来，随着RPC框架的不断推广，逐渐暴露很多问题，为了解决这些问题，分布式服务在RPC框架的基础上提供了很多特性：</p>
+<ol>
+<li>基于注册中心的服务订阅/发布机制</li>
+<li>支持服务自动发现</li>
+<li>自带负载均衡</li>
+<li>集群容错</li>
+<li>流量控制、服务分组、服务多版本</li>
+<li>故障隔离</li>
+<li>支持多协议发布服务</li>
+<li>践行DevOps思想</li>
+<li>服务治理（支持服务监控、线上治理）</li>
+</ol>
+<p>以上这些特性都是作为分布式服务框架的基本功能，不管在实际开发中使用哪一种框架，都应该包含这些功能。</p>
+<h3 id="分布式服务框架列表"><a href="#分布式服务框架列表" class="headerlink" title="分布式服务框架列表"></a>分布式服务框架列表</h3><p>在java生态圈中，目前业界主流的分布式服务框架，有以下几个：</p>
+<ul>
+<li>Dubbo/Dubbox（阿里/当当开源）</li>
+<li>HSF（阿里商业版）</li>
+<li>DSF（华为商业版）</li>
+<li>Coral Service（亚马逊内部）</li>
+<li>Spring Cloud（pivotal开源/商业版）</li>
+</ul>
+<p>我们公司内部使用的分布式服务框架是华为研发的DSF框架，由于它是商业版的，在接下来的文章中有实例分析或者demo介绍的时候，我会采用Spring cloud框架。Spring cloud框架是Spring生态中的一员，以后可能是最流行的开源的分布式服务框架。</p>
+<p><img src="/2018/01/27/distributed-service-xu/spring-cloud.png" alt="spring cloud"></p>
+<h3 id="九周九分布式服务预告"><a href="#九周九分布式服务预告" class="headerlink" title="九周九分布式服务预告"></a>九周九分布式服务预告</h3><p>下面列一下系列文章的内容预告，大体的内容不会变，以后可能由于思路的瞬变，会有小的变动也是可能的。请感兴趣的同学持续关注。预告：</p>
+<ol>
+<li>九周九分布式服务-架构演进</li>
+<li>九周九分布式服务-demo</li>
+<li>九周九分布式服务-功能架构</li>
+<li>九周九分布式服务-内部通信</li>
+<li>九周九分布式服务-特性介绍1</li>
+<li>九周九分布式服务-特性介绍2</li>
+<li>九周九分布式服务-埋点日志</li>
+<li>九周九分布式服务-访问控制</li>
+<li>九周九分布式服务-服务治理</li>
+</ol>
+<blockquote>
+<p>结束语：序就这么多吧。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
         </div>
-    </nav>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/distributed-service-evolution/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
 
 
 
