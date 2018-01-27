@@ -1,0 +1,959 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Apache Flume 1.6.0 用户指南 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Apache Flume 1.6.0 用户指南">
+            
+            Apache Flume 1.6.0 用户指南
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>工具</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            flume
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>翻译作品，水平有限，如有错误，烦请留言指正。原文请见 <a href="http://flume.apache.org/FlumeUserGuide.html" target="_blank" rel="noopener">官网英文文档</a></p>
+</blockquote>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Apache Flume是一个<strong>分布式的</strong>、可靠的、易用的系统，可以有效地将来自很多不同源系统的大量日志数据收集、汇总或者转移到一个数据中心存储。</p>
+<p>Apache Flume的作用不仅限于日志汇总，因为数据源是可以自定义的，Flume也可以被用于传输大量的事件数据，包括但不限于网络流量数据、社交媒体产生的数据、电子邮件和几乎所有可能的数据源。</p>
+<p>Apache Flume是Apache软件基金会的顶级项目。</p>
+<p>目前有两个已发布的代码版本可以使用，分别是0.9.x和1.x.</p>
+<p>0.9.x系列的文档获取方式是 <a href="http://archive.cloudera.com/cdh/3/flume/UserGuide/" target="_blank" rel="noopener">Flume 0.9.x User Guide</a>.</p>
+<p>这一篇文档适用于1.4.x系列版本。</p>
+<p>鼓励新用户和现存用户使用1.x系列的发布版本，因为在最新的版本中具有显著的性能提升和灵活配置的特性。</p>
+<h2 id="系统要求"><a href="#系统要求" class="headerlink" title="系统要求"></a>系统要求</h2><ol>
+<li>java运行环境-java 1.6或者更新（推荐使用1.7）</li>
+<li>内存-有足够的内存满足于sources、channels、和sinks的配置</li>
+<li>存储空间-有足够的空间满足于channels和sinks的配置      </li>
+<li>目录权限-agent使用的目录要有读写权限</li>
+</ol>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><h3 id="数据流模型"><a href="#数据流模型" class="headerlink" title="数据流模型"></a>数据流模型</h3><p>Flume event是一个数据流的基本单元，包含一个字节的载荷和一些可选的字符属性；Flume agent是一个JVM进程包含一些组件，通过这些组件，event从一个外部源流向下一个目的地（即一跳的传输）。<br><img src="/2018/01/27/apache-flume-user-guide/1.png" alt="图片来自官网"><br>Flume source消费像web server一样的外部source交付给它的event，外部source是以一种可以被目标Flume source识别的格式向Flume发送event。例如，一个Avro Flume source可以接收Avro event，这些event可以来自Avro client，也可以来自流中其它的Flume agent从Avro sink中发送的event。一个类似的数据流可以是这样的，Thrift Flume Source可以接收的event包括来自Thrift Sink，来自Flume Thrift RPC Client，来自其他任何语言根据Flume Thrift协议实现的Thrift Client。当Flume Source接收到一个event时，它会将其存储到一个或者多个Channel中，Channel是一个被动存储，它会存储接收的event一直到该event被Flume Sink消费掉。就拿file channel举例，它是依靠本地文件系统的。Sink将event从channel中清除掉，然后把它放到一个外部的仓库（如HDFS）中，这可以通过Flume HDFS Sink实现，或者把它传递给整个流中下一个Flume agent（即下一跳）的Flume Source。因为有channel的存储，在一个给定的agent中的Source和Sink可以分阶段地异步地处理event。</p>
+<h3 id="复杂数据流"><a href="#复杂数据流" class="headerlink" title="复杂数据流"></a>复杂数据流</h3><p>Flume允许用户创建多跳的流程，其中的event在到达最终的目的地之前会经过多个agent。Flume也允许扇入扇出（扇入：一个模块被多个模块调用，扇出：一个模块调用多个模块）模式的数据流，基于上下文的路由和作为失败跳转的备份路由（故障转移）。</p>
+<h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><p>在每一个agent中的event都是存储在相应的channel中的，然后这些event才会被传送到下一个agent或者最终的存储系统（如HDFS），这些event只用存储在下一个agent中的channel中或者最终存储系统中之后才会从当前的channel中清除。这也就是Flume在一次跳转的数据流中如何提供端到端可靠性的。</p>
+<p>Flume使用一种事务性的方法来保证event传送过程中的可靠性，Source和Sink封装在了一个存储/检索event的事务中，分别对应channel提供的放入/取出的事务，这就保证了event在数据流的点对点传输过程中的可靠性。在多跳数据流的情形下，上一跳的sink和下一跳的source它们在一个事务中运行，确保数据能够安全地存储到下一跳的channel中。</p>
+<h3 id="可恢复性"><a href="#可恢复性" class="headerlink" title="可恢复性"></a>可恢复性</h3><p>Event被存储在channel中，同时channel管理着事务的失败恢复。Flume有一个基于本地文件系统的可持久化的文件channel，还有一个内存channel，它能简单地将event存储在内存队列中，它的速度更快，但是当一个agent进程死掉的时候，还在channel中的event就不能恢复了。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="安装agent"><a href="#安装agent" class="headerlink" title="安装agent"></a>安装agent</h2><p>Flume agent的配置是存储在本地的配置文件中的，这是一个文本文件，它是java properties文件格式，可以在一个配置文件中指定一个或者多个agent的配置。这个配置文件包括一个agent中每一个source，sink和channel的属性，而且还有它们是如何绑在一些形成数据流的。</p>
+<h3 id="配置单个组件"><a href="#配置单个组件" class="headerlink" title="配置单个组件"></a>配置单个组件</h3><p>在数据流中的每一个组件（source，sink或者channel）都有一个name，type和一些跟这些type和实例相关的属性，例如，一个Avro source需要一个hostname（或者Ip地址）和一个端口号来接收数据，一个内存channel需要有最大的队列长度（容量），一个HDFS sink需要一个已知的文件系统URI，创建文件路径和文件的循环频次（hdfs.rollInterval）等等。一个组件的所有这些属性都被设置在Flume agent的properties文件中。</p>
+<h3 id="组件串联"><a href="#组件串联" class="headerlink" title="组件串联"></a>组件串联</h3><p>agent需要知道哪一个组件需要加载，它们是怎样有序地连接在一起组成一个数据流的。这就需要列举出一个agent中的每一个source，sink和channel，并且给每一个source和sink指定连接的channel。例如，一个agent从一个叫做“avroWeb”的Avro source中将event传送到一个叫做“hdfs-cluster1”的HDFS sink中，它们之间是通过一个叫做“file-channel”的文件channel，因此在配置文件中需要包含这些组件的名字和avroWeb source and hdfs-cluster1 sink共享的通道file-channel。</p>
+<h3 id="启动一个agent"><a href="#启动一个agent" class="headerlink" title="启动一个agent"></a>启动一个agent</h3><p>agent是用一个叫做flume-ng的shell脚本启动的，这个脚本位于flume的bin目录下面，执行时你需要指定agent的名字，配置文件目录和配置文件，命令如下：</p>
+<pre><code>$ bin/flume-ng agent -n $agent_name -c conf -f conf/flume-conf.properties.template
+</code></pre><p>现在agent将启动运行指定properties文件配置的source和sink。</p>
+<h3 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h3><p>这里我们给出了一个配置文件的例子，描述了一个单点的flume的部署，这个配置文件能使用户生产的event顺序地打印在console控制台上。</p>
+<pre><code># example.conf: A single-node Flume configuration
+
+# Name the components on this agent
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+# Describe/configure the source
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = localhost
+a1.sources.r1.port = 44444
+
+# Describe the sink
+a1.sinks.k1.type = logger
+
+# Use a channel which buffers events in memory
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+</code></pre><p>在这个配置文件里面仅定义了一个agent，它的名字叫a1，a1有一个source监听的是端口44444的数据，有一个channel是在内存中缓存event数据，还有一个sink将event数据打印到console控制台。在这个配置文件中配置了多个组件，然后描述了它们的type和配置参数。一个给定的配置文件可以指定多个不同名字的agent，当一个flume进程启动的时候，一个标志会被传进去告诉它启动哪一个agent。<br>考虑这个配置文件，我们可以使用下面的命令来启动flume：</p>
+<pre><code>$ bin/flume-ng agent --conf conf --conf-file example.conf --name a1 -Dflume.root.logger=INFO,console
+</code></pre><p>注：在实际的部署中我们通常会多包含一个参数：<code>--conf=&lt;conf-dir&gt;</code>，这个目录<code>&lt;conf-dir&gt;</code>包含一个shell脚本 <em>flume-env.sh</em> 和一个强大的log4j的properties文件，在这个例子中我们还传进去了一个java选项，强制Flume将日志打印在控制台console，而不是用定制的环境脚本。<br>在另外一个终端我们可以telnet端口44444，发送给flume一个event：</p>
+<pre><code>$ telnet localhost 44444
+Trying 127.0.0.1...
+Connected to localhost.localdomain (127.0.0.1).
+Escape character is &#39;^]&#39;.
+Hello world! &lt;ENTER&gt;
+OK
+</code></pre><p>在原来的flume的终端上将会输出这个event的log信息：</p>
+<pre><code>12/06/19 15:32:19 INFO source.NetcatSource: Source starting
+12/06/19 15:32:19 INFO source.NetcatSource: Created serverSocket:sun.nio.ch.ServerSocketChannelImpl[/127.0.0.1:44444]
+12/06/19 15:32:34 INFO sink.LoggerSink: Event: { headers:{} body: 48 65 6C 6C 6F 20 77 6F 72 6C 64 21 0D          Hello world!. }
+</code></pre><p>祝贺，你已经成功地配置并部署了一个Flume agent，在接下来的部分会更加详细地介绍agent的配置信息。</p>
+<h3 id="基于Zookeeper的配置"><a href="#基于Zookeeper的配置" class="headerlink" title="基于Zookeeper的配置"></a>基于Zookeeper的配置</h3><p>Flume支持通过zookeeper配置agent，但这是一个实验性特性，配置文件需要上传到zookeeper上去，在一个可配置的前缀下面，这个配置文件被存储在zookeeper的节点数据中，下面是zookeeper的节点树，比如 agent a1和a2.</p>
+<pre><code>- /flume
+ |- /a1 [Agent config file]
+ |- /a2 [Agent config file]
+</code></pre><p>配置文件上传到zookeeper之后，agent的启动命令如下：</p>
+<pre><code>$ bin/flume-ng agent –conf conf -z zkhost:2181,zkhost1:2181 -p /flume –name a1 -Dflume.root.logger=INFO,console
+</code></pre><p>参数解释如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">z</td>
+<td style="text-align:center">-</td>
+<td>zookeeper的连接字符串，hostname:port列表用逗号分隔</td>
+</tr>
+<tr>
+<td style="text-align:center">p</td>
+<td style="text-align:center">/flume</td>
+<td>zookeeper中存储agent配置文件的根路径</td>
+</tr>
+</tbody>
+</table>
+<h3 id="安装第三方插件"><a href="#安装第三方插件" class="headerlink" title="安装第三方插件"></a>安装第三方插件</h3><p>Flume有一个完整的基于插件的架构。Flume自带了很多开箱即用的source，sink，channel，serializer，并且在发Flume之外存在很多第三方的实现。<br>当然你也可以自定义很多组件，只要将它们的jar包放在<code>flume-env.sh</code>文件中的<code>FLUME_CLASSPATH</code>的变量中就可以。Flume现在支持一个特殊的目录叫<code>plugins.d</code>，其中按照一定格式打包的插件能够被自动检测到，这样使得插件的打包管理很方便，而且也使调试和问题跟踪变得简单了，尤其是依赖包的冲突问题。</p>
+<h4 id="plugins-d目录"><a href="#plugins-d目录" class="headerlink" title="plugins.d目录"></a>plugins.d目录</h4><p><code>plugins.d</code>目录的位置是<code>$FLUME_HOME/plugins.d</code>. 在启动的时候，<code>flume-ng</code>的启动脚本会检查<code>plugins.d</code>目录下符合以下格式的插件，把它们包含到<code>java</code>启动时合适的路径上。</p>
+<h4 id="插件的目录布局"><a href="#插件的目录布局" class="headerlink" title="插件的目录布局"></a>插件的目录布局</h4><p>在<code>plugins.d</code>目录下面的每一个插件（子目录）可以有三个子目录：</p>
+<ol>
+<li>lib - 存放插件的jar包。</li>
+<li>libext - 插件依赖的jar包。</li>
+<li>native - 存放任何的本地依赖包，如<code>.so</code>文件。</li>
+</ol>
+<p>下面有两个存储在目录<code>plugins.d</code>里的插件的例子：</p>
+<pre><code>plugins.d/
+plugins.d/custom-source-1/
+plugins.d/custom-source-1/lib/my-source.jar
+plugins.d/custom-source-1/libext/spring-core-2.5.6.jar
+plugins.d/custom-source-2/
+plugins.d/custom-source-2/lib/custom.jar
+plugins.d/custom-source-2/native/gettext.so
+</code></pre><h2 id="数据的采集"><a href="#数据的采集" class="headerlink" title="数据的采集"></a>数据的采集</h2><p>Flume支持很多种从外部source中采集数据的方式。</p>
+<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>在flume的发布版本中包含了一个Avro的客户端，它能通过avro RPC方式发送一个指定的文件到Flume Avro source中：</p>
+<pre><code>bin/flume-ng avro-client -H localhost -p 41414 -F /usr/logs/log.10
+</code></pre><p>上面的命令将会发送文件<code>/usr/logs/log.10</code>的内容到监听在端口上的Flume source。</p>
+<h3 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h3><p>有一个exec source，它可以执行一个给定的命令，然后消费这个输出，输出是个单行文本，文本以<code>\r</code>或者<code>\n</code>或者<code>\r\n</code>结尾。</p>
+<blockquote>
+<p>注：Flume不支持tail命令的source，有一个可以使用exec source执行的tail命令，同样可以流式的输出文件。</p>
+</blockquote>
+<h3 id="网络流"><a href="#网络流" class="headerlink" title="网络流"></a>网络流</h3><p>Flume支持以下几种方式从常见的日志流中读取数据：</p>
+<ol>
+<li>Avro</li>
+<li>Thrift</li>
+<li>Syslog</li>
+<li>Netcat</li>
+</ol>
+<h2 id="配置多个agent的数据流"><a href="#配置多个agent的数据流" class="headerlink" title="配置多个agent的数据流"></a>配置多个agent的数据流</h2><p><img src="/2018/01/27/apache-flume-user-guide/2.png" alt="图片来自官网"><br>为了能使数据流跨越多个agent或者跳，前一个agent的sink和当前一跳的source需要同样是avro类型的，并且sink需要指定source的hostname（或者ip地址）和端口号。</p>
+<h2 id="数据流合并"><a href="#数据流合并" class="headerlink" title="数据流合并"></a>数据流合并</h2><p>在做日志收集的时候一个常见的场景就是，大量的生产日志的客户端发送数据到少量的附属于存储子系统的消费者agent。例如，从数百个web服务器中收集日志，它们发送数据到十几个负责将数据写入HDFS集群的agent。</p>
+<p><img src="/2018/01/27/apache-flume-user-guide/3.png" alt="图片来自官网"><br>这个可在Flume中可以实现，需要配置大量第一层的agent，每一个agent都有一个avro sink，让它们都指向同一个agent的avro source（强调一下，在这样一个场景下你也可以使用thrift source/sink/client）。在第二层agent上的source将收到的event合并到一个channel中，event被一个sink消费到它的最终的目的地。</p>
+<h2 id="数据流复用"><a href="#数据流复用" class="headerlink" title="数据流复用"></a>数据流复用</h2><p>Flume支持多路输出event流到一个或多个目的地。这是靠定义一个多路数据流实现的，它可以实现复制和选择性路由一个event到一个或者多个channel。</p>
+<p><img src="/2018/01/27/apache-flume-user-guide/4.png" alt="图片来自官网"><br>上面的例子展示了agent foo中source扇出数据流到三个不同的channel，这个扇出可以是复制或者多路输出。在复制数据流的情况下，每一个event被发送所有的三个channel；在多路输出的情况下，一个event被发送到一部分可用的channel中，它们是根据event的属性和预先配置的值选择channel的，例如一个event的<code>txnType</code>属性的值是<code>customer</code>，这个它应该被发送到channel1和channel3，如果值是<code>vendor</code>，它应该被发送到channel2，如果没有到达channel2则会被发送到channel3. 这些映射关系应该被填写在agent的配置文件中。</p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>在上面几部分中都有提到，Flume agent的配置是从一个文件中读取的，该文件是一个具有层次结构的java properties文件。</p>
+<h2 id="数据流的定义"><a href="#数据流的定义" class="headerlink" title="数据流的定义"></a>数据流的定义</h2><p>为了定义单个agent内部的数据流，你需要通过channel将source和sink连接起来。你需要列出给定agent的source，sink和channel，然后将source和sink指向一个channel。一个source实例可以指定多个channel，但是一个sink只能指定一个channel。相关配置格式如下：</p>
+<pre><code># list the sources, sinks and channels for the agent
+&lt;Agent&gt;.sources = &lt;Source&gt;
+&lt;Agent&gt;.sinks = &lt;Sink&gt;
+&lt;Agent&gt;.channels = &lt;Channel1&gt; &lt;Channel2&gt;
+
+# set channel for source
+&lt;Agent&gt;.sources.&lt;Source&gt;.channels = &lt;Channel1&gt; &lt;Channel2&gt; ...
+
+# set channel for sink
+&lt;Agent&gt;.sinks.&lt;Sink&gt;.channel = &lt;Channel1&gt;
+</code></pre><p>例如，一个名为<code>agent_foo</code>，从一个外部的avro客户端读取数据，然后通过一个内存channel将数据发送到HDFS系统中。配置文件<code>weblog.config</code>看起来是下面这样的：</p>
+<pre><code># list the sources, sinks and channels for the agent
+agent_foo.sources = avro-appserver-src-1
+agent_foo.sinks = hdfs-sink-1
+agent_foo.channels = mem-channel-1
+
+# set channel for source
+agent_foo.sources.avro-appserver-src-1.channels = mem-channel-1
+
+# set channel for sink
+agent_foo.sinks.hdfs-sink-1.channel = mem-channel-1
+</code></pre><p>这样的配置会使event通过 <code>mem-channel-1</code> 从source <code>avro-appserver-src-1</code> 中流向sink <code>hdfs-sink-1</code>。当一个agent使用<code>weblog.config</code>作为它的配置文件启动时，它将实例化那个数据流。</p>
+<h2 id="单个组件的配置"><a href="#单个组件的配置" class="headerlink" title="单个组件的配置"></a>单个组件的配置</h2><p>定义过了数据流之后，你需要设置每一个组件（source、sink、channel）的属性。在properties文件中为每个组件的type指定值，都在同一个有层次的命名空间下完成的：</p>
+<pre><code># properties for sources
+&lt;Agent&gt;.sources.&lt;Source&gt;.&lt;someProperty&gt; = &lt;someValue&gt;
+
+# properties for channels
+&lt;Agent&gt;.channel.&lt;Channel&gt;.&lt;someProperty&gt; = &lt;someValue&gt;
+
+# properties for sinks
+&lt;Agent&gt;.sources.&lt;Sink&gt;.&lt;someProperty&gt; = &lt;someValue&gt;
+</code></pre><p>每一个组件都需要设置<code>type</code>属性，这样Flume才能理解需要什么类型的对象。每个source、sink和channel都有属于自己的一组属性，来实现它们预期的功能。所有这些属性都是按需设置的，在前一个例子中，我们有一个数据流是通过内存channel <code>mem-channel-1</code> 从 <code>avro-AppSrv-source</code> 到 <code>hdfs-Cluster1-sink</code>，下面是一个展示其中每一个组件的配置的例子：</p>
+<pre><code>agent_foo.sources = avro-AppSrv-source
+agent_foo.sinks = hdfs-Cluster1-sink
+agent_foo.channels = mem-channel-1
+
+# set channel for sources, sinks
+
+# properties of avro-AppSrv-source
+agent_foo.sources.avro-AppSrv-source.type = avro
+agent_foo.sources.avro-AppSrv-source.bind = localhost
+agent_foo.sources.avro-AppSrv-source.port = 10000
+
+# properties of mem-channel-1
+agent_foo.channels.mem-channel-1.type = memory
+agent_foo.channels.mem-channel-1.capacity = 1000
+agent_foo.channels.mem-channel-1.transactionCapacity = 100
+
+# properties of hdfs-Cluster1-sink
+agent_foo.sinks.hdfs-Cluster1-sink.type = hdfs
+agent_foo.sinks.hdfs-Cluster1-sink.hdfs.path = hdfs://namenode/flume/webdata
+
+#...
+</code></pre><h2 id="在一个agent中配置多个数据流"><a href="#在一个agent中配置多个数据流" class="headerlink" title="在一个agent中配置多个数据流"></a>在一个agent中配置多个数据流</h2><p>在一个单一的Flume agent中可以包含多个独立的数据流，在一个配置文件中你可以列出多个source、sink 和 channel。这些组件会被连接起来形成多个数据流：</p>
+<pre><code># list the sources, sinks and channels for the agent
+&lt;Agent&gt;.sources = &lt;Source1&gt; &lt;Source2&gt;
+&lt;Agent&gt;.sinks = &lt;Sink1&gt; &lt;Sink2&gt;
+&lt;Agent&gt;.channels = &lt;Channel1&gt; &lt;Channel2&gt;
+</code></pre><p>然后你可以利用相应的channel将对应的 source 和 sink 连接起来形成两个不同的数据流。例如，如果你需要在一个agent中配置两个数据流，一个来自外部的avro客户端流向外部的HDFS，另一个来自外部的 <code>tail</code> 流向avro sink，需要下面这样的配置：</p>
+<pre><code># list the sources, sinks and channels in the agent
+agent_foo.sources = avro-AppSrv-source1 exec-tail-source2
+agent_foo.sinks = hdfs-Cluster1-sink1 avro-forward-sink2
+agent_foo.channels = mem-channel-1 file-channel-2
+
+# flow #1 configuration
+agent_foo.sources.avro-AppSrv-source1.channels = mem-channel-1
+agent_foo.sinks.hdfs-Cluster1-sink1.channel = mem-channel-1
+
+# flow #2 configuration
+agent_foo.sources.exec-tail-source2.channels = file-channel-2
+agent_foo.sinks.avro-forward-sink2.channel = file-channel-2
+</code></pre><h2 id="多agent数据流的配置"><a href="#多agent数据流的配置" class="headerlink" title="多agent数据流的配置"></a>多agent数据流的配置</h2><p>为了配置一个多层数据流，你需要将第一跳的 avro/thrift sink指向下一跳的 avro/thrift source。这样第一个Flume agent就会将event传送到下一个flume agent中。例如，如果你使用avro 客户端周期性地传送一个文件（每个event一个文件）到本地的flume agent中，然后这个本地agent将它传送到下一个agent，然后把它存储起来。</p>
+<p>Weblog agent 配置信息：</p>
+<pre><code># list sources, sinks and channels in the agent
+agent_foo.sources = avro-AppSrv-source
+agent_foo.sinks = avro-forward-sink
+agent_foo.channels = file-channel
+
+# define the flow
+agent_foo.sources.avro-AppSrv-source.channels = file-channel
+agent_foo.sinks.avro-forward-sink.channel = file-channel
+
+# avro sink properties
+agent_foo.sources.avro-forward-sink.type = avro
+agent_foo.sources.avro-forward-sink.hostname = 10.1.1.100
+agent_foo.sources.avro-forward-sink.port = 10000
+
+# configure other pieces
+#...
+</code></pre><p>HDFS agent 配置信息：</p>
+<pre><code># list sources, sinks and channels in the agent
+agent_foo.sources = avro-collection-source
+agent_foo.sinks = hdfs-sink
+agent_foo.channels = mem-channel
+
+# define the flow
+agent_foo.sources.avro-collection-source.channels = mem-channel
+agent_foo.sinks.hdfs-sink.channel = mem-channel
+
+# avro sink properties
+agent_foo.sources.avro-collection-source.type = avro
+agent_foo.sources.avro-collection-source.bind = 10.1.1.100
+agent_foo.sources.avro-collection-source.port = 10000
+
+# configure other pieces
+#...
+</code></pre><p>这样我们就将 weblog agent 的 avro-forward-sink 和 hdfs agent 的 avro-collection-source 连接起来了。最后，来自外部 appserver source 的 event 就存储在了HDFS中。</p>
+<h2 id="扇出数据流"><a href="#扇出数据流" class="headerlink" title="扇出数据流"></a>扇出数据流</h2><p>在前面部分我们提到，Flume支持从一个source中扇出数据流到多个 channel 中，Flume有两种扇出模式，复制和多路复用。在复制数据流中，event 被发送到所有配置的channel中，在多路复用数据流中，event只被发送到特定的channel（所有channel的一个子集）中。为了扇出数据流，需要为一个source指定一个channel列表和扇出策略，扇出策略是通过添加channel 的 <code>Selector</code> 完成的，selector 的类型可能是复制也可能是多路复用，如果是多路复用，需要进一步配置选择规则，如果你不指定一个 <code>Selector</code> 默认就是复制：</p>
+<pre><code># List the sources, sinks and channels for the agent
+&lt;Agent&gt;.sources = &lt;Source1&gt;
+&lt;Agent&gt;.sinks = &lt;Sink1&gt; &lt;Sink2&gt;
+&lt;Agent&gt;.channels = &lt;Channel1&gt; &lt;Channel2&gt;
+
+# set list of channels for source (separated by space)
+&lt;Agent&gt;.sources.&lt;Source1&gt;.channels = &lt;Channel1&gt; &lt;Channel2&gt;
+
+# set channel for sinks
+&lt;Agent&gt;.sinks.&lt;Sink1&gt;.channel = &lt;Channel1&gt;
+&lt;Agent&gt;.sinks.&lt;Sink2&gt;.channel = &lt;Channel2&gt;
+
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.type = replicating
+</code></pre><p> 多路选择器为了使数据分流需要进一步的设置，这需要指定一个event的mapping属性，使event流向指定的channel。selector会检查在event header中配置的每个属性，如果它匹配到了特定的值，event会被发送到那个值映射到的所有channel中，如果没有匹配的，event会被发送到若干默认配置的channel：</p>
+<pre><code># Mapping for multiplexing selector
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.type = multiplexing
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.header = &lt;someHeader&gt;
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.mapping.&lt;Value1&gt; = &lt;Channel1&gt;
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.mapping.&lt;Value2&gt; = &lt;Channel1&gt; &lt;Channel2&gt;
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.mapping.&lt;Value3&gt; = &lt;Channel2&gt;
+#...
+
+&lt;Agent&gt;.sources.&lt;Source1&gt;.selector.default = &lt;Channel2&gt;
+</code></pre><p>每个值的mapping允许channel重叠。<br>下面有一个单个数据流通过多路选择流向两个路径例子，名叫<code>agent_foo</code>的agent有一个avro source 两个 channel 连接着两个 sink：</p>
+<pre><code># list the sources, sinks and channels in the agent
+agent_foo.sources = avro-AppSrv-source1
+agent_foo.sinks = hdfs-Cluster1-sink1 avro-forward-sink2
+agent_foo.channels = mem-channel-1 file-channel-2
+
+# set channels for source
+agent_foo.sources.avro-AppSrv-source1.channels = mem-channel-1 file-channel-2
+
+# set channel for sinks
+agent_foo.sinks.hdfs-Cluster1-sink1.channel = mem-channel-1
+agent_foo.sinks.avro-forward-sink2.channel = file-channel-2
+
+# channel selector configuration
+agent_foo.sources.avro-AppSrv-source1.selector.type = multiplexing
+agent_foo.sources.avro-AppSrv-source1.selector.header = State
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.CA = mem-channel-1
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.AZ = file-channel-2
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.NY = mem-channel-1 file-channel-2
+agent_foo.sources.avro-AppSrv-source1.selector.default = mem-channel-1
+</code></pre><p>通过上面的配置，Selector 会检查event中一个名叫 <code>State</code> 的 header，如果它的值是<code>CA</code>，这样的event会被发送到 channel <code>mem-channel-1</code> 中，如果它的值是 <code>AZ</code> ，这样的event会被发送到 channel <code>file-channel-2</code> 中，如果它的值是 <code>NY</code>，这样的event则会被发送到两个channel中，如果<code>State</code> header没有设值或者没有匹配到三个中的任何一个，这样的event会被发送到 <code>default</code> 设置的 <code>mem-channel-1</code> 中。</p>
+<p>Selector 还支持可选择的 channel，为了设置可选择的 channel 使用了一个 header，在下面的参数中配置参数<code>optional</code> 被使用：</p>
+<pre><code># channel selector configuration
+agent_foo.sources.avro-AppSrv-source1.selector.type = multiplexing
+agent_foo.sources.avro-AppSrv-source1.selector.header = State
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.CA = mem-channel-1
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.AZ = file-channel-2
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.NY = mem-channel-1 file-channel-2
+agent_foo.sources.avro-AppSrv-source1.selector.optional.CA = mem-channel-1 file-channel-2
+agent_foo.sources.avro-AppSrv-source1.selector.mapping.AZ = file-channel-2
+agent_foo.sources.avro-AppSrv-source1.selector.default = mem-channel-1
+</code></pre><p>Selector 首先尝试写入第一个必需的channels，如果这些消费event的channel中有一个失败，则整个事务失败，事务会再次尝试所有的这些channel，如果所有的必需的channel都消费到了event，然后selector会尝试写入可选的channel中，如果这些可选的channel中的任何一个消费event失败，都会被简单的忽略，而不会发起再次尝试。</p>
+<p>如果在一个指定的header的可选的channel和必需的channel有重叠，这个channel 会被认为是必须的，这个channel的失败同样会导致所有必需channel的重试。举个例子，在上面的配置样例中，header值等于 <code>CA</code> 的 channnel <code>mem-channel-1</code> 是被认为是必需的 channel，尽管它在必需的和可选的中都有标记，一旦写入这个channel失败，将会导致失败的event重试 Selector 中配置的所有的channel。</p>
+<p>注意，如果一个header 没有任何的必需的channel，然后这个event会被写入到默认的channel中，并且尝试写入到这个header的可选channel中。如果在没有指定必需的channel的情况下，设置可选的channel会导致event被写入默认的channel 中  。如果没有channel被指定为默认的，也没有必需的channel，Selector 会尝试将event写入到可选的channel中，在这种情况下，任何的失败都会被忽略。</p>
+<h2 id="Flume-Sources"><a href="#Flume-Sources" class="headerlink" title="Flume Sources"></a>Flume Sources</h2><h3 id="Avro-Source"><a href="#Avro-Source" class="headerlink" title="Avro Source"></a>Avro Source</h3><p>监听在Avro端口上接收来自外部的Avro客户端的数据流，当它与内嵌在另一个Flume agent （上一跳）的Avro Sink 成对出现时，它可以创建出分层的信息收集拓扑结构，下表中加粗的是必需的属性。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>channels</strong></td>
+<td style="text-align:center">-</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>type</strong></td>
+<td style="text-align:center">-</td>
+<td>组件的类型名，值必须是 <code>avro</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>bind</strong></td>
+<td style="text-align:center">-</td>
+<td>监听的主机名或者IP地址</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>port</strong></td>
+<td style="text-align:center">-</td>
+<td>bind 的端口号</td>
+</tr>
+<tr>
+<td style="text-align:center">threads</td>
+<td style="text-align:center">-</td>
+<td>能产生的最大线程数</td>
+</tr>
+<tr>
+<td style="text-align:center">selector.type</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">selector.*</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">interceptors</td>
+<td style="text-align:center">-</td>
+<td>以空格分隔的interceptor列表</td>
+</tr>
+<tr>
+<td style="text-align:center">interceptors.*</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">compression-type</td>
+<td style="text-align:center">none</td>
+<td>它的值可以是“none”或者“deflate”，但是必须和AvroSource匹配。</td>
+</tr>
+<tr>
+<td style="text-align:center">ssl</td>
+<td style="text-align:center">false</td>
+<td>设其值为true时，启用SSL加密，同时还必须指定一个 “keystore”  和 “keystore-password”。</td>
+</tr>
+<tr>
+<td style="text-align:center">keystore</td>
+<td style="text-align:center">-</td>
+<td>它的值是 Java keystore 的路径，SSL必需的。</td>
+</tr>
+<tr>
+<td style="text-align:center">keystore-password</td>
+<td style="text-align:center">-</td>
+<td>为 Java keystore 设置密码，SSL必需的。</td>
+</tr>
+<tr>
+<td style="text-align:center">keystore-type</td>
+<td style="text-align:center">JKS</td>
+<td>Java keystore 的类型，它的值可以是 “JKS” 或者 “PKCS12”。</td>
+</tr>
+<tr>
+<td style="text-align:center">exclude-protocols</td>
+<td style="text-align:center">SSLv3</td>
+<td>由空格分隔的要排除的SSL/TLS 协议列表，除了指定的协议之外，SSLv3总是被排除在外。</td>
+</tr>
+<tr>
+<td style="text-align:center">ipFilter</td>
+<td style="text-align:center">false</td>
+<td>其值设置为true时，启用netty的ipFiltering。</td>
+</tr>
+<tr>
+<td style="text-align:center">ipFilterRules</td>
+<td style="text-align:center">-</td>
+<td>使用此配置定义N netty ipFilter的模式规则</td>
+</tr>
+</tbody>
+</table>
+<p>一个名叫 a1 的 agent 的例子：</p>
+<pre><code>a1.sources = r1
+a1.channels = c1
+a1.sources.r1.type = avro
+a1.sources.r1.channels = c1
+a1.sources.r1.bind = 0.0.0.0
+a1.sources.r1.port = 4141
+</code></pre><p>ipFilterRules 的例子：<br>ipFilterRules 定义的 N netty ipFilters 的规则必须是逗号隔开的，并且必须是下面的格式：<br><code>&lt;’allow’ or deny&gt;:&lt;’ip’ or ‘name’ 机器名&gt;:&lt;pattern&gt;</code> 或者 <code>allow/deny:ip/name:pattern</code><br>例子：<br><code>ipFilterRules=allow:ip:127.*,allow:name:localhost,deny:ip:*</code><br>注，匹配到的第一条规则适用于下面的例子，在本地客户端上展示。<br>配置<code>“allow:name:localhost,deny:ip:</code>，这将允许来自本地的客户端，拒绝来自其它任何ip的客户端，配置<code>deny:name:localhost,allow:ip:</code>，这将拒绝来自本地的客户端允许其它任何ip的客户端。</p>
+<h3 id="Thrift-Source"><a href="#Thrift-Source" class="headerlink" title="Thrift Source"></a>Thrift Source</h3><p>监听 Thrift 端口，接收外部 Thrift 客户端流进来的 event。当它与内嵌有Thrift Sink的另一个（上一跳）Flume agent成对出现时，它能创建分层的数据收集拓扑结构。Thrift Source可以通过配置kerberos 认证实现在安全模式下启动，agent-principal 和 agent-keytab 是 Thrift Source 向 kerberos KDC 授权的两个属性。粗体是必须的属性。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>channels</strong></td>
+<td style="text-align:center">-</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>type</strong></td>
+<td style="text-align:center">-</td>
+<td>组件的类型名，值必须是 <code>thrift</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>bind</strong></td>
+<td style="text-align:center">-</td>
+<td>监听的主机名或者IP地址</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>port</strong></td>
+<td style="text-align:center">-</td>
+<td>bind 的端口号</td>
+</tr>
+<tr>
+<td style="text-align:center">threads</td>
+<td style="text-align:center">-</td>
+<td>能产生的最大线程数</td>
+</tr>
+<tr>
+<td style="text-align:center">selector.type</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">selector.*</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">interceptors</td>
+<td style="text-align:center">-</td>
+<td>以空格分隔的interceptor列表</td>
+</tr>
+<tr>
+<td style="text-align:center">interceptors.*</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">ssl</td>
+<td style="text-align:center">false</td>
+<td>设其值为true时，启用SSL加密，同时还必须指定一个 “keystore”  和 “keystore-password”。</td>
+</tr>
+<tr>
+<td style="text-align:center">keystore</td>
+<td style="text-align:center">-</td>
+<td>它的值是 Java keystore 的路径，SSL必需的。</td>
+</tr>
+<tr>
+<td style="text-align:center">keystore-password</td>
+<td style="text-align:center">-</td>
+<td>为 Java keystore 设置密码，SSL必需的。</td>
+</tr>
+<tr>
+<td style="text-align:center">keystore-type</td>
+<td style="text-align:center">JKS</td>
+<td>Java keystore 的类型，它的值可以是 “JKS” 或者 “PKCS12”。</td>
+</tr>
+<tr>
+<td style="text-align:center">exclude-protocols</td>
+<td style="text-align:center">SSLv3</td>
+<td>由空格分隔的要排除的SSL/TLS 协议列表，除了指定的协议之外，SSLv3总是被排除在外。</td>
+</tr>
+<tr>
+<td style="text-align:center">kerberos</td>
+<td style="text-align:center">false</td>
+<td>值为true时，启用kerberos认证，在kerberos模式下，agent-principal 和 agent-keytab是成功认证通过必需的属性，Thrift source在安全模式下，仅接受来自启用kerberos并且成功通过kerberos KDC认证的thrift客户端的连接。</td>
+</tr>
+<tr>
+<td style="text-align:center">agent-principal</td>
+<td style="text-align:center">-</td>
+<td>它被用于 thrift source 向 kerberos KDC 授权时使用。</td>
+</tr>
+<tr>
+<td style="text-align:center">agent-keytab</td>
+<td style="text-align:center">-</td>
+<td>keytab的位置和agent-principal结合使用。</td>
+</tr>
+</tbody>
+</table>
+<p>一个名为a1的agent的例子：</p>
+<pre><code>a1.sources = r1
+a1.channels = c1
+a1.sources.r1.type = thrift
+a1.sources.r1.channels = c1
+a1.sources.r1.bind = 0.0.0.0
+a1.sources.r1.port = 4141
+</code></pre><h3 id="Exec-Source"><a href="#Exec-Source" class="headerlink" title="Exec Source"></a>Exec Source</h3><p>Exec Source 可以运行一个unix命令，这个命令是启动命令或者是一个持续在标准输出上生产数据的进程（stderr会被简单的抛弃，除非配置<code>logStdErr</code>这个属性的值为true）。如果这个进程不管任何原因退出，这个resource也会退出，并且也不会产生进一步的数据。这意味着配置例如<code>cat[namedpipe]</code>或者<code>tail-F[file]</code> 这样的命令来产生我们希望的结果，而命令 <code>date</code> 不一样，前面两个命令将产生一个数据流，而后面的一个命令只会产生一个event而退出。 粗体是必需的参数。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>channels</strong></td>
+<td style="text-align:center">-</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>type</strong></td>
+<td style="text-align:center">-</td>
+<td>组件的类型名，值必须是 <code>exec</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>command</strong></td>
+<td style="text-align:center">-</td>
+<td>要执行的命令</td>
+</tr>
+<tr>
+<td style="text-align:center">shell</td>
+<td style="text-align:center">-</td>
+<td>用于执行command的shell外壳，例如 <code>/bin/sh -c</code>，仅在使用的命令依赖某种shell类型时，这个属性是必需的，比如通配符、返回标记、管道符等。</td>
+</tr>
+<tr>
+<td style="text-align:center">restartThrottle</td>
+<td style="text-align:center">10000</td>
+<td>在尝试重新启动之前等待的总时长（单位毫秒）</td>
+</tr>
+<tr>
+<td style="text-align:center">restart</td>
+<td style="text-align:center">false</td>
+<td>如果进程死掉了是否执行命令重新启动</td>
+</tr>
+<tr>
+<td style="text-align:center">logStdErr</td>
+<td style="text-align:center">false</td>
+<td>命令的标准错误输出是否应该被记录</td>
+</tr>
+<tr>
+<td style="text-align:center">batchSize</td>
+<td style="text-align:center">20</td>
+<td>同时读取和发送到channel的最大行数</td>
+</tr>
+<tr>
+<td style="text-align:center">batchTimeout</td>
+<td style="text-align:center">3000</td>
+<td>如果数据在被推到下游之前，缓冲区的大小未达到，要等待的时长（单位毫秒）</td>
+</tr>
+<tr>
+<td style="text-align:center">selector.type</td>
+<td style="text-align:center">replicating</td>
+<td>replicating（复制） 或者 multiplexing（多路）</td>
+</tr>
+<tr>
+<td style="text-align:center">selector.*</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">interceptors</td>
+<td style="text-align:center">-</td>
+<td>以空格分隔的interceptor列表</td>
+</tr>
+<tr>
+<td style="text-align:center">interceptors.*</td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>警告：ExecSource和其它的异步的source都有的一个问题是，如果有一个event放入channel失败了，source不可能保证客户端会知道。在这种情况下会出现数据丢失。作为一个实例，我们最常需要的一个功能是 <code>tail-F[file]</code> ，使用场景是当一个应用在硬盘上写日志文件的时候，Flume tail 那个文件，然后将每一行当作一个event发送出去。有一个很可能出现的很明显的问题是，如果channel被填满了，Flume不能发送event了会发生什么事情？Flume没有办法知道应用是正在写日志文件需要它保存日志呢，还是由于某种原因event没有被发送呢。如果这是没有意义的，你仅需要知道它：当你使用一个单向的、异步的接口（如ExecSource）时，你的应用可能从来都不能保证数据已经被发送出去了！作为这个警告的延伸，你要完全清楚一件事，使用这个source，event的发送完全是零保证的。为了有更强的可靠性保证，可以考虑使用 Spooling Directory Source 或者使用flume的SDK直接集成到应用中去。</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>注意：你可以模仿Flume 0.9x（flume og）的 TailSource 来使用 ExecSource。它只能使用unix命令 <code>tail-F/full/path/to/your/file</code>。在这种情况下，参数 <code>-F</code> 比 <code>-f</code> 更好，因为它支持文件的轮替。</p>
+</blockquote>
+<p>一个名为a1的agent的例子：</p>
+<pre><code>a1.sources = r1
+a1.channels = c1
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F /var/log/secure
+a1.sources.r1.channels = c1
+</code></pre><p><code>shell</code> 参数被用于配置执行 <code>command</code> 的一个shell（如Bash 或 Powershell）， <code>command</code> 的值会被作为一个参数传给 <code>shell</code> 执行，这就允许 <code>command</code> 使用一些该 shell 的特性，例如通配符、返回标记、管道、循环、条件等。如果缺少 <code>shell</code> 的配置，<code>command</code> 将会被直接调用。<code>shell</code> 常见的值包括<code>/bin/sh -c</code>, <code>/bin/ksh -c</code>, <code>cmd /c</code>, <code>powershell -Command</code> 等。</p>
+<pre><code>a1.sources.tailsource-1.type = exec
+a1.sources.tailsource-1.shell = /bin/bash -c
+a1.sources.tailsource-1.command = for i in /path/*.txt; do cat $i; done
+</code></pre><h3 id="JMS-Source"><a href="#JMS-Source" class="headerlink" title="JMS Source"></a>JMS Source</h3><p>JMS Source 从 JMS 的目的地（如队列、主题）中读取消息。作为一个 JMS 应用应该能够和任何的 JMS 提供者一起工作，但是目前仅测试过 ActiveMQ 。JMS Source 可配置 <code>batch size</code>, <code>message selector</code>, 用户名/密码, 和从 message 到 flume event 的转码器。注意供应商提供的 JMS jar 包应该被包含在Flume的classpath中，首选放在plugins.d文件夹下，或者在命令行中使用 <code>–classpath</code> 参数，再或者通过在文件 <code>flume-env.sh</code> 中定义的 <code>FLUME_CLASSPATH</code> 设置。<br>粗体是必需的参数。</p>
+<blockquote>
+<p>整个文档未能翻译完整，敬请谅解，看翻译之后的文档就是为了入门，快速了解概念，希望各位读者尽量去阅读英文原文。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/spring-framework-task/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/docker/" style="font-size: 12.5px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
