@@ -249,7 +249,16 @@ echo $JAVA_HOME
 [2016-09-16T14:17:51,333][INFO ][o.e.n.Node               ] [6-bjhwl] node name [6-bjhwl] derived from node ID; set [node.name] to override
 [2016-09-16T14:17:51,334][INFO ][o.e.n.Node               ] [6-bjhwl] version[5.4.1], pid[21261], build[f5daa16/2016-09-16T09:12:24.346Z], OS[Linux/4.4.0-36-generic/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/1.8.0_60/25.60-b23]
 [2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [aggs-matrix-stats]
-...
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [ingest-common]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-expression]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-groovy]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-mustache]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-painless]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [percolator]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [reindex]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [transport-netty3]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [transport-netty4]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded plugin [mapper-murmur3]
 [2016-09-16T14:17:53,521][INFO ][o.e.n.Node               ] [6-bjhwl] initialized
 [2016-09-16T14:17:53,521][INFO ][o.e.n.Node               ] [6-bjhwl] starting ...
 [2016-09-16T14:17:53,671][INFO ][o.e.t.TransportService   ] [6-bjhwl] publish_address {192.168.8.112:9300}, bound_addresses {{192.168.8.112:9300}
@@ -536,18 +545,16 @@ DELETE /customer/external/2?pretty
 
 做一个快速示范，下面是使用一个bulk操作将两个文档（ID 1 - John Doe and ID 2 - Jane Doe）编入索引的例子：
 
+
+
+下面的例子使用一个bulk操作更新第一个文档（ID为1），然后删除第二个文档（ID为2）：
+
 ```
 POST /customer/external/_bulk?pretty
-{"index":{"_id":"1"}}
-{&quot;name&quot;: &quot;John Doe&quot; }
-{&quot;index&quot;:{&quot;_id&quot;:&quot;2&quot;}}
-{&quot;name&quot;: &quot;Jane Doe&quot; }
-</id></type></index></rest></code></pre><p>下面的例子使用一个bulk操作更新第一个文档（ID为1），然后删除第二个文档（ID为2）：</p>
-<pre><code>POST /customer/external/_bulk?pretty
-{&quot;update&quot;:{&quot;_id&quot;:&quot;1&quot;}}
+{"update":{"_id":"1"}}
 {&quot;doc&quot;: { &quot;name&quot;: &quot;John Doe becomes Jane Doe&quot; } }
 {&quot;delete&quot;:{&quot;_id&quot;:&quot;2&quot;}}
-</code></pre><p>注意上面的删除操作，在它的后面没有指定对应的源文档，因为删除操作仅需要被删除文档的ID。</p>
+</id></type></index></rest></code></pre><p>注意上面的删除操作，在它的后面没有指定对应的源文档，因为删除操作仅需要被删除文档的ID。</p>
 <p>多个操作中的一个失败不会导致整个bulk操作的失败，如果其中一个操作不管什么原因失败了，将会继续执行它后面剩下的操作。在bulk操作的返回信息中将提供每个操作的执行状态，因此你可以检查某个指定的操作是否失败了。</p>
 <blockquote>
 <p>本文简单介绍了Elasticsearch的基本概念、安装步骤、集群相关操作的探索以及对数据的修改介绍，由于篇幅过长，这里就强行截断一下，下面对数据的探索的内容见下一篇:<a href="http://rabbitgyk.com/2018/01/27/elasticsearch-user-guide-2/">Elasticsearch用户指南（二）</a>。</p>
