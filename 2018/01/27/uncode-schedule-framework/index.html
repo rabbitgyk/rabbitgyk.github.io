@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>标签: 故障 | rabbitGYK&#39;s blog</title>
+<title>分布式定时任务框架 Uncode Schedule | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,7 +37,11 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -136,36 +140,120 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content ">
-                    <h3> 
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="分布式定时任务框架 Uncode Schedule">
+            
+            分布式定时任务框架 Uncode Schedule
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            分布式定时任务
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
 
-    故障 
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>作为一个支付公司的项目组，经常会有很多对账功能（签约对账、支付订单对账、记账对账），这些都是以定时任务的形式实现，组内经常需要维护一些定时任务，在使用过程中主要关注定时任务的稳定性、健壮性和可控性，<strong>分布式定时任务+任务监控</strong>基本满足使用需求。</p>
+</blockquote>
+<h2 id="定时任务的现状"><a href="#定时任务的现状" class="headerlink" title="定时任务的现状"></a>定时任务的现状</h2><p>就定时任务来说，首先是操作系统层面一直支持的功能，所以我们的各种对定时任务的实现手段才能得以发挥。由于操作系统和编程语言种类繁多，本文中将重点从linux操作系统、java语言以及java生态中开源框架来介绍定时任务。</p>
+<p><strong>1. linux系统级的定时任务执行器：crontab</strong><br>这是一个系统级的定时器，具有灵活简单的特性，同时也是缺乏管理功能和分布式支持。一般的使用方法是，使用shell脚本调用业务实现jar包。</p>
+<p><strong>2. java语言中的定时器：java.util.Timer</strong><br>这是一个java语言内置的定时器，这是所有基于java语言的开源框架实现的基础。其中，典型的任务调度方法：</p>
+<pre><code>public void schedule(TimerTask task, long delay);
+public void schedule(TimerTask task, Date time);
+public void schedule(TimerTask task, long delay, long period);
+public void schedule(TimerTask task, Date firstTime, long period);
+public void scheduleAtFixedRate(TimerTask task, long delay, long period);
+public void scheduleAtFixedRate(TimerTask task, Date firstTime, long period);
+</code></pre><p><strong>3. java定时任务开源框架（常用）</strong><br>3.1. Quartz（java定时任务的标准）<br>3.2. spring task<br>在spring中实现定时任务有两种方式，一是spring对quartz进行了封装，二是独立实现了定时任务的调度器称为<code>spring task</code>。其中spring task相对较为简单，cron表达式不支持<code>L W</code>；而quartz不但完整支持cron表达式，而且具有很多高级特性，如JDBCJobStore（作业仓库）、集群模式。</p>
+<p><strong>4. 分布式定时任务开源框架</strong><br>4.1. Elastic-Job（当当网）<br>4.2. light-task-scheduler<br>4.3. clover<br>4.4. TBSchedule（阿里）<br>4.5. niubi-job<br>4.6. Uncode-Schedule<br>基于java的分布式定时任务的开源框架还是很多的，这里没有一一列举，有些框架设计的非常完善复杂，可根据具体使用场景选择适当的框架，当某些功能不符合你的预期的时候，可以去修改一下源代码实现自己想要的功能，这是开源框架的好处。</p>
+<p>根据我们所有定时任务的特点和实际运行需求，我选择了Uncode-Schedule框架，这个框架相对简单、灵活，并且修改源代码以满足特定需求相对容易。</p>
+<h2 id="分布式定时任务面临的问题"><a href="#分布式定时任务面临的问题" class="headerlink" title="分布式定时任务面临的问题"></a>分布式定时任务面临的问题</h2><p>对于分布式应用来说，一致性始终是首要问题，另外就是对任务和执行任务的机器的管理问题。</p>
+<p><strong>1. 一致性问题</strong><br>1.1. 一个任务不能同时在多台机器上执行<br>1.2. 当某一台执行任务的机器宕机时，该机器上的任务自动重新分配至其他机器<br>1.3. 任务的均衡分配<br>1.4. 心跳检测</p>
+<p><strong>2. 任务的管理和监控</strong><br>2.1. 任务的动态添加和删除<br>2.2. 控制执行任务的机器<br>2.3. 随时手动执行任务</p>
+<h2 id="Uncode-Schedule开源框架分析"><a href="#Uncode-Schedule开源框架分析" class="headerlink" title="Uncode-Schedule开源框架分析"></a>Uncode-Schedule开源框架分析</h2><p>Uncode-Schedule是一个实现分布式定时任务的开源框架，java语言实现，本章将从上面的几个问题入手分析该框架的实现机制。</p>
+<p><strong>1. 功能概述</strong><br>Uncode-Schedule是基于zookeeper的分布式任务调度组件，非常小巧，使用简单，开发时只需要引入jar包，不需要单独部署服务端。而且定时任务的实现方式和原始的spring/quartz task保持一致，所以普通的定时任务改造成分布式很方便。</p>
+<p>1.1. 它能够确保所有任务在集群中不重复，不遗漏的执行。<br>1.2. 单节点故障时，任务能够自动转移到其他节点继续执行。<br>1.3. 支持动态添加和删除任务。<br>1.4. 支持添加机器ip黑名单。<br>1.5. 支持手动执行任务。</p>
+<p><strong>2. 注意事项</strong><br>在使用Uncode-Schedule框架开发定时任务时，需要注意几个问题：<br>2.1. 开发的定时任务在业务要保证幂等性。主要是为了解决单点故障时，任务转移重复执行带来的问题。<br>2.2. 任务节点启动时必须保证zookeeper可用。<br>2.3. 任务节点运行期zookeeper集群不可用时任务节点保持可用前状态运行，当zookeeper集群恢复后，任务正常运行。<br>2.4. 手动执行任务时，需要选择在哪台机器执行。</p>
+<p><strong>3. 模块架构</strong><br>3.1. Uncode-Schedule分布式定时任务的设计结构如下图：<br><img src="/2018/01/27/uncode-schedule-framework/uncode-schedule-architecture.png" alt="Uncode-Schedule架构图"><br>zookeeper集群负责存储定时任务和机器的数据，起到存储数据和保持一致性的关键作用。在所有的执行任务的节点中有一个leader，它会负责任务的分配。任务的管理和监控平台可单独部署。</p>
+<p>3.2. 每一个任务节点的内部结构如下图：<br><img src="/2018/01/27/uncode-schedule-framework/worker-node.png" alt="worker node结构图"><br>执行任务的节点上支持的任务类型包括spring的封装的quartz任务和spring task；另外该框架还自定义了一种任务Uncode Task，实际上是一种由zookeeper存储调度信息的任务，最终还是由spring的调度器<code>ThreadPoolTaskScheduler</code>控制的，不过这种任务是可动态添加和删除的。</p>
+<p><strong>3. 使用方法</strong><br>Uncode-Schedule框架的使用方法是很简单的，而且我也没有对原作者的使用方法做修改，所以具体使用方法可参考github上的<a href="https://github.com/rabbitgyk/uncode-schedule" target="_blank" rel="noopener">README文档</a>。</p>
+<p>我根据对框架的功能完善，自己设计了一个任务的<a href="https://github.com/rabbitgyk/uncode-schedule-manage" target="_blank" rel="noopener">管理和监控平台</a>。主要在其中添加了手动执行的功能，其他的监控功能会进一步完善。</p>
+<p><strong>4. 源码分析</strong><br><a href="http://www.jianshu.com/p/4a7eb40f6852" target="_blank" rel="noopener">见下一篇文章</a>。</p>
 
+    </div>
 
-</h3>
-
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/19/deal-online-fault/">处理线上故障的技术和基础设施储备</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月19日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-由于最近出现了几次生产故障，处理的不是那么完美。于是leader组织了一次头脑风暴，讨论如何快速高效的处理生产故障问题，由此还引发了另外一个问题，如何有效地避免（或者说减少）生产故障的出现。本来打算好好地写一篇文章《软件开发运维中如...
-            </p> 
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
         </div>
-    </article>
- 
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/uncode-schedule-manage/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
 
 
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
 
 
 
