@@ -267,6 +267,7 @@ echo $JAVA_HOME
 [2016-09-16T14:17:56,732][INFO ][o.e.g.GatewayService     ] [6-bjhwl] recovered [0] indices into cluster_state
 [2016-09-16T14:17:56,748][INFO ][o.e.n.Node               ] [6-bjhwl] started
 ```
+
 不过分深入细节的话，我们可以看到名为`6-bjhwl`（这是一组不同的字符，视你的情况而定）的节点已经启动了，并且它自己被选举为单节点的集群中的master节点。此刻你不用担心master意味着什么，这里重要的事情是，我们已经在一个集群中启动了一个节点。
 
 正如前面所说的，我们可以覆盖集群和节点的名字，这个可以在启动Elasticsearch的命令中做到，命令如下：
@@ -508,7 +509,7 @@ POST /customer/external/_bulk?pretty
 </code></pre><p>注意上面的删除操作，在它的后面没有指定对应的源文档，因为删除操作仅需要被删除文档的ID。</p>
 <p>多个操作中的一个失败不会导致整个bulk操作的失败，如果其中一个操作不管什么原因失败了，将会继续执行它后面剩下的操作。在bulk操作的返回信息中将提供每个操作的执行状态，因此你可以检查某个指定的操作是否失败了。</p>
 <blockquote>
-<p>本文简单介绍了Elasticsearch的基本概念、安装步骤、集群相关操作的探索以及对数据的修改介绍，由于篇幅过长，这里就强行截断一下，下面对数据的探索的内容见下一篇翻译。</p>
+<p>本文简单介绍了Elasticsearch的基本概念、安装步骤、集群相关操作的探索以及对数据的修改介绍，由于篇幅过长，这里就强行截断一下，下面对数据的探索的内容见下一篇翻译:<a href="http://rabbitgyk.com/2018/01/27/elasticsearch-user-guide-2/">Elasticsearch用户指南（二）</a>。</p>
 </blockquote>
 
     </div>
