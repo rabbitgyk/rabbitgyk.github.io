@@ -1,0 +1,728 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Elasticsearch用户指南（二） | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Elasticsearch用户指南（二）">
+            
+            Elasticsearch用户指南（二）
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>工具</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            Elasticsearch
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>翻译作品，水平有限，如有错误，烦请留言指正。原文请见 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html#getting-started" target="_blank" rel="noopener">官网英文文档</a></p>
+</blockquote>
+<p><img src="/2018/01/27/elasticsearch-user-guide-2/elasticsearch.png" alt="Elasticsearch"></p>
+<h3 id="5-探索数据"><a href="#5-探索数据" class="headerlink" title="5 探索数据"></a>5 探索数据</h3><h4 id="样本数据集"><a href="#样本数据集" class="headerlink" title="样本数据集"></a>样本数据集</h4><p>现在我们已经了解了一些基本知识，让我们研究一下更真实的数据集。我已经准备好了一个虚构的JSON文档示例，它是一个客户的银行账户信息。每个文档都有下面的模式：</p>
+<pre><code>{
+    &quot;account_number&quot;: 0,
+    &quot;balance&quot;: 16623,
+    &quot;firstname&quot;: &quot;Bradshaw&quot;,
+    &quot;lastname&quot;: &quot;Mckenzie&quot;,
+    &quot;age&quot;: 29,
+    &quot;gender&quot;: &quot;F&quot;,
+    &quot;address&quot;: &quot;244 Columbus Place&quot;,
+    &quot;employer&quot;: &quot;Euron&quot;,
+    &quot;email&quot;: &quot;bradshawmckenzie@euron.com&quot;,
+    &quot;city&quot;: &quot;Hobucken&quot;,
+    &quot;state&quot;: &quot;CO&quot;
+}
+</code></pre><p>处于好奇，这个数据我是从这个 <a href="http://www.json-generator.com/" target="_blank" rel="noopener">www.json-generator.com/
+</a> 网站上生成的，因此请忽略其中的数值和语义，这些都是随机生成的。</p>
+<h4 id="加载样本数据集"><a href="#加载样本数据集" class="headerlink" title="加载样本数据集"></a>加载样本数据集</h4><p>你可以从<a href="https://raw.githubusercontent.com/elastic/elasticsearch/master/docs/src/test/resources/accounts.json" target="_blank" rel="noopener">这里</a>（accounts.json）下载样本数据集，将其解压到当前目录，然后使用下面的命令加载到集群中：</p>
+<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &#39;localhost:9200/bank/account/_bulk?pretty&amp;refresh&#39; --data-binary &quot;@accounts.json&quot;
+curl &#39;localhost:9200/_cat/indices?v&#39;
+</code></pre><p>然后，响应如下：</p>
+<pre><code>health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   bank  l7sSYV2cQXmu6_4rJWVIww   5   1       1000            0    128.6kb        128.6kb
+</code></pre><p>这就意味着刚才成功地将1000个文档编入bank索引（account 类型下面）。</p>
+<h4 id="搜索API"><a href="#搜索API" class="headerlink" title="搜索API"></a>搜索API</h4><p>现在让我们开始使用一些简单的搜索，有两个基本的方法执行搜索：一个是通过 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html" target="_blank" rel="noopener">REST request URI</a> 发送搜索参数，另一个是通过 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html" target="_blank" rel="noopener">REST request body</a> 发送搜索参数；Request body方式更有表现力，允许你使用可读性比较好JSON格式定义你的搜索。我们尝试一个Request URI的方式，但是教程的其他部分我们将只使用Request Body方式。</p>
+<p>搜索的REST API可以通<code>_search</code>端点来访问，下面是获取bank索引下的所有文档的例子：</p>
+<pre><code>GET /bank/_search?q=*&amp;sort=account_number:asc&amp;pretty
+</code></pre><p>让我们首先剖析一下这个搜索调用，我们正在搜索bank索引（<code>_search</code>端点），参数<code>q=*</code>命令Elasticsearch匹配这个索引下的所有文档，参数<code>sort=account_number:asc</code>表明使用每个文档的<code>account_number</code>字段进行升序排序，另外参数<code>pretty</code>告诉Elasticsearch返回美化后的JSON结果。<br>然后，响应如下（展示部分）：</p>
+<pre><code>{
+  &quot;took&quot; : 63,
+  &quot;timed_out&quot; : false,
+  &quot;_shards&quot; : {
+    &quot;total&quot; : 5,
+    &quot;successful&quot; : 5,
+    &quot;failed&quot; : 0
+  },
+  &quot;hits&quot; : {
+    &quot;total&quot; : 1000,
+    &quot;max_score&quot; : null,
+    &quot;hits&quot; : [ {
+      &quot;_index&quot; : &quot;bank&quot;,
+      &quot;_type&quot; : &quot;account&quot;,
+      &quot;_id&quot; : &quot;0&quot;,
+      &quot;sort&quot;: [0],
+      &quot;_score&quot; : null,
+      &quot;_source&quot; : {&quot;account_number&quot;:0,&quot;balance&quot;:16623,&quot;firstname&quot;:&quot;Bradshaw&quot;,&quot;lastname&quot;:&quot;Mckenzie&quot;,&quot;age&quot;:29,&quot;gender&quot;:&quot;F&quot;,&quot;address&quot;:&quot;244 Columbus Place&quot;,&quot;employer&quot;:&quot;Euron&quot;,&quot;email&quot;:&quot;bradshawmckenzie@euron.com&quot;,&quot;city&quot;:&quot;Hobucken&quot;,&quot;state&quot;:&quot;CO&quot;}
+    }, {
+      &quot;_index&quot; : &quot;bank&quot;,
+      &quot;_type&quot; : &quot;account&quot;,
+      &quot;_id&quot; : &quot;1&quot;,
+      &quot;sort&quot;: [1],
+      &quot;_score&quot; : null,
+      &quot;_source&quot; : {&quot;account_number&quot;:1,&quot;balance&quot;:39225,&quot;firstname&quot;:&quot;Amber&quot;,&quot;lastname&quot;:&quot;Duke&quot;,&quot;age&quot;:32,&quot;gender&quot;:&quot;M&quot;,&quot;address&quot;:&quot;880 Holmes Lane&quot;,&quot;employer&quot;:&quot;Pyrami&quot;,&quot;email&quot;:&quot;amberduke@pyrami.com&quot;,&quot;city&quot;:&quot;Brogan&quot;,&quot;state&quot;:&quot;IL&quot;}
+    }, ...
+    ]
+  }
+}
+</code></pre><p>对于响应，我们看一下下面几个部分：</p>
+<ul>
+<li><code>took</code> Elasticsearch执行搜索的耗时，以毫秒为单位；</li>
+<li><code>timed_out</code> 告诉我们搜索是否超时；</li>
+<li><code>_shards</code> 告诉我们多少个分片被搜索到，并且显示搜索成功和失败的分片数；</li>
+<li><code>hits</code> 搜索结果；</li>
+<li><code>hits.total</code> 匹配搜索标准的文档总数；</li>
+<li><code>hits.hits</code> 搜索结果的实际阵列（默认前10个文档）；</li>
+<li><code>hits.sort</code> 搜索结果中的排序key（如果按照分数排序，将会缺失）；</li>
+<li><code>hits._score</code> 和 <code>max_score</code> 现在忽略这写字段；</li>
+</ul>
+<p>下面是一个代替上面全部搜索方法的Request Body方法：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_all&quot;: {} },
+  &quot;sort&quot;: [
+    { &quot;account_number&quot;: &quot;asc&quot; }
+  ]
+}
+</code></pre><p>与上面的URI中的<code>q=*</code>相比的不同点是，我们提交了一个JSON格式的查询请求到<code>_search</code> API。在下一个部分我们将讨论JSON的查询。</p>
+<p>要明白一件重要的事，Elasticsearch一旦返回搜索结果，搜索请求就完全结束了，它不会保持任何服务端的资源，也不会维持搜索结果中的游标。这和其他平台是完全不同的，例如SQL平台，开始时可以获取查询结果前面的部分子集，如果你想获取（或者通过分页查询）结果的其余部分，可以通过某种服务端游标继续请求服务器。</p>
+<h4 id="介绍查询语言"><a href="#介绍查询语言" class="headerlink" title="介绍查询语言"></a>介绍查询语言</h4><p>Elasticsearch提供了JSON格式的领域专用的语言，你可以使用它来执行查询，具体参考 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html" target="_blank" rel="noopener">Query DSL</a>。该查询语言是很全面的，乍看一下可能很吓人，实际上学习它的最好的方法是从一些基本的例子开始。</p>
+<p>回到我们的最后一个例子，执行这个查询：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_all&quot;: {} }
+}
+</code></pre><p>剖析一下上面的调用请求，<code>query</code>部分告诉我们查询的定义是什么，简单的说，<code>match_all</code>是我们想要执行的查询类型，<code>match_all</code>查询是搜索指定索引的全部文档。</p>
+<p>除了<code>query</code>参数以外，我们还可以通过其它参数来干预搜索结果，在上一部分的例子中我们使用过<code>sort</code>，这里我们使用一下<code>size</code>：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_all&quot;: {} },
+  &quot;size&quot;: 1
+}
+</code></pre><p>注意，如果<code>size</code>不指定的话，默认是10.</p>
+<p>下面的例子是一个 <code>match_all</code> 的搜索，然后返回从11到20的文档：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_all&quot;: {} },
+  &quot;from&quot;: 10,
+  &quot;size&quot;: 10
+}
+</code></pre><p><code>from</code>参数（0为基础）指定从索引的哪个文档开始，<code>size</code>参数指定返回从from参数开始的多少个文档。这个特性在实现搜索结果的分页查询时是很有用的。注意，如果<code>from</code>不指定，默认是0.</p>
+<p>下面的例子是一个<code>match_all</code>的搜索，然后按照账户余额进行降序排列，然后返回前10（默认）个文档。</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_all&quot;: {} },
+  &quot;sort&quot;: { &quot;balance&quot;: { &quot;order&quot;: &quot;desc&quot; } }
+}
+</code></pre><h4 id="搜索操作"><a href="#搜索操作" class="headerlink" title="搜索操作"></a>搜索操作</h4><p>现在我们已经看到了一些基本的搜索参数，让我们更深入地挖掘一下Query DSL. 让我们首先看一下返回的文档的字段，默认情况下，作为所有搜索的一部分返回完整的JSON文档，这个被称作资源（在搜索结果中的hits中的<code>_source</code>字段）。如果我们不想要返回的整个资源文档，我们可以仅请求返回的资源中的部分字段。</p>
+<p>下面的例子展示了如何搜索返回两个字段 <code>account_number</code> 和 <code>balance</code> （<code>_source</code>内部）：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_all&quot;: {} },
+  &quot;_source&quot;: [&quot;account_number&quot;, &quot;balance&quot;]
+}
+</code></pre><p>注意，上面的例子仅仅是减少了<code>_source</code>的字段，它仍然仅返回一个名叫<code>_source</code>的字段，但是在它只包含<code>account_number</code> 和 <code>balance</code> 两个字段。</p>
+<p>如果你有SQL背景，这个在概念上有点类似于<code>SQL SELECT FROM</code>的字段列表。</p>
+<p>现在让我们把注意力转到查询部分，前面我们已经看到<code>match_all</code>查询是如何匹配所有文档的，现在让我们介绍一个新的查询叫 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html" target="_blank" rel="noopener"><code>match</code> query</a>，可以认为它是基本字段的搜索查询（例如，指定一个字段或者多个字段来完成一次搜索）。</p>
+<p>下面的例子是返回账户编号为20的文档：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match&quot;: { &quot;account_number&quot;: 20 } }
+}
+</code></pre><p>下面的例子是返回地址包含“mill”的所有账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match&quot;: { &quot;address&quot;: &quot;mill&quot; } }
+}
+</code></pre><p>下面的例子是返回地址包含“mill”或者“lane”的所有账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match&quot;: { &quot;address&quot;: &quot;mill lane&quot; } }
+}
+</code></pre><p>下面的例子是<code>match</code>的一个变形（<code>match_phrase</code>），它返回地址中包含短语“mill lane”的所有账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: { &quot;match_phrase&quot;: { &quot;address&quot;: &quot;mill lane&quot; } }
+}
+</code></pre><p>现在让我介绍<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html" target="_blank" rel="noopener">bool(ean) query</a>。<code>bool</code>查询允许我们使用bool逻辑将小的查询组合成大查询。</p>
+<p>下面的例子是组合两个<code>match</code>查询，然后返回在地址中包含“mill” 和 “lane”的所有账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: [
+        { &quot;match&quot;: { &quot;address&quot;: &quot;mill&quot; } },
+        { &quot;match&quot;: { &quot;address&quot;: &quot;lane&quot; } }
+      ]
+    }
+  }
+}
+</code></pre><p>在上面的例子中，<code>bool must</code>分句指定所有查询条件必须是“true”才算匹配的文档。</p>
+<p>与此相反，下面的例子组合两个<code>match</code>查询，返回在地址中包含“mill” 或 “lane”的所有账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;should&quot;: [
+        { &quot;match&quot;: { &quot;address&quot;: &quot;mill&quot; } },
+        { &quot;match&quot;: { &quot;address&quot;: &quot;lane&quot; } }
+      ]
+    }
+  }
+}
+</code></pre><p>在上面的例子中，<code>bool should</code>分句指定一个查询列表，其中必须有一个是“true”的文档才算被匹配。</p>
+<p>下面的例子组合两个<code>match</code>查询，返回在地址中既不包含“mill” 也不包含 “lane”的所有账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must_not&quot;: [
+        { &quot;match&quot;: { &quot;address&quot;: &quot;mill&quot; } },
+        { &quot;match&quot;: { &quot;address&quot;: &quot;lane&quot; } }
+      ]
+    }
+  }
+}
+</code></pre><p>在上面的例子中，<code>must_not</code>分句指定一个查询列表，其中必须都不是“true”的文档才算被匹配。</p>
+<p>我们可以同时在一个<code>bool</code>查询中组合<code>must</code>, <code>should</code> 和 <code>must_not</code>分句。此外，我们可以在任何<code>bool</code>分句中组合<code>bool</code>查询，以便模拟任何复杂的多级bool逻辑。</p>
+<p>下面的例子返回年龄是40岁但不住在ID（aho）的所有人的账户：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: [
+        { &quot;match&quot;: { &quot;age&quot;: &quot;40&quot; } }
+      ],
+      &quot;must_not&quot;: [
+        { &quot;match&quot;: { &quot;state&quot;: &quot;ID&quot; } }
+      ]
+    }
+  }
+}
+</code></pre><h4 id="过滤操作"><a href="#过滤操作" class="headerlink" title="过滤操作"></a>过滤操作</h4><p>在前面的部分我们跳过了一个小细节所谓的文档得分（也就是搜索结果中的<code>_score</code>字段）。得分是数值型的，它是文档和我们指定的搜索查询匹配程度的相对度量。得分越高，文档越相关；得分越低，文档越不相关。</p>
+<p>但是查询并不总是需要得分，尤其是它们仅被用作文档集合的过滤器时。Elasticsearch探测到这种情况会自动地优化查询的执行，防止计算无用的得分。</p>
+<p>在前面我们介绍的 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html" target="_blank" rel="noopener">bool query</a> 也是支持<code>filter</code>分句的，它允许使用查询来限制其它分句匹配的文档，而不改变得分的计算。作为一个例子，我们来介绍一下<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html" target="_blank" rel="noopener"><code>range</code> query</a> ，它允许我们使用一个值域来过滤文档，这通常被用于数值型和日期型的过滤器。</p>
+<p>下面的例子使用bool 查询获取余额在20000和30000之间的所有账户，换句话说，我们是想找到余额大于等于20000并且小于等于30000的账户。</p>
+<pre><code>GET /bank/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: { &quot;match_all&quot;: {} },
+      &quot;filter&quot;: {
+        &quot;range&quot;: {
+          &quot;balance&quot;: {
+            &quot;gte&quot;: 20000,
+            &quot;lte&quot;: 30000
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>仔细分析一下上面的例子，bool查询包括一个<code>match all</code>查询（查询的一部分）和一个<code>range</code> 查询（过滤的一部分）。我们可以将其它任何查询替换成查询和过滤组成。在上面的例子中，range查询是很有意义的，因为所有在范围内的文档都是相等的，没有哪个文档比另外的文档更相关。</p>
+<p>除了 <code>match_all</code>, <code>match</code>, <code>bool</code>, and <code>range</code> 查询之外，还有很多其它类型的查询，我们不会在这里讨论它们。因为我们对它们的工作原理有了基本的理解，将这些知识应用于其它类型的查询，学习和使用它们都不会太难。</p>
+<h4 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h4><p>聚合提供了对数据进行分组、提取统计结果的能力。想明白聚合的最简单的方法是将其大致等同于SQL分组和SQL的聚合函数。在Elasticsearch中，可以执行搜索获取hits，同时也能在同一个响应中返回区别于hits的聚合结果。从这一点来说，它是很强大和高效的，你可以执行查询和多聚合操作，并且这些操作结果一起返回，使用这样简单的API避免了网络的切换。</p>
+<p>首先，下面的例子是将所有账户按照州来分组，然后返回按照数量的降序排列的前10个州（默认）：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;size&quot;: 0,
+  &quot;aggs&quot;: {
+    &quot;group_by_state&quot;: {
+      &quot;terms&quot;: {
+        &quot;field&quot;: &quot;state.keyword&quot;
+      }
+    }
+  }
+}
+</code></pre><p>在SQL中，上面的聚合在概念上类似于：</p>
+<pre><code>SELECT state, COUNT(*) FROM bank GROUP BY state ORDER BY COUNT(*) DESC
+</code></pre><p>然后，响应如下（部分展示）：</p>
+<pre><code>{
+  &quot;took&quot;: 29,
+  &quot;timed_out&quot;: false,
+  &quot;_shards&quot;: {
+    &quot;total&quot;: 5,
+    &quot;successful&quot;: 5,
+    &quot;failed&quot;: 0
+  },
+  &quot;hits&quot; : {
+    &quot;total&quot; : 1000,
+    &quot;max_score&quot; : 0.0,
+    &quot;hits&quot; : [ ]
+  },
+  &quot;aggregations&quot; : {
+    &quot;group_by_state&quot; : {
+      &quot;doc_count_error_upper_bound&quot;: 20,
+      &quot;sum_other_doc_count&quot;: 770,
+      &quot;buckets&quot; : [ {
+        &quot;key&quot; : &quot;ID&quot;,
+        &quot;doc_count&quot; : 27
+      }, {
+        &quot;key&quot; : &quot;TX&quot;,
+        &quot;doc_count&quot; : 27
+      }, {
+        &quot;key&quot; : &quot;AL&quot;,
+        &quot;doc_count&quot; : 25
+      }, {
+        &quot;key&quot; : &quot;MD&quot;,
+        &quot;doc_count&quot; : 25
+      }, {
+        &quot;key&quot; : &quot;TN&quot;,
+        &quot;doc_count&quot; : 23
+      }, {
+        &quot;key&quot; : &quot;MA&quot;,
+        &quot;doc_count&quot; : 21
+      }, {
+        &quot;key&quot; : &quot;NC&quot;,
+        &quot;doc_count&quot; : 21
+      }, {
+        &quot;key&quot; : &quot;ND&quot;,
+        &quot;doc_count&quot; : 21
+      }, {
+        &quot;key&quot; : &quot;ME&quot;,
+        &quot;doc_count&quot; : 20
+      }, {
+        &quot;key&quot; : &quot;MO&quot;,
+        &quot;doc_count&quot; : 20
+      } ]
+    }
+  }
+}
+</code></pre><p>我们可以看出在<code>ID</code>（Idaho）州由27个账户，在<code>TX</code>（Texas）州有个27个账户，在<code>AL</code>（Alabama）州有25个账户，等等。</p>
+<p>注意上面我们设置<code>size=0</code>是为了不展示搜索结果，因为我们仅想在响应中看到聚合结果。</p>
+<p>在前面的聚合操作的基础上，下面的例子计算了每个州的账户余额平均值（同样仅展示账户总数降序排列的前10个州）：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;size&quot;: 0,
+  &quot;aggs&quot;: {
+    &quot;group_by_state&quot;: {
+      &quot;terms&quot;: {
+        &quot;field&quot;: &quot;state.keyword&quot;
+      },
+      &quot;aggs&quot;: {
+        &quot;average_balance&quot;: {
+          &quot;avg&quot;: {
+            &quot;field&quot;: &quot;balance&quot;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>请注意我们是如何将<code>average_balance</code>聚合嵌套在<code>group_by_state</code>聚合中的，这是所有聚合中常见的模式，为了从数据中提取总结你需要的信息，可以嵌套聚合到任意其它的聚合之中。</p>
+<p>在前面的聚合的基础上，现在让我们按照余额的平均值进行降序排列：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;size&quot;: 0,
+  &quot;aggs&quot;: {
+    &quot;group_by_state&quot;: {
+      &quot;terms&quot;: {
+        &quot;field&quot;: &quot;state.keyword&quot;,
+        &quot;order&quot;: {
+          &quot;average_balance&quot;: &quot;desc&quot;
+        }
+      },
+      &quot;aggs&quot;: {
+        &quot;average_balance&quot;: {
+          &quot;avg&quot;: {
+            &quot;field&quot;: &quot;balance&quot;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>下面的例子演示了如何通过年龄组（ 20-29, 30-39, 和 40-49）进行分组，然后按照性别分组，最后获得在每个年龄组每个性别中账户余额的平均值：</p>
+<pre><code>GET /bank/_search
+{
+  &quot;size&quot;: 0,
+  &quot;aggs&quot;: {
+    &quot;group_by_age&quot;: {
+      &quot;range&quot;: {
+        &quot;field&quot;: &quot;age&quot;,
+        &quot;ranges&quot;: [
+          {
+            &quot;from&quot;: 20,
+            &quot;to&quot;: 30
+          },
+          {
+            &quot;from&quot;: 30,
+            &quot;to&quot;: 40
+          },
+          {
+            &quot;from&quot;: 40,
+            &quot;to&quot;: 50
+          }
+        ]
+      },
+      &quot;aggs&quot;: {
+        &quot;group_by_gender&quot;: {
+          &quot;terms&quot;: {
+            &quot;field&quot;: &quot;gender.keyword&quot;
+          },
+          &quot;aggs&quot;: {
+            &quot;average_balance&quot;: {
+              &quot;avg&quot;: {
+                &quot;field&quot;: &quot;balance&quot;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre><p>还有很多其它的聚合功能，这里我们就不详细一一介绍了，如果你想进一步学习聚合的操作， <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html" target="_blank" rel="noopener">aggregations reference guide</a> 是一个不错的参考文档。</p>
+<h3 id="6-结论"><a href="#6-结论" class="headerlink" title="6 结论"></a>6 结论</h3><p>Elasticsearch是一个既简单又复杂的产品。到目前为止，我们已经了解了它的基本原理，如何查看它的内部，如何使用一些REST API操作它。我希望这个教程让你更好地理解了Elasticsearch是什么，更重要是，激发你去进一步探索Elasticsearch的其余特性。</p>
+<blockquote>
+<p>Elasticsearch的起步教程终于翻译完了，这个翻译文档只是入门级的介绍Elasticsearch，希望能对你的学习有所帮助。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/elasticsearch-user-guide/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">17</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 16.67px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 13.33px;">Elasticsearch</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>

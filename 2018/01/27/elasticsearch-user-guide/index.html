@@ -1,0 +1,689 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Elasticsearch用户指南（一） | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Elasticsearch用户指南（一）">
+            
+            Elasticsearch用户指南（一）
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>工具</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            Elasticsearch
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>翻译作品，水平有限，如有错误，烦请留言指正。原文请见 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html#getting-started" target="_blank" rel="noopener">官网英文文档</a></p>
+</blockquote>
+<p><img src="/2018/01/27/elasticsearch-user-guide/elasticsearch.png" alt="Elasticsearch"></p>
+<h2 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h2><p>Elasticsearch 是一个大规模开源的全文搜索和分析引擎，你可以用它来快速（接近实时）存储、搜索和分析大量的数据。通常被用作基础的引擎，或者有复杂的搜索功能和要求的应用的技术支撑。</p>
+<p>这儿是一些Elasticsearch简单的使用场景：</p>
+<ul>
+<li><p>在线网站的数据存储，允许你的客户对你售卖的产品进行搜索的场景。这时，你可以使用Elasticsearch存储你的全部产品信息分类和库存，然后提供搜索和自动填充建议。</p>
+</li>
+<li><p>你想做日志和事务数据的收集，然后对它们进行分析和挖掘，期待找到某种趋势，或者进行统计、归纳和异常分析。在这种情况下，你可以使用logstash（ Elasticsearch/Logstash/Kibana 栈的一部分）收集、汇总和解析数据，然后logstash将这些数据传送到Elasticsearch中，一旦数据进入Elasticsearch中，你就可以使用搜索和聚合来挖掘任何你想要的信息。</p>
+</li>
+<li><p>价格预警平台，允许精打细算的客户指定特殊的规则，比如我对某个特定的电子产品比较感兴趣，在下个月任意一个供应商的价格下降到指定价格，然后提醒我。在这种情况下，你可以把供货商的价格推送到Elasticsearch中，利用它的反向搜索（过滤）能力匹配用户查询的价格走势，最后将已经发现的匹配项发送给客户。</p>
+</li>
+<li><p>你有分析或者商业智能的需求，在大量数据（数百万或者数十亿的记录）中想做个快速的调查、分析、可视化和询问特殊问题。在这种情况下，你可以使用Elasticsearch存储数据，使用kibana构建自定义的仪表盘来展示你关心的数据。此外，你还可以使用Elasticsearch的聚合功能来做复杂的商业智能分析与数据查询。</p>
+</li>
+</ul>
+<p>接下来的教程，我将会引导你完成Elasticsearch的获取、安装和运行，然后稍微深入一点，介绍一些基本操作，比如建立索引、搜索和修改你的数据。在教程的最后你应该对Elasticsearch有一个很好的认识，它是什么，它是怎么工作的。无论是构建复杂的搜索程序还是从你的数据中挖掘情报，在如何使用Elasticsearch方面，希望你能受到启发。</p>
+<h3 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1 基本概念"></a>1 基本概念</h3><p>这里有一些Elasticsearch的主要核心概念，在开始的时候就理解了这些概念，对于你的学习过程有非常大的帮助。</p>
+<h4 id="准实时"><a href="#准实时" class="headerlink" title="准实时"></a>准实时</h4><p>Elasticsearch是一个准实时的搜索平台。意思是从你创建一个文档的索引到这个索引可以被搜索只有很小延迟（通常是1秒）。</p>
+<h4 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h4><p>一个集群是一个或者多个节点（服务器）的集合，它们共同拥有所有的数据，并且提供跨节点的索引和搜索能力。一个集群由一个唯一的名字确定，默认情况下是“elasticsearch”，这个名字是很重要的，因为一个节点仅可能是一个集群的一部分，节点加入到哪个集群是根据这个名字来判断的。</p>
+<p>一定不要在不同的环境使用相同的集群名称，否则你可能将节点加入到错误的集群中，例如你可以分别在开发环境、预备环境和生产环境使用<code>logging-dev</code>, <code>logging-stage</code> 和 <code>logging-prod</code>。</p>
+<p>注意，在一个集群中只有一个节点也是有效的和非常好的。此外，你可以有多个独立的集群，如果它们的有各自唯一的集群名字。</p>
+<h4 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h4><p>一个节点是一台服务器，也是一个集群的一部分，存储你的数据，参与提供集群的索引和搜索能力。就像集群一样，节点也是由一个名字唯一确定的，这个名字默认是一个随机的UUID，它是在节点启动的时候分配的。如果你不想要默认的名字，你可以随意定义你的节点名称。这个名字在集群的管理上显得很重要，他可以让你确定地知道在elasticsearch集群中的节点对应网络中的哪一台服务器。</p>
+<p>一个节点可以通过配置集群名称加入到任意的集群中，默认情况下，每个节点都被设置加入到一个名叫<code>elasticsearch</code>的集群中，这意味着，如果你在一个网络中（服务器之间能够彼此互相发现）启动大量这样的节点，它们将自动的形成一个集群，名叫<code>elasticsearch</code>。</p>
+<p>在一个集群中你可以有任意多的节点。此外，如果在当前节点运行的网络中没有其他的 Elasticsearch 的节点，只启动一个节点，它将会形成一个新的单节点集群，名叫<code>elasticsearch</code>。</p>
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>索引是具有相似特性的文档的集合，例如，你可以为客户数据建立一个索引，你也可以为产品类数据建立索引，还有订单数据也可以建立索引。一个索引都有一个特定的名字（必需为小写）标识，在对索引的文档执行索引、搜索、更新和删除操作时，该名称用于指定索引。</p>
+<p>在一个集群中，你可以定义任意多的索引。</p>
+<h4 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h4><p>在一个索引中，你可以定义一个或者多个类型，类型是索引的逻辑类/分区，它的语义完全由你决定。一般来说，将一组具有公共字段的文档定义为一种类型。例如，假设你在运行一个博客平台，你的所有数据都存储在一个索引中，在这个索引中你可能为用户数据定义一个类型，博客数据定义另一个类型，注释数据为另一个类型。</p>
+<h4 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h4><p>文档是可以被索引的信息的基本单位。例如，你可以为一个单独的客户数据建立一个文档，一个单独的产品也可以建立一个文档，还有一个订单文档。这些文档是用JSON格式的数据来表示的，这是一种在互联网上无处不在的数据交互格式。</p>
+<p>在一个索引/类型中，你可以存储尽可能多的文档。注意，尽管一个文档实际是存储在索引中的，但是实际上你必须将文档分配到一个索引中的一个类型。</p>
+<h4 id="分片-amp-备份"><a href="#分片-amp-备份" class="headerlink" title="分片&amp;备份"></a>分片&amp;备份</h4><p>一个索引可以存储大量的数据，这些数据可能超过单个节点硬盘限制，例如，一个存储了十亿文档的索引占了1TB的磁盘空间，可能不太适合存储在一个节点的硬盘上，或者说单个节点服务于搜索请求太慢了。</p>
+<p>为了解决这个问题，Elasticsearch提供了将索引细分为多块的能力，这些块被称为“分片”。在你创建索引的时候，可以简单地定义所需数目的分片，每一个分片本身是一个功能全面的、独立的“索引”，它可以被托管在集群中的任意节点。</p>
+<p>索引分片有两个原因是非常重要的：</p>
+<ul>
+<li>你可以水平拆分/缩放存储数据卷。</li>
+<li>你可以分布式或者并行地执行跨分片（可能存储在多个节点上）的操作，因此可以提高性能和吞吐量。</li>
+</ul>
+<p>分片的分布机制和分片的文档是如何聚集在一起实现一次用户的搜索请求，这些完全都是由Elasticsearch管理的，对用户来说是透明的。</p>
+<p>在网络/云环境中随时都有可能失败，在一个分片/节点不知原因地掉线或者消失的情况下，故障转移机制还是非常有用的，强烈推荐。为此，Elasticsearch允许你为索引的分片创建一个或多个副本，这就是所谓的副本分片，或者简称为备份。</p>
+<p>备份有两个原因是非常重要的：</p>
+<ul>
+<li>在分片或者节点故障的情况下，它提供了高可用性。正因为这一点，注意一个副本分片从来不会被分配和主分片（copy的来源节点）在同一个节点上，这一点是很重要的。</li>
+<li>它能提高你的搜索数据量和吞吐量，因为搜索可以并行地在多个副本上执行。</li>
+</ul>
+<p>总结一下，一个索引能分成多个分片，一个索引能被复制零（无备份）或多次。一旦复制了之后，每个索引都有主分片（拷贝的来源分片）和副分片（主分片的拷贝）。一个索引的分片和副本的数量都可以在索引创建的时候定义，在索引创建之后，你可以随时动态的改变副本的数量，但是你不能事后修改分片的数量。</p>
+<p>默认情况下，在Elasticsearch中的每个索引被分为5个主分片和1个副本，这就意味着在你的集群中至少有两个节点，你的索引将有5个主分片和另外5个副分片（一个完整的副本），每个索引总共10个分片。</p>
+<blockquote>
+<p>注意，每一个Elasticsearch分片都是一个Lucene索引，在一个单独的Lucene索引中拥有的文档数量是有最大值的，根据<code>LUCENE-5843</code>中介绍，这个限制是2,147,483,519 (= Integer.MAX_VALUE - 128)个文档。你可以使用api <code>_cat/shards</code> 来监控分片的大小。</p>
+</blockquote>
+<p>既然如此，我们就开始有趣的下一part吧。</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2 安装"></a>2 安装</h3><p>Elasticsearch要求java 8 以上，在写该文档时，建议你使用oracle的JDK版本1.8.0_131，关于java在各个平台的安装过程这里就不详细介绍了，在oracle的官网上能够找到oracle推荐的安装文档，我只想说，在你安装Elasticsearch之前，请检查你的当前运行的java版本（根据需要安装或升级java）：</p>
+<pre><code>java -version
+echo $JAVA_HOME
+</code></pre><p>如果你已经安装了java，我们就可以开始下载和运行Elasticsearch了。在 <a href="http://www.elastic.co/downloads" target="_blank" rel="noopener">www.elastic.co/downloads
+</a>这个网址上可以下载到可用的二进制包，还有过去发行的其它版本的包。对于每一个发行版本，你都可以选择<code>zip</code>或者<code>tar</code>压缩包，还有<code>DEB</code>和<code>RPM</code>包。为了简单起见，我们以tar包为例。</p>
+<p>让我首先使用下面的命令下载Elasticsearch5.4.1版本的tar文件（windows用户应该下载zip包）：</p>
+<pre><code>curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.1.tar.gz
+</code></pre><p>然后，使用下面的命令解压它（windows用户应该使用unzip来解压zip包）：</p>
+<pre><code>tar -xvf elasticsearch-5.4.1.tar.gz
+</code></pre><p>解压完成之后，将会在当前目录产生大量的文件和文件夹，然后我们进入到bin目录下，命令如下：</p>
+<pre><code>cd elasticsearch-5.4.1/bin
+</code></pre><p>现在我们可以准备启动这个节点和单节点集群了（windows用户应该运行.bat文件）：</p>
+<pre><code>./elasticsearch
+</code></pre><p>如果一切顺利的话，你将看到很多信息输出，像下面这样：</p>
+<pre><code>[2016-09-16T14:17:51,251][INFO ][o.e.n.Node               ] [] initializing ...
+[2016-09-16T14:17:51,329][INFO ][o.e.e.NodeEnvironment    ] [6-bjhwl] using [1] data paths, mounts [[/ (/dev/sda1)]], net usable_space [317.7gb], net total_space [453.6gb], spins? [no], types [ext4]
+[2016-09-16T14:17:51,330][INFO ][o.e.e.NodeEnvironment    ] [6-bjhwl] heap size [1.9gb], compressed ordinary object pointers [true]
+[2016-09-16T14:17:51,333][INFO ][o.e.n.Node               ] [6-bjhwl] node name [6-bjhwl] derived from node ID; set [node.name] to override
+[2016-09-16T14:17:51,334][INFO ][o.e.n.Node               ] [6-bjhwl] version[5.4.1], pid[21261], build[f5daa16/2016-09-16T09:12:24.346Z], OS[Linux/4.4.0-36-generic/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/1.8.0_60/25.60-b23]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [aggs-matrix-stats]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [ingest-common]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-expression]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-groovy]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-mustache]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [lang-painless]
+[2016-09-16T14:17:51,967][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [percolator]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [reindex]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [transport-netty3]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded module [transport-netty4]
+[2016-09-16T14:17:51,968][INFO ][o.e.p.PluginsService     ] [6-bjhwl] loaded plugin [mapper-murmur3]
+[2016-09-16T14:17:53,521][INFO ][o.e.n.Node               ] [6-bjhwl] initialized
+[2016-09-16T14:17:53,521][INFO ][o.e.n.Node               ] [6-bjhwl] starting ...
+[2016-09-16T14:17:53,671][INFO ][o.e.t.TransportService   ] [6-bjhwl] publish_address {192.168.8.112:9300}, bound_addresses {{192.168.8.112:9300}
+[2016-09-16T14:17:53,676][WARN ][o.e.b.BootstrapCheck     ] [6-bjhwl] max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]
+[2016-09-16T14:17:56,731][INFO ][o.e.h.HttpServer         ] [6-bjhwl] publish_address {192.168.8.112:9200}, bound_addresses {[::1]:9200}, {192.168.8.112:9200}
+[2016-09-16T14:17:56,732][INFO ][o.e.g.GatewayService     ] [6-bjhwl] recovered [0] indices into cluster_state
+[2016-09-16T14:17:56,748][INFO ][o.e.n.Node               ] [6-bjhwl] started
+```
+不过分深入细节的话，我们可以看到名为`6-bjhwl`（这是一组不同的字符，视你的情况而定）的节点已经启动了，并且它自己被选举为单节点的集群中的master节点。此刻你不用担心master意味着什么，这里重要的事情是，我们已经在一个集群中启动了一个节点。
+
+正如前面所说的，我们可以覆盖集群和节点的名字，这个可以在启动Elasticsearch的命令中做到，命令如下：
+```
+./elasticsearch -Ecluster.name=my_cluster_name -Enode.name=my_node_name
+```
+
+同时还要注意信息中的http地址（192.168.8.112）和端口（9200），这是节点的访问入口。默认情况下，Elasticsearch使用端口9200提供REST API的访问，这个端口在必要的时候也是可以配置的。
+
+### 3 探索集群
+#### REST API
+现在我们已经启动了我们的节点（和集群），它们正在运行中，下一步我们需要理解怎样和它交流。幸运的是，Elasticsearch提供了非常全面、强大的REST API，你可以使用这些API接口与你的集群交互。下面这些事情都可以通过API来完成：
+- 检查你的集群、节点和索引的健康情况、状态和一些统计
+- 管理你的集群、节点和索引数据、元数据
+- 执行CRUD（创建、读取、更新和删除）操作和针对索引的搜索操作
+- 执行高级的搜索操作，例如分页、排序、过滤、脚本、聚合，还有很多其他的操作
+
+#### 集群健康
+让我们以基本的健康检查开始，健康检查可以让我们了解集群的运行情况。我们使用curl命令来调用这些API，你也可以使用任意其它的HTTP/REST调用工具。假设我们已经登录了运行着Elasticsearch的同一个节点，并且打开了一个shell命令行窗口。
+
+为了检查集群的健康度，我们将使用[`_cat` API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html).。你可以点击"VIEW IN CONSOLE"在[Kibana’s Console](https://www.elastic.co/guide/en/kibana/5.4/console-kibana.html)上执行下面的命令，或者点击 "COPY AS CURL" 之后粘贴到你的终端上使用`curl`命令。
+```
+GET /_cat/health?v
+```
+然后，下面就是响应：
+```
+epoch      timestamp cluster       status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+1475247709 17:01:49  elasticsearch green           1         1      0   0    0    0        0             0                  -                100.0%
+```
+我们可以从中看到，集群的名字叫“elasticsearch”，是绿色的状态。
+
+无论什么时候我们检查集群的健康状况，都是绿色、黄色、红色。绿色意味着一切都是好的（集群的所有功能都能正常使用）；黄色意味着所有数据都是可用的，但是缺少一些分片（集群的所有功能都能正常使用）；红色意味着不管什么原因一些数据是不可用的；注意，即使集群的状态是红色，还是有部分功能是可用的（例如，它将继续可以用来从可用的分片上搜索数据），但是你可能需要尽快修复它，因为你已经丢失了数据。
+
+从上面的响应中我们还可以看出，总共就只有一个节点，零个分片是因为里面没有数据。注意我们使用的是默认的集群名字（Elasticsearch），Elasticsearch默认的使用单播网络来发现同一台机器上的其它节点，你也有可能意外地在一台机器上启动了多个节点，然后它们组成了一个集群。在这种情形下，你可能在上面的响应中看到多个节点。
+
+我们也可以查看集群中的所有节点，像下面这样：
+```
+GET /_cat/nodes?v
+```
+然后，响应如下：
+```
+ip        heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+127.0.0.1           10           5   5    4.46                        mdi      *      PB2SGZY
+```
+这里我们可以看出，只有一个名叫“PB2SGZY”的节点，它是当前集群中的唯一的一个节点。
+
+#### 列出所有索引
+现在让我们看一下我们的索引：
+```
+GET /_cat/indices?v
+```
+然后，响应如下：
+```
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+```
+这仅仅意味着在我们的集群中没有索引。
+
+#### 创建索引
+现在让我们创建一个名叫“customer”索引，然后再次列出所有的索引：
+```
+PUT /customer?pretty
+GET /_cat/indices?v
+```
+第一条命令使用动词PUT创建了一个名叫“customer”的索引，在命令的结尾仅仅跟了一个`pretty`，意思是任何响应都以JSON的形式打印出来。
+
+然后，响应如下：
+```
+health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   customer 95SQ4TSUT7mWBT7VNHH67A   5   1          0            0       260b           260b
+```
+第二条命令的结果告诉我们，现在我们由一个名叫“customer”的索引，它有5个主分片和1个副本（默认），其中没有任何文档。
+
+你可能还注意到customer索引有一个黄色的健康标记，回顾我们之前的讨论，黄色意味着一些分片没有被分配。出现这种情况的原因是，Elasticsearch默认情况下会为这个索引创建一个副本，但是此刻集群中仅有一个节点，只有另一个节点加入到集群中时，这个副本才可能被分配（高可用）。一旦副本被分配到第二个节点中，这个索引的健康状态立马就会变成绿色。
+
+#### 索引和查询文档
+现在让我们先在customer索引中放一些东西，还记得之前我们为文档创建索引，必须告诉Elasticsearch文档应该被放在索引中的什么类型下。
+
+让我们将一个简单的客户文档放进customer索引中，external类型中，ID为1，就像下面这样：
+```
+PUT /customer/external/1?pretty
+{
+  "name": "John Doe"
+}
+```
+然后，响应如下：
+```
+{
+  "_index" : "customer",
+  "_type" : "external",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "created" : true
+}
+```
+从上面的响应中我们可以看出，一个新的客户文档被成功地创建在customer索引的external类型中，这个文档还有一个内部id为1，在索引文档时候它需要被指定。
+
+特别需要注意的是，Elasticsearch没有明确要求你在索引一个文档之前首先创建一个索引，就前面的例子而言，如果事先customer索引不存在，Elasticsearch会自动的创建它。
+
+现在让我们去检索一下刚刚编入索引的那个文档：
+```
+GET /customer/external/1?pretty
+```
+然后，响应如下：
+```
+{
+  "_index" : "customer",
+  "_type" : "external",
+  "_id" : "1",
+  "_version" : 1,
+  "found" : true,
+  "_source" : { "name": "John Doe" }
+}
+```
+除了其中的`found`字段没有什么特别的地方，说明我们找到了请求的ID为1的那个文档，另一个字段是`_source`，它返回了我们上一步中编入索引的完全的JSON格式的文档。
+
+#### 删除索引
+现在让我们删除刚刚创建的索引，然后再次列出所有的索引：
+```
+DELETE /customer?pretty
+GET /_cat/indices?v
+```
+然后，响应如下：
+```
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+```
+这就是说索引已经被成功删除，现在我们又回到了开始时集群中什么都没有的状态。
+
+在继续学习之前，让我们再仔细看看我们学到的一些API命令：
+```
+PUT /customer
+PUT /customer/external/1
+{
+  "name": "John Doe"
+}
+GET /customer/external/1
+DELETE /customer
+```
+如果我们仔细研究上面的命令，实际上我们可以看到一种如何从Elasticsearch中访问数据的模式，这种模式可以概括如下：
+```
+<rest verb=""> /<index>/<type>/<id>
+```
+这种REST访问模式在所有的API命令中是普遍存在的，如果你能简单地记住它，在掌握Elasticsearch上，你有了一个良好的开端。
+
+### 4 修改数据
+Elasticsearch提供准实时的数据操作和搜索功能。默认情况下，从你创建索引/更新/删除你的数据到展现出搜索结果应该是只有1秒的延迟（刷新间隔），这是与像SQL等其它平台的重要区别，它们中的事务操作完成之后数据立即可用。
+
+#### 索引和替换文档
+我们前面已经知道了如何将一个单独的文档编入索引，让我们回顾一下命令：
+```
+PUT /customer/external/1?pretty
+{
+  "name": "John Doe"
+}
+```
+同样，上面的命令将一个指定的文档编入到customer索引中，类型为external，ID为1. 如果我们使用不同（或者相同）的文档再次执行上面的命令，Elasticsearch将在现存的ID为1的上面替换（或者重建）一个新文档：
+```
+PUT /customer/external/1?pretty
+{
+  "name": "Jane Doe"
+}
+```
+上面的命令改变了ID为1的文档的名字，由 "John Doe" 改为 "Jane Doe"。另一方面，如果我们使用不同的ID，一个新的文档将会被编入索引，而索引中已经存在的文档保持不变。
+```
+PUT /customer/external/2?pretty
+{
+  "name": "Jane Doe"
+}
+```
+上面的命令将一个ID为2的新文档编入了索引。
+
+当我们索引文档的时候，ID部分是可选的，如果你不指定的话，Elasticsearch将随机生成一个ID，然后使用它去索引文档。Elasticsearch实际生成的ID（或者是前面例子中我们明确指定的ID）将作为索引API调用的一部分。
+
+下面的例子展示了在不明确指定ID的情况下如何索引一个文档：
+```
+POST /customer/external?pretty
+{
+  "name": "Jane Doe"
+}
+```
+注意，上面的例子中我们使用的是动词`POST`，而不是PUT，因为我们没有指定ID。
+
+#### 更新文档
+另外，除了可以索引和替换文档之外，我们还可以更新文档。需要注意的是，Elasticsearch背后并没有真正的做更新操作，无论我们什么时候做更新操作，Elasticsearch都是删除旧的文档，然后将更新后的文档一次性地作为一个新文档编入索引。
+
+下面的例子展示了，如何更新前面的文档（ID为1），将它的name字段改为"Jane Doe"：
+```
+POST /customer/external/1/_update?pretty
+{
+  "doc": { "name": "Jane Doe" }
+}
+```
+下面的例子展示了，如何更新前面的文档（ID为1），将它的name字段改为"Jane Doe"，同时增加一个新的字段age：
+```
+POST /customer/external/1/_update?pretty
+{
+  "doc": { "name": "Jane Doe", "age": 20 }
+}
+```
+更新操作也可以使用简单的脚本，下面的例子使用脚本将age字段的值增加5：
+```
+POST /customer/external/1/_update?pretty
+{
+  "script" : "ctx._source.age += 5"
+}
+```
+在上面的例子中，`ctx._source` 是指即将更新的当前文档。
+
+注意，在写这篇文档的时候，更新操作还只能一次更新一个文档。未来，elasticsearch可能提供根据查询条件更新多个文档的能力（就像`SQL UPDATE-WHERE`语句一样）。
+
+#### 删除文档
+删除文档相对来说是比较简单的，下面的例子展示了如何删除ID为2的客户文档：
+```
+DELETE /customer/external/2?pretty
+```
+参见 [*Delete By Query API*](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html) 删除指定查询条件的所有文档。删除整个索引比根据查询API删除该索引下的所有文档更高效。
+
+#### 批处理
+我们除了能索引、更新和删除单个文档，Elasticsearch还提供了使用 [`_bulk`
+ API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)批量执行上面的任何操作。这个功能是很重要的，它提供了一种尽可能快并且尽量少的网络切换条件下执行多个操作的高效机制。
+
+做一个快速示范，下面是使用一个bulk操作将两个文档（ID 1 - John Doe and ID 2 - Jane Doe）编入索引的例子：
+```
+POST /customer/external/_bulk?pretty
+{"index":{"_id":"1"}}
+{&quot;name&quot;: &quot;John Doe&quot; }
+{&quot;index&quot;:{&quot;_id&quot;:&quot;2&quot;}}
+{&quot;name&quot;: &quot;Jane Doe&quot; }
+</id></type></index></rest></code></pre><p>下面的例子使用一个bulk操作更新第一个文档（ID为1），然后删除第二个文档（ID为2）：</p>
+<pre><code>POST /customer/external/_bulk?pretty
+{&quot;update&quot;:{&quot;_id&quot;:&quot;1&quot;}}
+{&quot;doc&quot;: { &quot;name&quot;: &quot;John Doe becomes Jane Doe&quot; } }
+{&quot;delete&quot;:{&quot;_id&quot;:&quot;2&quot;}}
+</code></pre><p>注意上面的删除操作，在它的后面没有指定对应的源文档，因为删除操作仅需要被删除文档的ID。</p>
+<p>多个操作中的一个失败不会导致整个bulk操作的失败，如果其中一个操作不管什么原因失败了，将会继续执行它后面剩下的操作。在bulk操作的返回信息中将提供每个操作的执行状态，因此你可以检查某个指定的操作是否失败了。</p>
+<blockquote>
+<p>本文简单介绍了Elasticsearch的基本概念、安装步骤、集群相关操作的探索以及对数据的修改介绍，由于篇幅过长，这里就强行截断一下，下面对数据的探索的内容见下一篇翻译。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/01/27/elasticsearch-user-guide-2/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+    
+    
+        <a href="/2018/01/19/deal-online-fault/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">17</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 16.67px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 13.33px;">Elasticsearch</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
