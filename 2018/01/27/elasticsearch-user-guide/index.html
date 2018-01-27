@@ -271,6 +271,7 @@ echo $JAVA_HOME
 不过分深入细节的话，我们可以看到名为`6-bjhwl`（这是一组不同的字符，视你的情况而定）的节点已经启动了，并且它自己被选举为单节点的集群中的master节点。此刻你不用担心master意味着什么，这里重要的事情是，我们已经在一个集群中启动了一个节点。
 
 正如前面所说的，我们可以覆盖集群和节点的名字，这个可以在启动Elasticsearch的命令中做到，命令如下：
+
 ```
 ./elasticsearch -Ecluster.name=my_cluster_name -Enode.name=my_node_name
 ```
@@ -289,14 +290,18 @@ echo $JAVA_HOME
 让我们以基本的健康检查开始，健康检查可以让我们了解集群的运行情况。我们使用curl命令来调用这些API，你也可以使用任意其它的HTTP/REST调用工具。假设我们已经登录了运行着Elasticsearch的同一个节点，并且打开了一个shell命令行窗口。
 
 为了检查集群的健康度，我们将使用[`_cat` API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html).。你可以点击"VIEW IN CONSOLE"在[Kibana’s Console](https://www.elastic.co/guide/en/kibana/5.4/console-kibana.html)上执行下面的命令，或者点击 "COPY AS CURL" 之后粘贴到你的终端上使用`curl`命令。
+
 ```
 GET /_cat/health?v
 ```
+
 然后，下面就是响应：
+
 ```
 epoch      timestamp cluster       status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
 1475247709 17:01:49  elasticsearch green           1         1      0   0    0    0        0             0                  -                100.0%
 ```
+
 我们可以从中看到，集群的名字叫“elasticsearch”，是绿色的状态。
 
 无论什么时候我们检查集群的健康状况，都是绿色、黄色、红色。绿色意味着一切都是好的（集群的所有功能都能正常使用）；黄色意味着所有数据都是可用的，但是缺少一些分片（集群的所有功能都能正常使用）；红色意味着不管什么原因一些数据是不可用的；注意，即使集群的状态是红色，还是有部分功能是可用的（例如，它将继续可以用来从可用的分片上搜索数据），但是你可能需要尽快修复它，因为你已经丢失了数据。
@@ -304,40 +309,52 @@ epoch      timestamp cluster       status node.total node.data shards pri relo i
 从上面的响应中我们还可以看出，总共就只有一个节点，零个分片是因为里面没有数据。注意我们使用的是默认的集群名字（Elasticsearch），Elasticsearch默认的使用单播网络来发现同一台机器上的其它节点，你也有可能意外地在一台机器上启动了多个节点，然后它们组成了一个集群。在这种情形下，你可能在上面的响应中看到多个节点。
 
 我们也可以查看集群中的所有节点，像下面这样：
+
 ```
 GET /_cat/nodes?v
 ```
+
 然后，响应如下：
+
 ```
 ip        heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
 127.0.0.1           10           5   5    4.46                        mdi      *      PB2SGZY
 ```
+
 这里我们可以看出，只有一个名叫“PB2SGZY”的节点，它是当前集群中的唯一的一个节点。
 
 #### 列出所有索引
 现在让我们看一下我们的索引：
+
 ```
 GET /_cat/indices?v
 ```
+
 然后，响应如下：
+
 ```
 health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
 ```
+
 这仅仅意味着在我们的集群中没有索引。
 
 #### 创建索引
 现在让我们创建一个名叫“customer”索引，然后再次列出所有的索引：
+
 ```
 PUT /customer?pretty
 GET /_cat/indices?v
 ```
+
 第一条命令使用动词PUT创建了一个名叫“customer”的索引，在命令的结尾仅仅跟了一个`pretty`，意思是任何响应都以JSON的形式打印出来。
 
 然后，响应如下：
+
 ```
 health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 yellow open   customer 95SQ4TSUT7mWBT7VNHH67A   5   1          0            0       260b           260b
 ```
+
 第二条命令的结果告诉我们，现在我们由一个名叫“customer”的索引，它有5个主分片和1个副本（默认），其中没有任何文档。
 
 你可能还注意到customer索引有一个黄色的健康标记，回顾我们之前的讨论，黄色意味着一些分片没有被分配。出现这种情况的原因是，Elasticsearch默认情况下会为这个索引创建一个副本，但是此刻集群中仅有一个节点，只有另一个节点加入到集群中时，这个副本才可能被分配（高可用）。一旦副本被分配到第二个节点中，这个索引的健康状态立马就会变成绿色。
@@ -346,13 +363,16 @@ yellow open   customer 95SQ4TSUT7mWBT7VNHH67A   5   1          0            0   
 现在让我们先在customer索引中放一些东西，还记得之前我们为文档创建索引，必须告诉Elasticsearch文档应该被放在索引中的什么类型下。
 
 让我们将一个简单的客户文档放进customer索引中，external类型中，ID为1，就像下面这样：
+
 ```
 PUT /customer/external/1?pretty
 {
   "name": "John Doe"
 }
 ```
+
 然后，响应如下：
+
 ```
 {
   "_index" : "customer",
@@ -368,15 +388,19 @@ PUT /customer/external/1?pretty
   "created" : true
 }
 ```
+
 从上面的响应中我们可以看出，一个新的客户文档被成功地创建在customer索引的external类型中，这个文档还有一个内部id为1，在索引文档时候它需要被指定。
 
 特别需要注意的是，Elasticsearch没有明确要求你在索引一个文档之前首先创建一个索引，就前面的例子而言，如果事先customer索引不存在，Elasticsearch会自动的创建它。
 
 现在让我们去检索一下刚刚编入索引的那个文档：
+
 ```
 GET /customer/external/1?pretty
 ```
+
 然后，响应如下：
+
 ```
 {
   "_index" : "customer",
@@ -387,21 +411,27 @@ GET /customer/external/1?pretty
   "_source" : { "name": "John Doe" }
 }
 ```
+
 除了其中的`found`字段没有什么特别的地方，说明我们找到了请求的ID为1的那个文档，另一个字段是`_source`，它返回了我们上一步中编入索引的完全的JSON格式的文档。
 
 #### 删除索引
 现在让我们删除刚刚创建的索引，然后再次列出所有的索引：
+
 ```
 DELETE /customer?pretty
 GET /_cat/indices?v
 ```
+
 然后，响应如下：
+
 ```
 health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
 ```
+
 这就是说索引已经被成功删除，现在我们又回到了开始时集群中什么都没有的状态。
 
 在继续学习之前，让我们再仔细看看我们学到的一些API命令：
+
 ```
 PUT /customer
 PUT /customer/external/1
@@ -411,10 +441,13 @@ PUT /customer/external/1
 GET /customer/external/1
 DELETE /customer
 ```
+
 如果我们仔细研究上面的命令，实际上我们可以看到一种如何从Elasticsearch中访问数据的模式，这种模式可以概括如下：
+
 ```
 <rest verb=""> /<index>/<type>/<id>
 ```
+
 这种REST访问模式在所有的API命令中是普遍存在的，如果你能简单地记住它，在掌握Elasticsearch上，你有了一个良好的开端。
 
 ### 4 修改数据
@@ -422,72 +455,88 @@ Elasticsearch提供准实时的数据操作和搜索功能。默认情况下，�
 
 #### 索引和替换文档
 我们前面已经知道了如何将一个单独的文档编入索引，让我们回顾一下命令：
+
 ```
 PUT /customer/external/1?pretty
 {
   "name": "John Doe"
 }
 ```
+
 同样，上面的命令将一个指定的文档编入到customer索引中，类型为external，ID为1. 如果我们使用不同（或者相同）的文档再次执行上面的命令，Elasticsearch将在现存的ID为1的上面替换（或者重建）一个新文档：
+
 ```
 PUT /customer/external/1?pretty
 {
   "name": "Jane Doe"
 }
 ```
+
 上面的命令改变了ID为1的文档的名字，由 "John Doe" 改为 "Jane Doe"。另一方面，如果我们使用不同的ID，一个新的文档将会被编入索引，而索引中已经存在的文档保持不变。
+
 ```
 PUT /customer/external/2?pretty
 {
   "name": "Jane Doe"
 }
 ```
+
 上面的命令将一个ID为2的新文档编入了索引。
 
 当我们索引文档的时候，ID部分是可选的，如果你不指定的话，Elasticsearch将随机生成一个ID，然后使用它去索引文档。Elasticsearch实际生成的ID（或者是前面例子中我们明确指定的ID）将作为索引API调用的一部分。
 
 下面的例子展示了在不明确指定ID的情况下如何索引一个文档：
+
 ```
 POST /customer/external?pretty
 {
   "name": "Jane Doe"
 }
 ```
+
 注意，上面的例子中我们使用的是动词`POST`，而不是PUT，因为我们没有指定ID。
 
 #### 更新文档
 另外，除了可以索引和替换文档之外，我们还可以更新文档。需要注意的是，Elasticsearch背后并没有真正的做更新操作，无论我们什么时候做更新操作，Elasticsearch都是删除旧的文档，然后将更新后的文档一次性地作为一个新文档编入索引。
 
 下面的例子展示了，如何更新前面的文档（ID为1），将它的name字段改为"Jane Doe"：
+
 ```
 POST /customer/external/1/_update?pretty
 {
   "doc": { "name": "Jane Doe" }
 }
 ```
+
 下面的例子展示了，如何更新前面的文档（ID为1），将它的name字段改为"Jane Doe"，同时增加一个新的字段age：
+
 ```
 POST /customer/external/1/_update?pretty
 {
   "doc": { "name": "Jane Doe", "age": 20 }
 }
 ```
+
 更新操作也可以使用简单的脚本，下面的例子使用脚本将age字段的值增加5：
+
 ```
 POST /customer/external/1/_update?pretty
 {
   "script" : "ctx._source.age += 5"
 }
 ```
+
 在上面的例子中，`ctx._source` 是指即将更新的当前文档。
 
 注意，在写这篇文档的时候，更新操作还只能一次更新一个文档。未来，elasticsearch可能提供根据查询条件更新多个文档的能力（就像`SQL UPDATE-WHERE`语句一样）。
 
 #### 删除文档
 删除文档相对来说是比较简单的，下面的例子展示了如何删除ID为2的客户文档：
+
 ```
 DELETE /customer/external/2?pretty
 ```
+
 参见 [*Delete By Query API*](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html) 删除指定查询条件的所有文档。删除整个索引比根据查询API删除该索引下的所有文档更高效。
 
 #### 批处理
@@ -495,6 +544,7 @@ DELETE /customer/external/2?pretty
  API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html)批量执行上面的任何操作。这个功能是很重要的，它提供了一种尽可能快并且尽量少的网络切换条件下执行多个操作的高效机制。
 
 做一个快速示范，下面是使用一个bulk操作将两个文档（ID 1 - John Doe and ID 2 - Jane Doe）编入索引的例子：
+
 ```
 POST /customer/external/_bulk?pretty
 {"index":{"_id":"1"}}
@@ -509,7 +559,7 @@ POST /customer/external/_bulk?pretty
 </code></pre><p>注意上面的删除操作，在它的后面没有指定对应的源文档，因为删除操作仅需要被删除文档的ID。</p>
 <p>多个操作中的一个失败不会导致整个bulk操作的失败，如果其中一个操作不管什么原因失败了，将会继续执行它后面剩下的操作。在bulk操作的返回信息中将提供每个操作的执行状态，因此你可以检查某个指定的操作是否失败了。</p>
 <blockquote>
-<p>本文简单介绍了Elasticsearch的基本概念、安装步骤、集群相关操作的探索以及对数据的修改介绍，由于篇幅过长，这里就强行截断一下，下面对数据的探索的内容见下一篇翻译:<a href="http://rabbitgyk.com/2018/01/27/elasticsearch-user-guide-2/">Elasticsearch用户指南（二）</a>。</p>
+<p>本文简单介绍了Elasticsearch的基本概念、安装步骤、集群相关操作的探索以及对数据的修改介绍，由于篇幅过长，这里就强行截断一下，下面对数据的探索的内容见下一篇:<a href="http://rabbitgyk.com/2018/01/27/elasticsearch-user-guide-2/">Elasticsearch用户指南（二）</a>。</p>
 </blockquote>
 
     </div>
