@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>标签: 数据 | rabbitGYK&#39;s blog</title>
+<title>标签: 事务 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -139,7 +139,7 @@
                 <main class="col-md-8 main-content ">
                     <h3> 
 
-    数据 
+    事务 
 
 
 </h3>
@@ -149,17 +149,17 @@
         <div class="post-content">
             <div class="post-head home-post-head">
                 <h1 class="post-title"> 
-                    <a href="/2018/01/15/Event-Driven-Data-Management-for-Microservices/">微服务中基于事件驱动的数据管理</a>
+                    <a href="/2018/01/27/why-not-rollback-spring-transaction/">Spring声明式事务为何不回滚</a>
                 </h1>
                 <div class="post-meta">  &bull;
                     <time class="post-date" datetime="" title="">
-                        2018年01月15日
+                        2018年01月27日
                     </time>
                 </div>
             </div>
             <p class="brief">
                 
-在nginx官网的blog中，作者Chris Richardson关于微服务的文章有七篇：1. Introduction to Microservices（微服务介绍）2. Building Microservices: Using...
+疑问，确实像往常一样在service上添加了注解 @Transactional，为什么查询数据库时还是发现有数据不一致的情况，想想肯定是事务没起作用，出现异常的时候数据没有回滚。于是就对相关代码进行了一番测试，结果发现一下踩进了两个...
             </p> 
         </div>
     </article>

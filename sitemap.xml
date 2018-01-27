@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rabbitgyk.com/2018/01/27/why-not-rollback-spring-transaction/</loc>
+    
+    <lastmod>2018-01-27T09:42:34.037Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rabbitgyk.com/2018/01/27/distributed-service-xu/</loc>
     
     <lastmod>2018-01-27T04:42:52.151Z</lastmod>
