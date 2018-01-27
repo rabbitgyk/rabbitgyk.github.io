@@ -1,0 +1,799 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Uncode-Schedule框架源码分析 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Uncode-Schedule框架源码分析">
+            
+            Uncode-Schedule框架源码分析
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            分布式定时任务
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>之前发布过一篇文章《<a href="http://rabbitgyk.com/2018/01/27/uncode-schedule-framework/">分布式定时任务框架—Uncode Schedule</a>》，在这篇文章中已经介绍uncode-schedule分布式定时任务框架的有关功能，以及实现机制。本文主要结合源码来介绍一下分布式定时任务uncode-schedule框架的实现原理。</p>
+</blockquote>
+<h2 id="1-Uncode-Schedule功能概述"><a href="#1-Uncode-Schedule功能概述" class="headerlink" title="1. Uncode-Schedule功能概述"></a>1. Uncode-Schedule功能概述</h2><p>Uncode-Schedule是基于zookeeper的分布式任务调度组件，非常小巧，使用简单。<br>1.1. 它能够确保所有任务在集群中不重复，不遗漏的执行。<br>1.2. 单节点故障时，任务能够自动转移到其他节点继续执行。<br>1.3. 支持动态添加和删除任务。<br>1.4. 支持添加机器ip黑名单。<br>1.5. 支持手动执行任务。</p>
+<h2 id="2-使用方法"><a href="#2-使用方法" class="headerlink" title="2. 使用方法"></a>2. 使用方法</h2><p>2.1. 配置maven依赖，pom.xml配置如下：</p>
+<pre><code>&lt;dependency&gt;
+        &lt;groupId&gt;cn.uncode&lt;/groupId&gt;
+        &lt;artifactId&gt;uncode-schedule&lt;/artifactId&gt;
+        &lt;version&gt;0.8.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>2.2. schedule.properties配置<br>这里主要配置固定值，而不是系统自动生成的，目前可配置机器编码，配置如下：</p>
+<pre><code>#uncode.schedule.server.code=0000000001
+</code></pre><p>2.3. 定时任务的spring配置，applicationContext.xml配置如下：</p>
+<ul>
+<li>ScheduleManager配置<pre><code>&lt;bean id=&quot;zkScheduleManager&quot; class=&quot;cn.uncode.schedule.ZKScheduleManager&quot; init-method=&quot;init&quot;&gt;
+      &lt;property name=&quot;zkConfig&quot;&gt;
+          &lt;map&gt;
+              &lt;entry key=&quot;zkConnectString&quot; value=&quot;192.168.7.149:2181&quot; /&gt;
+              &lt;entry key=&quot;rootPath&quot; value=&quot;/uncode/schedule&quot; /&gt;
+              &lt;entry key=&quot;zkSessionTimeout&quot; value=&quot;60000&quot; /&gt;
+              &lt;entry key=&quot;userName&quot; value=&quot;ScheduleAdmin&quot; /&gt;
+              &lt;entry key=&quot;password&quot; value=&quot;password&quot; /&gt;
+              &lt;entry key=&quot;autoRegisterTask&quot; value=&quot;true&quot; /&gt;
+              &lt;entry key=&quot;isCheckParentPath&quot; value=&quot;true&quot; /&gt;
+                &lt;entry key=&quot;ipBlacklist&quot; value=&quot;192.168.7.231&quot; /&gt;
+          &lt;/map&gt;
+      &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li>spring task配置<pre><code>&lt;task:scheduled-tasks scheduler=&quot;zkScheduleManager&quot;&gt;
+      &lt;task:scheduled ref=&quot;simpleTask&quot; method=&quot;print&quot; cron=&quot;0/30 * * * * ?&quot; /&gt;
+&lt;/task:scheduled-tasks&gt;
+</code></pre></li>
+<li>待执行任务类<pre><code>@Component
+public class SimpleTask {
+      private static int i = 0;
+      private Logger log = LoggerFactory.getLogger(SimpleTask.class);
+      public void print() {
+           log.info(&quot;===========print start!=========&quot;);
+           log.info(&quot;print:&quot;+i);i++;
+           log.info(&quot;===========print end !=========&quot;);
+      }
+}
+</code></pre>从上面的配置信息中可以看出，使用框架Uncode-Schedule可以很简单的实现定时任务的分布式。从代码上看，和原来的spring task或quartz任务写法完全一样。<br>关键点是，每个定时任务配置的调度器是uncode-schedule框架自定义的调度器 <code>cn.uncode.schedule.ZKScheduleManager</code>。上面是基于xml的配置，同样的，基于注解的配置是<code>&lt;task:annotation-driven scheduler=&quot;zkScheduleManager&quot; /&gt;</code>，详细的配置方式可以参考<a href="https://github.com/rabbitgyk/uncode-schedule-learn" target="_blank" rel="noopener">uncode-schedule-learn</a>，或者<a href="https://github.com/rabbitgyk/uncode-schedule" target="_blank" rel="noopener">uncode-schedule</a>。</li>
+</ul>
+<h2 id="3-源码分析"><a href="#3-源码分析" class="headerlink" title="3. 源码分析"></a>3. 源码分析</h2><p>从上面的Uncode-Schedule框架的使用和功能来看，源码分析应该有5个入口：</p>
+<ul>
+<li>类 <code>cn.uncode.schedule.ZKScheduleManager</code> 的 <code>init</code> 方法；</li>
+<li>类 <code>cn.uncode.schedule.ZKScheduleManager</code> 的定时任务初始化；</li>
+<li>类 <code>cn.uncode.schedule.ZKScheduleManager</code> 的心跳检测 <code>hearBeatTimer</code>；</li>
+<li>控制管理类 <code>cn.uncode.schedule.ConsoleManager</code> ；</li>
+<li>对外暴露的连个servlet接口 <code>ManagerServlet</code> 和 <code>ManualServlet</code>；</li>
+</ul>
+<p>下面按照谁许依次进行源码分析：</p>
+<h3 id="3-1-类-cn-uncode-schedule-ZKScheduleManager-的-init-方法"><a href="#3-1-类-cn-uncode-schedule-ZKScheduleManager-的-init-方法" class="headerlink" title="3.1. 类 cn.uncode.schedule.ZKScheduleManager 的 init 方法"></a>3.1. 类 <code>cn.uncode.schedule.ZKScheduleManager</code> 的 <code>init</code> 方法</h3><p>该方法的主要作用是，将配置文件中的数据加载进内存，连接zookeeper，校验zookeeper的连接状态，注册任务服务器，计算统一时间，启动心跳检测任务。</p>
+<p>init方法的代码如下：</p>
+<pre><code>public void init() throws Exception {
+    Properties properties = new Properties();
+    for (Map.Entry&lt;String, String&gt; e : this.zkConfig.entrySet()) {
+        properties.put(e.getKey(), e.getValue());
+    }
+    this.init(properties);
+}
+</code></pre><p>将xml配置文件中的配置信息加载进properties变量，然后去进一步初始化。</p>
+<pre><code>public void init(Properties p) throws Exception {
+    if (this.initialThread != null) {
+        this.initialThread.stopThread();
+    }
+    this.initLock.lock();
+    try {
+        this.scheduleDataManager = null;
+        if (this.zkManager != null) {
+            this.zkManager.close();
+        }
+        //连接zookeeper
+        this.zkManager = new ZKManager(p);
+        this.errorMessage = &quot;Zookeeper connecting ......&quot;
+                + this.zkManager.getConnectStr();
+        initialThread = new InitialThread(this);
+        initialThread.setName(&quot;ScheduleManager-initialThread&quot;);
+        initialThread.start();
+    } finally {
+        this.initLock.unlock();
+    }
+}
+</code></pre><p>在代码中通过<code>this.zkManager = new ZKManager(p);</code> 和zookeeper建立连接，然后会启动一个初始化线程，这个线程的作业主要是等待连接zookeeper成功之后，进一步初始化之后的注册服务器等，初始化线程的代码如下：</p>
+<pre><code>class InitialThread extends Thread {
+    private transient Logger log = LoggerFactory.getLogger(InitialThread.class);
+    ZKScheduleManager sm;
+    public InitialThread(ZKScheduleManager sm) {
+        this.sm = sm;
+    }
+    boolean isStop = false;
+    public void stopThread() {
+        this.isStop = true;
+    }
+    @Override
+    public void run() {
+        sm.initLock.lock();
+        try {
+            int count = 0;
+            while (!sm.zkManager.checkZookeeperState()) {
+                count = count + 1;
+                if (count % 50 == 0) {
+                    sm.errorMessage = &quot;Zookeeper connecting ......&quot;
+                            + sm.zkManager.getConnectStr() + &quot; spendTime:&quot;
+                            + count * 20 + &quot;(ms)&quot;;
+                    log.error(sm.errorMessage);
+                }
+                Thread.sleep(20);
+                if (this.isStop) {
+                    return;
+                }
+            }
+            sm.initialData();
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            sm.initLock.unlock();
+        }
+    }
+}
+</code></pre><p>看线程的 <code>run</code> 方法，<code>while</code> 循环中检测是否连接成功zookeeper，连接成功之后，调用 <code>sm.initialData();</code> 真正的初始化 <code>ZKScheduleManager</code>，初始化的代码如下：</p>
+<pre><code>public void initialData() throws Exception {
+    //首先进行了框架的版本兼容性校验
+    this.zkManager.initial();
+    this.scheduleDataManager = new ScheduleDataManager4ZK(this.zkManager);
+    if (this.start) {
+        // 注册调度管理器
+        this.scheduleDataManager.registerScheduleServer(this.currenScheduleServer);
+        if (hearBeatTimer == null) {
+            hearBeatTimer = new Timer(&quot;ScheduleManager-&quot;
+                    + this.currenScheduleServer.getUuid() + &quot;-HearBeat&quot;);
+        }
+        hearBeatTimer.schedule(new HeartBeatTimerTask(this), 2000, this.timerInterval);
+    }
+}
+</code></pre><p>代码中首先进行了版本兼容性校验，然后将自身作为一个调度服务器注册到管理器中，最后启动检测调度器本身的心跳任务。心跳检测的任务在下一个小节重点分析，这里重点看一下注册调度管理器，代码如下：</p>
+<pre><code>@Override
+public void registerScheduleServer(ScheduleServer server) throws Exception {
+    if(server.isRegister()){
+        throw new Exception(server.getUuid() + &quot; 被重复注册&quot;);
+    }
+    //clearExpireScheduleServer();
+    String realPath;
+    //此处必须增加UUID作为唯一性保障
+    StringBuffer id = new StringBuffer();
+    id.append(server.getIp()).append(&quot;$&quot;)
+        .append(UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;).toUpperCase());
+
+    String serverCode = ScheduleUtil.getServerCode();
+    if(serverCode != null){ //如果配置文件schedule.properties中配置server code
+        String zkServerPath = pathServer + &quot;/&quot; + id.toString() + &quot;$&quot; + serverCode;
+        realPath = this.getZooKeeper().create(zkServerPath, null, this.zkManager.getAcl(),CreateMode.PERSISTENT);
+    }else{
+        String zkServerPath = pathServer + &quot;/&quot; + id.toString() +&quot;$&quot;;
+        realPath = this.getZooKeeper().create(zkServerPath, null, this.zkManager.getAcl(),CreateMode.PERSISTENT_SEQUENTIAL);
+    }
+
+    server.setUuid(realPath.substring(realPath.lastIndexOf(&quot;/&quot;) + 1));
+
+    Timestamp heartBeatTime = new Timestamp(getSystemTime());
+    server.setHeartBeatTime(heartBeatTime);
+
+    String valueString = this.gson.toJson(server);
+    this.getZooKeeper().setData(realPath,valueString.getBytes(),-1);
+    server.setRegister(true);
+}
+</code></pre><p>将调度服务器信息注册到zookeeper中，服务器信息在zk上的节点是由 <code>ip$UUID$serverCode</code> 组成，存储在目录<code>{rootPath}/server</code> 下，例如， <code>192.168.7.231$B6A47BA82F4C44389D8D066F571D51D8$1000000001</code>。其中serverCode有两个来源，一是配置文件<code>schedule.properties</code>中的 <code>uncode.schedule.server.code</code>，另一个是由zk的持久化顺序节点生产，这个数值关系到分布式系统中leader节点的选取，因此做成可配置的，从而控制leader节点的选取，选leader节点的算法将会在心跳检测中详细介绍。<br>并且zk中server路径下的每一个服务器节点中都存储有相关数据，主要数据包括注册时间、最后一次心跳时间、ip、UUID等。</p>
+<h3 id="3-2-类cn-uncode-schedule-ZKScheduleManager的定时任务初始化"><a href="#3-2-类cn-uncode-schedule-ZKScheduleManager的定时任务初始化" class="headerlink" title="3.2. 类cn.uncode.schedule.ZKScheduleManager的定时任务初始化"></a>3.2. 类cn.uncode.schedule.ZKScheduleManager的定时任务初始化</h3><p>这里主要介绍分布式任务调度器初始化完毕之后，定时任务启动时的任务注册和任务启动的代码。</p>
+<p>类<code>cn.uncode.schedule.ZKScheduleManager</code>继承了类 <code>org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler</code>，它又实现了接口<code>org.springframework.scheduling.TaskScheduler</code>，重写以下接口来实现在任务调度的同时将定时任务的信息注册到zookeeper中。</p>
+<pre><code>ScheduledFuture&lt;?&gt; schedule(Runnable task, Trigger trigger);
+ScheduledFuture&lt;?&gt; schedule(Runnable task, Date startTime);
+ScheduledFuture&lt;?&gt; scheduleAtFixedRate(Runnable task, Date startTime, long period);
+ScheduledFuture&lt;?&gt; scheduleAtFixedRate(Runnable task, long period);
+ScheduledFuture&lt;?&gt; scheduleWithFixedDelay(Runnable task, Date startTime, long delay);
+ScheduledFuture&lt;?&gt; scheduleWithFixedDelay(Runnable task, long delay);
+</code></pre><p>重写之后的源代码如下：</p>
+<pre><code>@Override
+public ScheduledFuture&lt;?&gt; scheduleAtFixedRate(Runnable task, long period) {
+    TaskDefine taskDefine = getTaskDefine(task);
+    LOGGER.info(&quot;spring task init------taskName:{}, period:{}&quot;, taskDefine.stringKey(), period);
+    taskDefine.setPeriod(period);
+    addTask(task, taskDefine);
+    return super.scheduleAtFixedRate(taskWrapper(task), period);
+}
+
+public ScheduledFuture&lt;?&gt; schedule(Runnable task, Trigger trigger) {
+    TaskDefine taskDefine = getTaskDefine(task);
+    if(trigger instanceof CronTrigger){
+        CronTrigger cronTrigger = (CronTrigger)trigger;
+        taskDefine.setCronExpression(cronTrigger.getExpression());
+        LOGGER.info(&quot;spring task init------trigger:&quot; + cronTrigger.getExpression());
+    }
+    addTask(task, taskDefine);
+    return super.schedule(taskWrapper(task), trigger);
+}
+
+public ScheduledFuture&lt;?&gt; schedule(Runnable task, Date startTime) {
+    TaskDefine taskDefine = getTaskDefine(task);
+    LOGGER.info(&quot;spring task init------taskName:{}, period:{}&quot;, taskDefine.stringKey(), startTime);
+    taskDefine.setStartTime(startTime);
+    addTask(task, taskDefine);
+    return super.schedule(taskWrapper(task), startTime);
+}
+
+public ScheduledFuture&lt;?&gt; scheduleAtFixedRate(Runnable task, Date startTime, long period) {
+    TaskDefine taskDefine = getTaskDefine(task);
+    LOGGER.info(&quot;spring task init------taskName:{}, period:{}&quot;, taskDefine.stringKey(), period);
+    taskDefine.setStartTime(startTime);
+    taskDefine.setPeriod(period);
+    addTask(task, taskDefine);
+    return super.scheduleAtFixedRate(taskWrapper(task), startTime, period);
+}
+
+public ScheduledFuture&lt;?&gt; scheduleWithFixedDelay(Runnable task, Date startTime, long delay) {
+    TaskDefine taskDefine = getTaskDefine(task);
+    LOGGER.info(&quot;spring task init------taskName:{}, delay:{}&quot;, taskDefine.stringKey(), delay);
+    taskDefine.setStartTime(startTime);
+    taskDefine.setPeriod(delay);
+    taskDefine.setType(TaskDefine.TASK_TYPE_QSD);
+    addTask(task, taskDefine);
+    return super.scheduleWithFixedDelay(taskWrapper(task), startTime, delay);
+}
+
+public ScheduledFuture&lt;?&gt; scheduleWithFixedDelay(Runnable task, long delay) {
+    TaskDefine taskDefine = getTaskDefine(task);
+    LOGGER.info(&quot;spring task init------taskName:{}, delay:{}&quot;, taskDefine.stringKey(), delay);
+    taskDefine.setPeriod(delay);
+    taskDefine.setType(TaskDefine.TASK_TYPE_QSD);
+    addTask(task, taskDefine);
+    return super.scheduleWithFixedDelay(taskWrapper(task), delay);
+}
+</code></pre><p>主要是在任务调度之前，通过<code>private TaskDefine getTaskDefine(Runnable task);</code>获取任务的详细信息，然后通过<code>private void addTask(Runnable task, TaskDefine taskDefine)</code>将其存储到zookeeper中。<br>另外一个关键点是，所有的task都经过了 <code>taskWrapper</code> 的包装，先看代码：</p>
+<pre><code>/**
+ * 将Spring的定时任务进行包装，决定任务是否在本机执行。
+ * @param task
+ * @return
+ */
+private Runnable taskWrapper(final Runnable task){
+    return new Runnable(){
+        public void run(){
+            Method targetMethod = null;
+            if(task instanceof ScheduledMethodRunnable){
+                ScheduledMethodRunnable uncodeScheduledMethodRunnable = (ScheduledMethodRunnable)task;
+                targetMethod = uncodeScheduledMethodRunnable.getMethod();
+            }else{
+                org.springframework.scheduling.support.ScheduledMethodRunnable springScheduledMethodRunnable = (org.springframework.scheduling.support.ScheduledMethodRunnable)task;
+                targetMethod = springScheduledMethodRunnable.getMethod();
+            }
+        String[] beanNames = applicationcontext.getBeanNamesForType(targetMethod.getDeclaringClass());
+        if(null != beanNames &amp;&amp; StringUtils.isNotEmpty(beanNames[0])){
+            String name = ScheduleUtil.getTaskNameFormBean(beanNames[0], targetMethod.getName());
+            boolean isOwner = false;
+                try {
+                    if(!isScheduleServerRegister){
+                        Thread.sleep(1000);
+                    }
+                    if(zkManager.checkZookeeperState()){
+                        isOwner = scheduleDataManager.isOwner(name, currenScheduleServer.getUuid());
+                        isOwnerMap.put(name, isOwner);
+                    }else{
+                        // 如果zk不可用，使用历史数据
+                        if(null != isOwnerMap){
+                            isOwner = isOwnerMap.get(name);
+                        }
+                    }
+                    if(isOwner){
+                    task.run();
+                    scheduleDataManager.saveRunningInfo(name, currenScheduleServer.getUuid());
+                    LOGGER.info(&quot;Cron job has been executed.&quot;);
+                }
+                } catch (Exception e) {
+                    LOGGER.error(&quot;Check task owner error.&quot;, e);
+                }
+        }
+        }
+    };
+}
+</code></pre><p>这里主要控制定时任务的执行，在执行时，需要检测该任务是否属于该服务器。并且考虑到zookeeper不可用的情况，如果不可用查看缓存的任务归属关系。</p>
+<h3 id="3-3-类cn-uncode-schedule-ZKScheduleManager的心跳检测hearBeatTimer"><a href="#3-3-类cn-uncode-schedule-ZKScheduleManager的心跳检测hearBeatTimer" class="headerlink" title="3.3. 类cn.uncode.schedule.ZKScheduleManager的心跳检测hearBeatTimer"></a>3.3. 类cn.uncode.schedule.ZKScheduleManager的心跳检测hearBeatTimer</h3><p>在分布式系统中心跳检测任务是很重要的，负责整个分布式系统的稳定性和健壮性。在3.1.节中的代码中我们看到，心跳检测的定时任务调度代码 <code>hearBeatTimer.schedule(new HeartBeatTimerTask(this), 2000, this.timerInterval);</code> 启动延迟2秒执行，心跳间隔2秒。心跳检测任务 <code>HeartBeatTimerTask</code> 的代码如下：</p>
+<pre><code>class HeartBeatTimerTask extends java.util.TimerTask {
+    private transient final Logger log = LoggerFactory.getLogger(HeartBeatTimerTask.class);
+    ZKScheduleManager manager;
+
+    public HeartBeatTimerTask(ZKScheduleManager aManager) {
+        manager = aManager;
+    }
+
+    public void run() {
+        try {
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            manager.refreshScheduleServer();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    }
+}
+</code></pre><p>从以上代码中可以看到，心跳检测通过 <code>manager.refreshScheduleServer();</code> 不停在刷新调度服务器信息，代码是：</p>
+<pre><code>/**
+ * 1. 定时向数据配置中心更新当前服务器的心跳信息。 如果发现本次更新的时间如果已经超过了，服务器死亡的心跳周期，则不能在向服务器更新信息。
+ * 而应该当作新的服务器，进行重新注册。
+ * 2. 任务分配
+ * 3. 检查任务是否属于本机，是否添加到调度器
+ * 
+ * @throws Exception
+ */
+public void refreshScheduleServer() throws Exception {
+    try {
+        // 更新或者注册服务器信息
+        rewriteScheduleInfo();
+        // 如果任务信息没有初始化成功，不做任务相关的处理
+        if (!this.isScheduleServerRegister) {
+            return;
+        }
+
+        // 重新分配任务
+        this.assignScheduleTask();
+        // 检查本地任务
+        this.checkLocalTask();
+    } catch (Throwable e) {
+        // 清除内存中所有的已经取得的数据和任务队列,避免心跳线程失败时候导致的数据重复
+        this.clearMemoInfo();
+        if (e instanceof Exception) {
+            throw (Exception) e;
+        } else {
+            throw new Exception(e.getMessage(), e);
+        }
+    }
+}
+</code></pre><p>进入到方法之后看到，心跳检测任务主要负责：</p>
+<ol>
+<li>方法<code>rewriteScheduleInfo();</code>的功能是，定时向数据配置中心zk更新当前服务器的心跳信息，如果更新失败，重新注册调度服务器信息（在3.1节中已经介绍过了，就是方法<code>scheduleDataManager.registerScheduleServer</code>）；</li>
+<li>方法<code>assignScheduleTask();</code>的功能是，定时任务的分配，分配任务的时候会校验该节点是否是leader节点，因为只有leader节点才能分配任务；在分配任务的时候启用了服务器ip黑名单，在黑名单列表中的机器不参与任务分配；</li>
+<li>检查本地的定时任务，添加调度器；该功能是检查是否有通过控制台添加uncode task 类型的定时任务，如果有的话启动该定时任务；这是一种自定义的定时任务类型，任务的启动方式也是自定义的，主要方法在类 <code>DynamicTaskManager</code> 中；</li>
+</ol>
+<p>下面看几个关键步骤的代码：首先是leader节点的选择算法代码，</p>
+<pre><code>private String getLeader(List&lt;String&gt; serverList){
+    if(serverList == null || serverList.size() ==0){
+        return &quot;&quot;;
+    }
+    long no = Long.MAX_VALUE;
+    long tmpNo = -1;
+    String leader = null;
+    for(String server:serverList){
+        tmpNo =Long.parseLong( server.substring(server.lastIndexOf(&quot;$&quot;)+1));
+        if(no &gt; tmpNo){
+            no = tmpNo;
+            leader = server;
+        }
+    }
+    return leader;
+}
+</code></pre><p>从代码可以看出，选择leader节点的算法是，取serverCode最小的服务器为leader。这种方法的好处是，由于serverCode是递增的，再新增服务器的时候，leader节点不会变化，比较稳定，算法又简单。</p>
+<h3 id="3-4-控制管理类cn-uncode-schedule-ConsoleManager"><a href="#3-4-控制管理类cn-uncode-schedule-ConsoleManager" class="headerlink" title="3.4. 控制管理类cn.uncode.schedule.ConsoleManager"></a>3.4. 控制管理类cn.uncode.schedule.ConsoleManager</h3><p>在该类的功能主要是对外提供的是一些操作任务和数据的方法，包括注册在zk上的定时任务数据的增、删、查；以及定时任务的执行入口。主要代码如下：</p>
+<pre><code>public static void addScheduleTask(TaskDefine taskDefine) throws Exception{
+    ConsoleManager.getScheduleManager().getScheduleDataManager().addTask(taskDefine);
+}
+
+public static void delScheduleTask(TaskDefine taskDefine) {
+    try {
+        ConsoleManager.scheduleManager.getScheduleDataManager().delTask(taskDefine);
+    } catch (Exception e) {
+        log.error(e.getMessage(), e);
+    }
+}
+
+public static List&lt;TaskDefine&gt; queryScheduleTask() {
+    List&lt;TaskDefine&gt; taskDefines = new ArrayList&lt;TaskDefine&gt;();
+    try {
+        List&lt;TaskDefine&gt; tasks = ConsoleManager.getScheduleManager().getScheduleDataManager().selectTask();
+        taskDefines.addAll(tasks);
+    } catch (Exception e) {
+        log.error(e.getMessage(), e);
+    }
+    return taskDefines;
+}
+
+public static boolean isExistsTask(TaskDefine taskDefine) throws Exception{
+    return ConsoleManager.scheduleManager.getScheduleDataManager().isExistsTask(taskDefine);
+}
+
+/**
+* 手动执行定时任务
+* @param task
+*/
+public static void runTask(TaskDefine task) throws Exception{
+    Object object = null;
+    if (StringUtils.isNotEmpty(task.getTargetBean())) {
+        object = ZKScheduleManager.getApplicationcontext().getBean(task.getTargetBean());
+    }
+    if (object == null) {
+        log.error(&quot;任务名称 = [{}]---------------未启动成功，targetBean不存在，请检查是否配置正确！！！&quot;, task.stringKey());
+        throw new Exception(&quot;targetBean:&quot;+task.getTargetBean()+&quot;不存在&quot;);
+    }
+    Method method = null;
+    try {
+        if(StringUtils.isNotEmpty(task.getParams())){
+            method = object.getClass().getDeclaredMethod(task.getTargetMethod(), String.class);
+        }else{
+            method = object.getClass().getDeclaredMethod(task.getTargetMethod());
+        }
+    } catch (Exception e) {
+        log.error(String.format(&quot;定时任务bean[%s]，method[%s]初始化失败.&quot;, task.getTargetBean(), task.getTargetMethod()), e);
+        throw new Exception(&quot;定时任务:&quot;+task.stringKey()+&quot;初始化失败&quot;);
+    }
+    if (method != null) {
+        try {
+            if(StringUtils.isNotEmpty(task.getParams())){
+                method.invoke(object, task.getParams());
+            }else{
+                method.invoke(object);
+            }
+        } catch (Exception e) {
+            log.error(String.format(&quot;定时任务bean[%s]，method[%s]调用失败.&quot;, task.getTargetBean(), task.getTargetMethod()), e);
+            throw new Exception(&quot;定时任务:&quot;+task.stringKey()+&quot;调用失败&quot;);
+        }
+    }
+    log.info(&quot;任务名称 = [{}]----------启动成功&quot;, task.stringKey());
+}
+</code></pre><h3 id="3-5-对外暴露的连个servlet接口ManagerServlet和ManualServlet"><a href="#3-5-对外暴露的连个servlet接口ManagerServlet和ManualServlet" class="headerlink" title="3.5. 对外暴露的连个servlet接口ManagerServlet和ManualServlet"></a>3.5. 对外暴露的连个servlet接口<code>ManagerServlet</code>和<code>ManualServlet</code></h3><p>servlet <code>ManagerServlet</code>是一个简单管理界面，<code>ManualServlet</code>是一个手动执行定时任务的接口；使用方法是要在项目中的<code>web.xml</code>中配置响应的servlet，配置文件代码如下：</p>
+<pre><code>&lt;!-- 配置 uncode schedule 管理后台 --&gt;
+&lt;servlet&gt;
+    &lt;servlet-name&gt;UncodeSchedule&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;cn.uncode.schedule.web.ManagerServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;UncodeSchedule&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/uncode/schedule&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+
+&lt;!-- 配置 uncode schedule 手动执行器 --&gt;
+&lt;servlet&gt;
+    &lt;servlet-name&gt;ScheduleManual&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;cn.uncode.schedule.web.ManualServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;ScheduleManual&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/schedule/manual&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><blockquote>
+<p>结束语，源代码分析结束，uncode-schedule分布式定时任务框架实现的主要功能都已覆盖到，有问题的请留言！最后再一次附上源代码 <a href="https://github.com/rabbitgyk/uncode-schedule" target="_blank" rel="noopener">github链接</a>！下一篇预告：《<a href="http://rabbitgyk.com/2018/01/27/uncode-schedule-manage/">uncode-schedule-manage定制化管理系统</a>》</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/uncode-schedule-framework/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">24</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/docker/" style="font-size: 12.5px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/spring/" style="font-size: 12.5px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
