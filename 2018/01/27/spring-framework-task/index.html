@@ -1,0 +1,656 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>spring framework 定时任务 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="spring framework 定时任务">
+            
+            spring framework 定时任务
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>技术栈</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            spring
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>徒手翻译spring framework 4.2.3官方文档的第33章，若有翻译不当之处请指正。</p>
+</blockquote>
+<h1 id="定时任务的执行和调度"><a href="#定时任务的执行和调度" class="headerlink" title="定时任务的执行和调度"></a>定时任务的执行和调度</h1><h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>spring framework 为任务的异步执行和调度提供了抽象接口分别是：TaskExecutor 和 TaskScheduler，spring 对这些接口的进一步实现支持线程池或者将该功能交给应用服务器的commonJ。最后，在java5、java6和java EE环境下这些公共接口的实现的使用方法是不同的。</p>
+<p>spring为了支持任务的调度，利用Timer（始于jdk1.3）和Quartz调度器实现了一些集成类，这两种调度器的建立都是利用FactoryBean，可分别参考Timer或者Trigger的示例。此外，还有一个Quartz调度器和Timer都可用的类，这个类很方便，它允许你调用现存对象的一个方法（类似于常见的 MethodInvokingFactoryBean）。</p>
+<h2 id="2-Spring-TaskExecutor"><a href="#2-Spring-TaskExecutor" class="headerlink" title="2. Spring TaskExecutor"></a>2. Spring TaskExecutor</h2><p>spring 2.0 引入一个抽象类来处理executors，Executors是java 5 为线程池命的名。executor的命名不一定要实现作一个线程池，但实际上就是一个池子，一个executor可能是单线程的或者同步的，spring的抽象类隐藏java SE 1.4、java SE 1.5和java EE中的实现细节。</p>
+<p>Spring 的 <code>TaskExecutor</code>和 <code>java.util.concurrent.Executor</code>接口是一样的，实际上它存在的主要原因是和java 5在线程池的使用上的不同，这个接口仅有一个方法execute(Runnable task)，这个任务的执行是基于线程池的原理和配置的。</p>
+<p>起初，<code>TaskExcecutor</code> 是为其他的需要线程池支持的spring组件设计的，这些组件如：<code>ApplicationEventMulticaster</code>、JMS中的 <code>AbstractMessageListenerContainer</code> 和Quartz集成时用到的线程池。可是，如果你的beans需要线程池，也可以根据自己的需要来使用这个抽象类。</p>
+<p><strong>TaskExecutor 的实现类</strong><br> 在spring发布版本中，有很多TaskExecutor内部实现类，大多数情况下，你不需要自己实现。</p>
+<ol>
+<li><code>SimpleAsyncTaskExecutor</code> 这是一个实现类，它不会多次使用任何线程，而是对每次调用启动一个新的线程。但是它确实支持并发限制，当线程数超过限制时，阻止任何调用，直到有一个空位。如果想要一个真实线程池，参看下面讨论的 <code>SimpleThreadPoolTaskExecutor</code> 和 <code>ThreadPoolTaskExecutor</code> 。</li>
+</ol>
+<ul>
+<li><p><code>SyncTaskExecutor</code> 这是一个实现类，它不会异步执行方法，而是每个任务调用都会占用正在运行的线程。主要是应用在没必要使用多线程的情景下，如简单的测试方法。</p>
+</li>
+<li><p><code>ConcurrentTaskExecutor</code> 这是一个实现类，它是 <code>java.util.concurrent.Executor</code> 的一个适配器，这个和  <code>ThreadPoolTaskExecutor</code> 是二选一的，它可以将Executor的配置参数做成properties bean。需要用这个类的地方很少，但是如果你觉得 <code>ThreadPoolTaskExecutor</code> 不够灵活，<code>ConcurrentTaskExecutor</code> 是一个选择。</p>
+</li>
+<li><p><code>SimpleThreadPoolTaskExecutor</code> 这个实现类实际上是Quartz中 <code>SampleThreadPool</code> 的一个子类，它监听了spring生命周期中的所有回调。它的典型用法是，当你有一个线程池需要Quartz和non-Quartz的组件共享时，可使用该类。</p>
+</li>
+<li><p><code>ThreadPoolTaskExecutor</code> 这是最常用的一个实现，它使得 <code>java.util.concurrent.ThreadPoolExecutor</code> 的参数配置可以在properties bean中，并且把它封装在了 <code>TaskExecutor</code>，如果你需要适配不同种类的 <code>java.util.concurrent.Executor</code>，推荐你使用 <code>ConcurrentTaskExecutor</code>。</p>
+</li>
+<li><p><code>WorkManagerTaskExecutor</code> 这个类实现了CommonJ中的 <code>WorkManager</code> 接口，可以很方便的在spring的容器中启动一个CommonJ中的 <code>WorkManager</code>，和 <code>SimpleThreadPoolTaskExecutor</code> 类很相似，这个类实现了 <code>WorkManager</code> 接口，因此也可以直接用作 WorkManager。</p>
+</li>
+</ul>
+<p><strong>TaskExecutor示例</strong><br>spring的<code>TaskExecutor</code>可以用一些简单的JavaBean实现，我们举个用 <code>ThreadPoolTaskExecutor</code> 定义一个Bean，并异步的打印一些信息的例子：</p>
+<pre><code>import org.springframework.core.task.TaskExecutor;
+public class TaskExecutorExample {
+    private class MessagePrinterTask implements Runnable {
+        private String message;
+        public MessagePrinterTask(String message) {
+            this.message = message;
+        }
+
+        public void run() {
+            System.out.println(message);
+        }
+    }
+
+    private TaskExecutor taskExecutor;
+
+    public TaskExecutorExample(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
+
+    public void printMessages() {
+        for (int i = 0; i &lt; 25; i++) {
+            taskExecutor.execute(new MessagePrinterTask(&quot;Message&quot; + i));
+        }
+    }
+}
+</code></pre><p>正如你看到的一样，并不是从线程池中重新取出一个线程来执行它，而是添加你自己的Runnable任务到一个队列中，然后TaskExecutor用它的内部规则来决定那个任务被执行。为了配置将要使用的TaskExecutor规则，下面是一个简单的bean properties配置：</p>
+<pre><code>&lt;bean id=&quot;taskExecutor&quot;
+    class=&quot;org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor&quot;&gt;
+    &lt;property name=&quot;corePoolSize&quot; value=&quot;5&quot; /&gt;
+    &lt;property name=&quot;maxPoolSize&quot; value=&quot;10&quot; /&gt;
+    &lt;property name=&quot;queueCapacity&quot; value=&quot;25&quot; /&gt;
+&lt;/bean&gt;
+&lt;bean id=&quot;taskExecutorExample&quot; class=&quot;TaskExecutorExample&quot;&gt;
+    &lt;constructor-arg ref=&quot;taskExecutor&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><h2 id="3-Spring-TaskScheduler"><a href="#3-Spring-TaskScheduler" class="headerlink" title="3. Spring TaskScheduler"></a>3. Spring TaskScheduler</h2><p> 除了TaskExecutor的抽象之外，spring 3.0 还引入了 TaskScheduler，其中包含大量的方法，使得可以指定在将来的某个时候运行任务。</p>
+<pre><code>public interface TaskScheduler {
+    ScheduledFuture schedule(Runnable task, Trigger trigger);
+    ScheduledFuture schedule(Runnable task, Date startTime);
+    ScheduledFuture scheduleAtFixedRate(Runnable task, Date startTime, long period);
+    ScheduledFuture scheduleAtFixedRate(Runnable task, long period);
+    ScheduledFuture scheduleWithFixedDelay(Runnable task, Date startTime, long delay);
+    ScheduledFuture scheduleWithFixedDelay(Runnable task, long delay);
+}
+</code></pre><p> 其中，最简单的方法是一个叫做<code>schedule</code>的方法，仅需要一个Ruannable任务和一个时间，它会使任务在到达指定的时间之后运行一次。所有其它的方法都是可以使任务重复执行的，fixed-rate和fixed-delay方法是一个简化的操作，任务周期性的执行，但是传入参数Trigger的方法是更灵活的。</p>
+<p><strong>Trigger接口</strong><br>Trigger接口的灵感本质上是来自于JSR-236，到spring 3.0 实现为止，还没有官方的实现。Trigger的基本想法是控制任务的执行时间，根据过去任务的执行结果或者是任意条件执行任务。如果这些决定确实要考虑之前的执行结果，在TriggerContext中的信息是有用的。Trigger接口本身是很简单的：</p>
+<pre><code>public interface Trigger {
+    Date nextExecutionTime(TriggerContext triggerContext);
+}
+</code></pre><p>正如你所看到的，<code>TriggerContext</code>是很重要的一部分，它封装了所有的相关数据，并且如果在将来有必要的话是可以扩展的。<code>TriggerContext</code>是一个接口（<code>SimpleTriggerContext</code> 是默认使用的实现类），下面代码中你可以看到<code>TriggerContext</code> 接口中哪些方法是可以使用的。</p>
+<pre><code>public interface TriggerContext {
+    Date lastScheduledExecutionTime();
+    Date lastActualExecutionTime();
+    Date lastCompletionTime();
+}
+</code></pre><p> <strong>Trigger的实现类</strong><br>Spring为Trigger接口提供了两个实现类，你可能最感兴趣的一个是<code>CronTrigger</code>，它能够按照cron表达式来调度任务。例如，下面的任务执行时间规则，在工作日（周一至周五）的9点到17点期间的每个小时整点过15分钟执行一次。</p>
+<pre><code>scheduler.schedule(task, new CronTrigger(&quot;0 15 9-17 * * MON-FRI&quot;));
+</code></pre><p>另一个实现类是拆箱可用的 <code>PeriodicTrigger</code> ，它接受一个固定的周期，一个可选的初始的延迟时间，还有一个Boolean值指出将固定的周期解释作fixed-rate还是fixed-delay。因为在TaskScheduler接口中已经利用fixed-rate和fixed-delay定义了调度任务的几个方法，这些方法在任何时候都能直接使用。<code>PeriodicTrigger</code>实现类的价值在于，它可以用在依赖Trigger的组件内部使用。例如，它可以很方便的允许周期性触发器或者基于cron表达式的触发器，甚至是自定义实现的触发器去执行任务，这样的一个组件可以利用依赖注入的特性，以便于这些触发器可以外部配置，因此更容易修改和扩展。</p>
+<p><strong>TaskScheduler的实现类</strong><br>正如<code>TaskExecutor</code>的抽象类一样，TaskScheduler的最主要的意义在于，依赖调度行为的代码不再需要关注特定调度方法的实现。在一些不应该应用本身创建线程的应用服务器中，这些调度方法能够很灵活的实现特定的任务调度功能。在这样的情况下，spring提供了一个类 <code>TimerManagerTaskScheduler</code>，它是CommonJ中类 <code>TimerManager</code><br>的一个实例，典型的配置是JNDI-lookup。</p>
+<p>当在外部的线程管理不是必须的时候，一个更简单的选择 <code>ThreadPoolTaskScheduler</code> 可以被使用。在内部，它代表 <code>ScheduledExecutorService</code> 的一个实例。<code>ThreadPoolTaskScheduler</code> 实际上也实现了<code>TaskExecutor</code>的接口，所以一个单独的实例会被尽快的异步执行，按照预定的时间执行，可能会再次执行或者执行完成。</p>
+<h2 id="4-任务的调度和异步执行的注解支持"><a href="#4-任务的调度和异步执行的注解支持" class="headerlink" title="4. 任务的调度和异步执行的注解支持"></a>4. 任务的调度和异步执行的注解支持</h2><p>spring 对任务调度和异步方法调用都提供了注解支持。</p>
+<p><strong>启动任务调度注解</strong><br>为了启用注解<code>@Scheduled</code>和<code>@Async</code>，需要再你的一个<code>@Configuration</code>类上添加注解<code>@EnableScheduling</code>和<code>@EnableAsync</code>。</p>
+<pre><code>@Configuration
+@EnableAsync
+@EnableScheduling
+public class AppConfig {
+}
+</code></pre><p>你可以任意为你的应用选择相关的注解使用，例如，如果你仅需要支持<code>@Scheduled</code>，就可以省略<code>@EnableAsync</code>。如果你需要更加细粒度的控制任务，你可以额外实现<code>SchedulingConfigurer</code>或者<code>AsyncConfigurer</code>接口。全部细节详见javadocs。<br>如果你更喜欢使用XML配置文件，就使用 <code>&lt;task:annotation-driven&gt;</code> 元素。</p>
+<pre><code>&lt;task:annotation-driven executor=&quot;myExecutor&quot; scheduler=&quot;myScheduler&quot; /&gt;
+&lt;task:executor id=&quot;myExecutor&quot; pool-size=&quot;5&quot; /&gt;
+&lt;task:scheduler id=&quot;myScheduler&quot; pool-size=&quot;10&quot; /&gt;
+</code></pre><blockquote>
+<p>注意上述XML配置信息，其中处理任务的executor引用配置，相当于<code>@Async</code>注解；管理任务的Scheduler相当于<code>@Scheduled</code>注解。</p>
+</blockquote>
+<p><strong>@Scheduled注解</strong><br>这个注解可以添加在一个方法上，注解里可以配置一些触发器的参数。例如下面的一个方法，每次被调用都有5秒钟的延迟（即下一次执行在上一次执行完成之后，延迟5秒钟再执行），这个周期的衡量是每次调用完成的时间。</p>
+<pre><code>@Scheduled(fixedDelay=5000)
+public void doSomething() {
+    // something that should execute periodically
+}
+</code></pre><p>如果你急需一个固定频率的执行任务方法，只需要简单的改变注解中属性名称，下面的方法就是每5秒钟执行一次，这个周期的衡量是每次成功调用开始的时间。</p>
+<pre><code>@Scheduled(fixedRate=5000)
+public void doSomething() {
+    // something that should execute periodically
+}
+</code></pre><p>对于一些固定时延和固定频率执行的任务，指定一个初始延迟时间，表明这个方法的第一次执行需要等待这个毫秒数。例子如下：</p>
+<pre><code>@Scheduled(initialDelay=1000, fixedRate=5000)
+public void doSomething() {
+    // something that should execute periodically
+}
+</code></pre><p>如果简单的周期性调度不能满足你的任务的表达，可以使用提供的cron表达式。例如下面的例子，这个仅在工作日时间执行。</p>
+<pre><code>@Scheduled(cron=&quot;*/5 * * * * MON-FRI&quot;)
+public void doSomething() {
+// something that should execute on weekdays only
+}
+</code></pre><blockquote>
+<ol>
+<li>注意，此外你还可以使用zone属性来指定cron表达式中的时区问题。</li>
+</ol>
+<ul>
+<li>注意，这些被调度的任务方法不能有任何返回值，都是void方法，如果这个方法需要和应用上下文中其他对象有交互，这将需要通过依赖注入来实现。</li>
+<li>注意，确定你在运行时将注解了<code>@Scheduled</code>的类不要被初始化为一个实例，除非你确实想调度每个实例的回调函数。与这个相关，确保不要在使用<code>@Scheduled</code>注解的类上使用<code>@Configurable</code>，要表现为spring 容器的一个普通 bean，否则这个类会被初始化两次，一次是通过容器初始化的，一次是通过<code>@Configurable</code>切面初始化的，这样导致的结果就是，每个注解<code>@Scheduled</code>的方法被执行两次。</li>
+</ul>
+</blockquote>
+<p><strong>@Async注解</strong><br>注解<code>@Async</code>在方法上使用，这样，这个方法就可以被异步调用。换句话说就是，调用者将及时的得到上一次调用的响应，方法的实际执行将在一个任务中，这个任务已经被提交到Spring TaskExecutor中，最简单的例子是，注解被应用在一个void返回值的方法。</p>
+<pre><code>@Async
+void doSomething() {
+    // this will be executed asynchronously
+}
+</code></pre><p>和加了<code>@scheduled</code>注解的方法不同，这些方法希望有一些参数，因为它们是调用者在运行时，以一种普通的方式调用的，而不是一个被容器管理的调度任务中调用的，例如，下面是<code>@Async</code>使用合法的一个方法。</p>
+<pre><code>@Async
+void doSomething(String s) {
+    // this will be executed asynchronously
+}
+</code></pre><p>甚至，带有返回值的方法也能异步调用，但是这些方法的返回值类型必须是<code>Future</code>，这给异步执行提供了便利，调用者可以在调用<code>Future</code>中<code>get( )</code>方法之前调用其他任务。</p>
+<pre><code>@Async
+Future&lt;String&gt; returnSomething(int i) {
+    // this will be executed asynchronously
+}
+</code></pre><p><code>@Async</code>注解不能和 spring bean 生命周期的回调函数相关注解一起使用，例如<code>@PostConstruct</code>。如果想异步初始化 spring bean 中方法，必须在一个分离的初始化 spring bean 中调用带有<code>@Async</code>注解的方法。</p>
+<pre><code>public class SampleBeanImpl implements SampleBean {
+    @Async
+    void doSomething() {
+        // ...
+    }
+}
+
+public class SampleBeanInititalizer {
+    private final SampleBean bean;
+    public SampleBeanInitializer(SampleBean bean) {
+        this.bean = bean;
+    }
+
+    @PostConstruct
+    public void initialize() {
+        bean.doSomething();
+    }
+}
+</code></pre><blockquote>
+<p>注意，在同一个类中的方法调用，添加<code>@Async</code>注解实现异步调用是无效的。</p>
+</blockquote>
+<p><strong>@Async中指定执行时的Executor</strong><br>添加了<code>@Async</code>注解的方法默认情况下使用的Executor是上面提到的一种方式，即通过<code>Annotation-driven</code>元素提供的Executor。然而，在<code>@Async</code>注解的一个属性中可以指定这个Executor，而不是使用上面默认提供的Executor。例子如下：</p>
+<pre><code>@Async(&quot;otherExecutor&quot;)
+void doSomething(String s) {
+    // this will be executed asynchronously by &quot;otherExecutor&quot;
+}
+</code></pre><p>在这种情况下，<code>otherExecutor</code>可能是在spring容器中任何Executor的名字，也可能是和任何Executor有联系的qualifier的名字，如指定<code>&lt;qualifier&gt;</code>元素或者spring的<code>@Qualifier</code>注解。</p>
+<p><strong>@Async的异常管理</strong><br>当一个注有<code>@Async</code>注解的方法有一个Future类型的返回值时，异常是很容易管理的，即当这个方法执行过程中抛出异常时，这个异常同样会在调用Future中get方法时抛出。然而一个void返回值类型的函数呢，这个异常将不会被捕获也不会被传递，就这种情况下，<code>AsyncUncaughtExceptionHandler</code>是用来处理这种异常的。</p>
+<pre><code>public class MyAsyncUncaughtExceptionHandler implements AsyncUncaughtExceptionHandler {
+    @Override
+    public void handleUncaughtException(Throwable ex, Method method, Object... params) {
+        // handle exception
+    }
+}
+</code></pre><blockquote>
+<p>默认情况下，这种异常仅仅被简单记入日志，还可以通过接口<code>AsyncConfigurer</code>或者XML标签<code>task:annotation-driven</code>自定义一个 <code>AsyncUncaughtExceptionHandler</code>。</p>
+</blockquote>
+<h2 id="5-Task的命名空间"><a href="#5-Task的命名空间" class="headerlink" title="5. Task的命名空间"></a>5. Task的命名空间</h2><p>从spring 3.0 开始，为了配置<code>TaskExecutor</code>和<code>TaskScheduler</code>实例新添加了XML命名空间，这也为使用触发器配置任务调度提供了方便。</p>
+<p><strong>Scheduler元素</strong><br>下面的元素将要使用指定的线程池大小创建一个<code>TreadPoolTaskScheduler</code>实例：</p>
+<pre><code>&lt;task:scheduler id=&quot;scheduler&quot; pool-size=&quot;10&quot;/&gt;
+</code></pre><p>上面提供的<code>id</code>属性的值将会在线程池中被用作线程名字的前缀，<code>Scheduler</code>元素是相对来说比较简单的。如果你不提供<code>pool-size</code>属性的值，默认的线程池大小就是1，<code>Scheduler</code>元素没有其它的配置属性了。</p>
+<p><strong>Executor元素</strong><br>下面将创建一个<code>ThreadPoolTaskExecutor</code>的实例：</p>
+<pre><code>&lt;task:executor id=&quot;executor&quot; pool-size=&quot;10&quot;/&gt;
+</code></pre><p>和上面的<code>scheduler</code>元素一样，<code>id</code>属性的值将会被用作在线程池中线程名称的前缀，就线程池大小而言，<code>executor</code>元素比<code>scheduler</code>元素支持更多的配置项。首先，<code>ThreadPoolTaskExecutor</code>的线程池本身是有很多配置的，不仅仅是一个线程池大小的配置，一个<code>executor</code>的线程池的核心值和最大值有很多不同的值，如果是简单的一个值，<code>executor</code>将有一个固定大小的线程池（核心和最大值是相同的），然而实际上，<code>executor</code>元素的<code>pool-size</code>属性已接受这样的值<code>min-max</code>。下面是个例子：</p>
+<pre><code>&lt;task:executor id= &quot;executorWithPoolSizeRange&quot;
+    pool-size=&quot;5-25&quot;
+    queue-capacity=&quot;100&quot; /&gt;
+</code></pre><p>正如你在配置中看到的一样，还提供了一个属性<code>queue-capacity</code>。线程池的配置应该考虑一下executor的队列容量，对于线程池大小和队列容量之间关系的详细描述，参见<code>TreadPoolExecutor</code>的文档。主要的意思是这样的，当我们提交一个任务的时候，首先，如果当前活动的线程数量小于核心大小，则executor使用一个空闲的线程来执行这个任务；如果当前线程数量已达到核心大小，任务将会被添加到一个队列中，直到达到队列的最大容量；如果队列的容量也达到了，executor将会在核心大小之外创建新的线程来执行这个任务；如果线程数量也达到了线程池的最大值，executor将拒绝执行这个任务。</p>
+<p>默认情况下，队列的大小是无限的（<code>Integer.MAX_VALUE</code>），但是这个值很少人有人设置，这样如果任务添加过多，而线程池的线程又是一直工作的，就会导致内存溢出的错误（<code>OutOfMemoryErrors</code>）。进一步来说，如果队列的大小是无限的，设置的线程池的最大值就没有作用了。因为当线程池大小超过核心大小时，创建一个新的线程之前，executor总是试图将任务添加到队列中，所以队列必须设置一个有限的容量，来接收超出线程池核心大小的任务。使用无限队列大小的唯一明智的情况是，在使用固定大小线程池的时候。</p>
+<p>现在我们需要回顾一下<code>keep-alive</code>设置的效果，这是配置了线程池大小之后，有一个需要考虑的因素。首先，让我们考虑一下这种情况，如上所述，一个任务可能会被拒绝。默认情况下，当一个任务被拒绝的时候，executor会抛出一个异常（<code>TaskRejectedException</code>），实际上拒绝任务的策略是可配置的，抛出异常的那个默认的拒绝任务的策略是<code>AbortPolicy</code>实现类。在一些应用中，重负载下的一些任务是可以跳过的，这时可配置的拒绝策略是<code>DiscardPolicy</code>或者<code>DiscardOldestPolicy</code>。另一个可选的拒绝任务的策略是<code>CallerRunsPolicy</code>，它在某些应用（在重负载下的需要节流已经提交的任务）中表现良好。与抛出异常和丢弃任务相比，这个策略是简单的强制正在调用提交方法的线程运行当前这个任务。主要的思想是让任务的调用者是繁忙的，而不能立即提交其他的任务。因此这样就提供了一种简单的控制任务提交的方式，在达到线程池和队列的限制时。这样executor就会在完成一些任务后，在队列和线程池中腾出一些空间。上面列举的这些选项都是可以作为executor元素中的<code>rejection-policy</code>属性的值。下面是个例子：</p>
+<pre><code>&lt;task:executor id= &quot;executorWithCallerRunsPolicy&quot;
+    pool-size=&quot;5-25&quot;
+    queue-capacity=&quot;100&quot;
+    rejection-policy=&quot;CALLER_RUNS&quot; /&gt;
+</code></pre><p>最后，<code>keep-alive</code>设置决定了闲置的线程在被终止前保留的时间（以秒为单位），意思是，如果在当前线程池中有超过核心线程数的线程，在等待这个时间没有处理一个任务之后，超出的线程将会终止。这个时间设置为0，导致超出的线程在执行完任务之后就会被立即结束，不会处理任务队列中的后续工作。下面是一个例子：</p>
+<pre><code>&lt;task:executor id= &quot;executorWithKeepAlive&quot;
+    pool-size=&quot;5-25&quot;
+    keep-alive=&quot;120&quot; /&gt;
+</code></pre><p><strong>scheduled-tasks元素</strong><br>spring的task的命名空间最强大的一个特性是，支持在spring的应用上下文中配置任务和调度。下面是一种方法和在spring中其他的<code>method-invokers</code>一样，例如在JMS的命名空间中配置<code>Message-driven</code>的POJO，基本上一个<code>ref</code>属性就能指定spring 管理的对象，并且<code>method</code>属性指定在那个类中要调用的方法名。这儿是一个简单的例子：</p>
+<pre><code>&lt;task:scheduled-tasks scheduler=&quot;myScheduler&quot;&gt;
+    &lt;task:scheduled ref=&quot;beanA&quot; method=&quot;methodA&quot; fixed-delay =&quot;5000&quot;/&gt;
+&lt;/task:scheduled-tasks&gt;
+&lt;task:scheduler id=&quot;myScheduler&quot; pool-size=&quot;10&quot;/&gt;
+</code></pre><p>正如你所看到的，scheduler是被其他外部元素引用的，每一单独的任务包括触发器的相关配置。在前面的例子中，是一个有固定延迟的周期性触发器，延迟的指定数字的毫秒数，也就是每个任务执行完成之后，要等待这个时间值之后再启动下一次任务。另一个选项是<code>fixed-rate</code>，它的意思是任务多长时间执行一次，不管前面的任务是否执行完成。此外，<code>fixed-delay</code>和<code>fixed-rate</code>都有一个<code>initial-delay</code>参数，可以指定任务第一次执行时延迟的时间，需要更多的控制的话，可以使用<code>cron</code>属性。下面是一个展示这些选项的例子：</p>
+<pre><code>&lt;task:scheduled-tasks scheduler=&quot;myScheduler&quot;&gt;
+    &lt;task:scheduled ref=&quot;beanA&quot; method=&quot;methodA&quot; fixed-delay=&quot;5000&quot; initial-delay=&quot;1000&quot; /&gt;
+    &lt;task:scheduled ref=&quot;beanB&quot; method=&quot;methodB&quot; fixed-rate=&quot;5000&quot; /&gt;
+    &lt;task:scheduled ref=&quot;beanC&quot; method=&quot;methodC&quot; cron=&quot;*/5 * * * * MON-FRI&quot; /&gt;
+&lt;/task:scheduled-tasks&gt;
+&lt;task:scheduler id=&quot;myScheduler&quot; pool-size=&quot;10&quot; /&gt;
+</code></pre><h2 id="6-Quartz-Scheduler的用法"><a href="#6-Quartz-Scheduler的用法" class="headerlink" title="6. Quartz Scheduler的用法"></a>6. Quartz Scheduler的用法</h2><p>Quartz使用<code>Trigger</code>、<code>Job</code>和<code>JobDetail</code>对象来实现各种任务的调度。对于Quartz背后的基本概念，可以查看<a href="http://quartz-scheduler.org" target="_blank" rel="noopener">http://quartz-scheduler.org</a>。为了方便，spring提供了两个类，简化在基于spring的应用中使用Quartz的过程。</p>
+<p><strong>JobDetailFactoryBean的用法</strong><br>Quartz的JobDetail对象包括运行一个Job所需的全部信息。spring提供了一个<code>JobDetailFactoryBean</code>，实现xml配置的目的。下面是一个例子：</p>
+<pre><code>&lt;bean name=&quot;exampleJob&quot; class=&quot;org.springframework.scheduling.quartz.JobDetailFactoryBean&quot;&gt;
+    &lt;property name=&quot;jobClass&quot; value=&quot;example.ExampleJob&quot; /&gt;
+    &lt;property name=&quot;jobDataAsMap&quot;&gt;
+        &lt;map&gt;
+            &lt;entry key=&quot;timeout&quot; value=&quot;5&quot; /&gt;
+        &lt;/map&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre><p>Job detail的配置包含运行一个任务（ExampleJob）所需的全部信息。timeout在任务的数据映射中被指定，任务的数据映射是通过<code>JobExecutionContext</code>获取的，而<code>JobExecutionContext</code>是在执行任务的时候传进来的，并且<code>JobDetail</code>也可以从映射到任务实例的任务数据中获取它的所有属性。因此在这种情况下，如果<code>ExampleJob</code>中包含一个名叫<code>timeout</code>的bean属性，<code>JobDetail</code>将自动的使用它：</p>
+<pre><code>package example;
+
+public class ExampleJob extends QuartzJobBean {
+    private int timeout;
+
+    /**
+     * Setter called after the ExampleJob is instantiated with the value from
+     * the JobDetailFactoryBean (5)
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    protected void executeInternal(JobExecutionContext ctx) throws JobExecutionException {
+        // do the actual work
+    }
+}
+</code></pre><p>当然，在任务的数据映射中的其他所有的属性也是可以用的。</p>
+<blockquote>
+<p>注意，你可以使用name和group属性来分别修改任务的名字和组别。默认情况下，任务的名字是<code>JobDetailFactoryBean</code>的bean的名字（在上面的例子中就是<code>exampleJob</code>）。</p>
+</blockquote>
+<p><strong>MethodInvokingJobDetailFactoryBean的用法</strong><br>你经常仅需要调用一个指定类里的一个方法，你可以像下面这样使用<code>MethodInvokingJobDetailFactoryBean</code>：</p>
+<pre><code>&lt;bean id=&quot;jobDetail&quot;
+    class=&quot;org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean&quot;&gt;
+    &lt;property name=&quot;targetObject&quot; ref=&quot;exampleBusinessObject&quot; /&gt;
+    &lt;property name=&quot;targetMethod&quot; value=&quot;doIt&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><p>上面的例子将会使名为 <code>exampleBusinessObject</code> 的 bean 中的<code>doIt</code>方法被调用。bean 的定义如下：</p>
+<pre><code>public class ExampleBusinessObject {
+    // properties and collaborators
+    public void doIt() {
+        // do the actual work
+    }
+}
+</code></pre><pre><code>&lt;bean id=&quot;exampleBusinessObject&quot; class=&quot;examples.ExampleBusinessObject&quot;/&gt;
+</code></pre><p>使用<code>MethodInvokingJobDetailFactoryBean</code>的时候，不需要创建一行有关任务相关的代码，只需要调用一个方法，你只需要创建一个实际的业务对象，然后和<code>detail</code>对象连接起来就行了。</p>
+<p>默认情况下，Quartz 任务是无状态的，这就可能导致任务之间互相干扰，如果你为一个<code>JobDetail</code>指定两个触发器，在第一个任务执行完成之前，有可能第二个任务已经开始执行，如果<code>JobDetail</code>的实现类已经实现了Stateful接口，这种情况不会出现，第二个任务将不会在第一个任务执行完成之前开始。为了使<code>MethodInvokingJobDetailFactoryBean</code>不并行，设置<code>concurrent</code>属性为<code>false</code>。</p>
+<pre><code>&lt;bean id=&quot;jobDetail&quot;
+    class=&quot;org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean&quot;&gt;
+    &lt;property name=&quot;targetObject&quot; ref=&quot;exampleBusinessObject&quot; /&gt;
+    &lt;property name=&quot;targetMethod&quot; value=&quot;doIt&quot; /&gt;
+    &lt;property name=&quot;concurrent&quot; value=&quot;false&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><blockquote>
+<p>注意，默认情况下任务是并行的模式。</p>
+</blockquote>
+<p><strong>使用Triggers和SchedulerFactoryBean连接任务</strong><br>我们已经创建了<code>JobDetail</code>和<code>Job</code>，我们也回顾一下上面方便我们直接调用一个对象的指定方法的bean，当然，仍然需要我们自己调度任务，这需要使用<code>Trigger</code>和一个<code>SchedulerFactoryBean</code>。在Quartz中的<code>Trigger</code>是可以用，在spring中提供了Quartz 中 <code>FactoryBean</code> 的两个实现类：<code>CronTriggerFactoryBean</code> 和 <code>SimpleTriggerFactoryBean</code>。<br>Trigger是调度需要的，spring提供了一个<code>SchedulerFactoryBean</code>，Trigger作为它的一个属性。<code>SchedulerFactoryBean</code>根据这些Trigger实际调度这些任务。下面是一对例子：</p>
+<pre><code>&lt;bean id=&quot;simpleTrigger&quot;
+    class=&quot;org.springframework.scheduling.quartz.SimpleTriggerFactoryBean&quot;&gt;
+    &lt;!-- see the example of method invoking job above --&gt;
+    &lt;property name=&quot;jobDetail&quot; ref=&quot;jobDetail&quot; /&gt;
+    &lt;!-- 10 seconds --&gt;
+    &lt;property name=&quot;startDelay&quot; value=&quot;10000&quot; /&gt;
+    &lt;!-- repeat every 50 seconds --&gt;
+    &lt;property name=&quot;repeatInterval&quot; value=&quot;50000&quot; /&gt;
+&lt;/bean&gt;
+&lt;bean id=&quot;cronTrigger&quot;
+    class=&quot;org.springframework.scheduling.quartz.CronTriggerFactoryBean&quot;&gt;
+    &lt;property name=&quot;jobDetail&quot; ref=&quot;exampleJob&quot; /&gt;
+    &lt;!-- run every morning at 6 AM --&gt;
+    &lt;property name=&quot;cronExpression&quot; value=&quot;0 0 6 * * ?&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><p>现在我们启动了两个Trigger，一个是每50秒执行一次，开始延迟是10秒，另一个是每天早上6点执行一次。为了最后执行每个任务，我们需要启动<code>SchedulerFactoryBean</code>：</p>
+<pre><code>&lt;bean class=&quot;org.springframework.scheduling.quartz.SchedulerFactoryBean&quot;&gt;
+    &lt;property name=&quot;triggers&quot;&gt;
+        &lt;list&gt;
+            &lt;ref bean=&quot;cronTrigger&quot; /&gt;
+            &lt;ref bean=&quot;simpleTrigger&quot; /&gt;
+        &lt;/list&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre><p>在<code>SchedulerFactoryBean</code>中有很多属性可以设置，例如在<code>JobDetail</code>中的日历，支持Quartz中自定义属性等，详细信息查阅<code>SchedulerFactoryBean</code>的javadoc文档。</p>
+<blockquote>
+<p>最完整的一个主题的翻译，下一篇预告：分布式定时任务的完美实施，《<a href="http://rabbitgyk.com/2018/01/27/uncode-schedule-framework/">分布式定时任务框架 Uncode Schedule</a>》</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/uncode-schedule-source/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">25</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/docker/" style="font-size: 12.5px;">docker</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
