@@ -204,7 +204,7 @@
 </li>
 </ul>
 <p><strong>TaskExecutor示例</strong><br>spring的<code>TaskExecutor</code>可以用一些简单的JavaBean实现，我们举个用 <code>ThreadPoolTaskExecutor</code> 定义一个Bean，并异步的打印一些信息的例子：</p>
-<pre><code>import org.springframework.core.task.TaskExecutor;
+<pre><code class="java">import org.springframework.core.task.TaskExecutor;
 public class TaskExecutorExample {
     private class MessagePrinterTask implements Runnable {
         private String message;
@@ -229,7 +229,8 @@ public class TaskExecutorExample {
         }
     }
 }
-</code></pre><p>正如你看到的一样，并不是从线程池中重新取出一个线程来执行它，而是添加你自己的Runnable任务到一个队列中，然后TaskExecutor用它的内部规则来决定那个任务被执行。为了配置将要使用的TaskExecutor规则，下面是一个简单的bean properties配置：</p>
+</code></pre>
+<p>正如你看到的一样，并不是从线程池中重新取出一个线程来执行它，而是添加你自己的Runnable任务到一个队列中，然后TaskExecutor用它的内部规则来决定那个任务被执行。为了配置将要使用的TaskExecutor规则，下面是一个简单的bean properties配置：</p>
 <pre><code>&lt;bean id=&quot;taskExecutor&quot;
     class=&quot;org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor&quot;&gt;
     &lt;property name=&quot;corePoolSize&quot; value=&quot;5&quot; /&gt;
