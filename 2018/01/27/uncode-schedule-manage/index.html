@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>标签: spring | rabbitGYK&#39;s blog</title>
+<title>uncode-schedule-manage定制化管理系统 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,7 +37,11 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -136,56 +140,132 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content ">
-                    <h3> 
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="uncode-schedule-manage定制化管理系统">
+            
+            uncode-schedule-manage定制化管理系统
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            分布式定时任务
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
 
-    spring 
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>Uncode-Schedule分布式服务框架的系列文章，今天再补充一篇定时任务的管理系统。方便监控定时任务的执行状态以及手动控制。Uncode-Schedule框架本身自带有一个简单的查看定时任务的页面，但是比较简单，为了更方便全面的监控定时任务，我单独做了一个监控系统，名叫<a href="https://github.com/rabbitgyk/uncode-schedule-manage" target="_blank" rel="noopener">uncode-schedule-manage</a>。本文主要介绍一下该监控系统的功能和使用方法。</p>
+</blockquote>
+<h2 id="功能简介"><a href="#功能简介" class="headerlink" title="功能简介"></a>功能简介</h2><p>主要功能包括定时任务的执行状态查看和手动执行定时任务。</p>
+<p>一、 首页<br>管理界面首页如下图，其中功能包括：<br>1.1. 查看集群节点服务器名称以及是否是调度节点；<br>1.2. 定时任务的列表，除了包含定时任务的基本信息之外，还包含每个定时任务的执行次数和最近一次的执行时间，还可以将定时任务的信息在zk中删除；<br>1.3. 添加定时任务的功能，可以将一个Spring bean中的方法作为定时任务添加进去。<br><img src="/2018/01/27/uncode-schedule-manage/manage-page.png" alt="管理界面首页"></p>
+<p><img src="/2018/01/27/uncode-schedule-manage/add-page.png" alt="管理界面首页添加定时任务功能"></p>
+<p>二、手动执行功能<br>手动执行的定时任务列表如下图，再点击“执行”前需要先选择集群中的某个服务器节点，选择之后点击“执行”，弹出如下“执行任务界面”，在这个界面中需要填写要传入的方法参数，还要添加完整执行节点的url（端口+项目名称）。</p>
+<p><img src="/2018/01/27/uncode-schedule-manage/manual-list.png" alt="手动执行任务列表"></p>
+<p><img src="/2018/01/27/uncode-schedule-manage/execute-task.png" alt="执行任务界面"></p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ol>
+<li><p>修改配置文件applicationContext.xml</p>
+<pre><code>&lt;bean id=&quot;zkScheduleManager&quot; class=&quot;cn.uncode.schedule.ZKScheduleManager&quot; init-method=&quot;init&quot;&gt;
+ &lt;property name=&quot;zkConfig&quot;&gt;
+     &lt;map&gt;
+         &lt;entry key=&quot;zkConnectString&quot; value=&quot;192.168.7.149:2181&quot; /&gt;
+         &lt;entry key=&quot;rootPath&quot; value=&quot;/uncode/schedule&quot; /&gt;
+         &lt;entry key=&quot;zkSessionTimeout&quot; value=&quot;60000&quot; /&gt;
+         &lt;entry key=&quot;userName&quot; value=&quot;ScheduleAdmin&quot; /&gt;
+         &lt;entry key=&quot;password&quot; value=&quot;password&quot; /&gt;
+         &lt;entry key=&quot;autoRegisterTask&quot; value=&quot;true&quot; /&gt;
+         &lt;entry key=&quot;isCheckParentPath&quot; value=&quot;true&quot; /&gt;
+         &lt;entry key=&quot;ipBlacklist&quot; value=&quot;192.168.7.231&quot; /&gt;
+     &lt;/map&gt;
+ &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre><p>修改其中的zk配置，首先连接字符串<code>zkConnectString</code>和要监控的定时任务注册的zk一样，以及根目录、用户名和密码都要一样；然后还要将管理系统部署节点的IP地址加入到黑名单<code>&lt;entry key=&quot;ipBlacklist&quot; value=&quot;192.168.7.231&quot; /&gt;</code>，使其不可成为任务执行节点。</p>
+</li>
+<li><p>修改配置文件schedule.properties</p>
+<pre><code>uncode.schedule.server.code=1000000001
+</code></pre><p>将这个值配置成最大值，使其永远不会成为调度节点。</p>
+</li>
+<li><p>使用maven打成war包，部署到tomcat即可。</p>
+</li>
+<li><p>首页地址是：<code>http://192.168.7.231:8089/uncode-schedule-manage/main/page</code></p>
+</li>
+</ol>
+<blockquote>
+<p>总结：有了这个管理界面就可以很方便的查看定时任务和手动执行定时任务，完美支撑Uncode-Schedule分布式定时任务框架。</p>
+</blockquote>
 
+    </div>
 
-</h3>
-
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/27/why-not-rollback-spring-transaction/">Spring声明式事务为何不回滚</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月27日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-疑问，确实像往常一样在service上添加了注解 @Transactional，为什么查询数据库时还是发现有数据不一致的情况，想想肯定是事务没起作用，出现异常的时候数据没有回滚。于是就对相关代码进行了一番测试，结果发现一下踩进了两个...
-            </p> 
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
         </div>
-    </article>
- 
-    <article class="post">
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/why-not-rollback-spring-transaction/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
         
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/04/druid-configuration/">druid连接池推荐配置</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月04日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-Druid是阿里巴巴开源平台上的一个项目，整个项目由数据库连接池、插件框架和SQL解析器组成。该项目主要是为了扩展JDBC的一些限制，可以让程序员实现一些特殊的需求，比如向密钥服务请求凭证、统计SQL信息、SQL性能收集、SQL注入...
-            </p> 
-        </div>
-    </article>
- 
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
 
 
+
+
+
+
+
+
+    </div>
 
 
 
