@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>标签: 架构 | rabbitGYK&#39;s blog</title>
+<title>九周九分布式服务-架构演进 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -37,7 +37,11 @@
     
 
 
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
 
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
 
 
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
@@ -136,36 +140,144 @@
     <section class="content-wrap">
         <div class="container">
             <div class="row">
-                <main class="col-md-8 main-content ">
-                    <h3> 
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="九周九分布式服务-架构演进">
+            
+            九周九分布式服务-架构演进
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            微服务
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/01/27</span>
+    </span>
+</div>
 
-    架构 
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>自从《序》发表之后20多天了，新项目总算忙过去了，回家过年顺便休个假，茶余饭后继续我们的九周九分布式服务系列文章。根据预告中的顺序，今天写第一篇《架构演进》，书归正传。</p>
+</blockquote>
+<h3 id="00-概述"><a href="#00-概述" class="headerlink" title="00 概述"></a>00 概述</h3><p>随着业务的发展，项目的规模不断扩大，为了方便快速的构建迭代应用，应用的架构也在不断的演进，发展的核心问题是，服务化改造和服务治理。这种架构设计是，对复杂的应用进行水平拆分和服务化改造，将服务的消费者和服务的提供者解耦，增加复用性，减少公共模块的重复开发。系统可靠性和团队的协作能力也会有所提高。</p>
+<p>应用架构的历史演进过程是这样的，下图展示了整个过程。</p>
+<p><img src="/2018/01/27/distributed-service-evolution/architecture-evolution.png" alt="架构演进"></p>
+<ol>
+<li>垂直烟囱式架构：这类架构一般是一个war包搞定一切 [All in One]。</li>
+<li>RPC架构：这类架构实现了前后端分离，这里不是指页面（html等）和后台代码（java等）的分离，是指逻辑上的前后端分离，前端逻辑和后端逻辑的分离，前端逻辑由Spring MVC框架完成，后端通过RPC框架完成业务逻辑接口的封装和暴露。</li>
+<li>SOA架构：随着暴露接口的增多，在RPC架构中接口的管理和配置工作随之增加，这时对应用的架构提出了更高的要求，<strong>服务自动发现</strong>，<strong>自带负载均衡</strong>，<strong>服务自治</strong>，<strong>服务可编排</strong>等高级特性。这就是面向服务的架构设计（SOA）出现的历史原因。</li>
+<li>微服务架构：与SOA架构没有本质上的区别，是SOA架构进化出来的一种服务设计风格，特点是服务拆分粒度小、服务量大、真正实现敏捷交付、践行DevOps思想。</li>
+</ol>
+<h3 id="01-垂直架构"><a href="#01-垂直架构" class="headerlink" title="01 垂直架构"></a>01 垂直架构</h3><p>这种架构设计一般出现在业务发展初期，业务功能单一，业务量小。 在垂直的架构中一般采用经典的MVC三层架构模型：<br><img src="/2018/01/27/distributed-service-evolution/architecture-mvc.png" alt="mvc架构模型"></p>
+<p>垂直的mvc三层架构，最前端的是视图展示层，是用户与之交互的界面；中间的控制层主要负责web请求的分发；第三层为应用模型层，这是业务逻辑的主要实现部分。</p>
+<p>它的部署方式一般是如下形式：</p>
+<p><img src="/2018/01/27/distributed-service-evolution/architecture-vertical.png" alt="垂直架构的部署方式"></p>
+<p>特点：<br>维护成本高，部署效率低，团队协作效率差，导致系统可靠性变差（在一个进程里面，一旦有一个接口出现故障，内存泄漏，会影响整个节点的宕机），新功能上线周期变长（耦合太多）。</p>
+<h3 id="02-RPC架构"><a href="#02-RPC架构" class="headerlink" title="02 RPC架构"></a>02 RPC架构</h3><p>RPC全称是Remote Procedure Call，是一种进程间通信方式，允许像调用本地服务一样的调用远程服务，一定程度上做到了公共服务的重用。支撑这种架构的框架就是RPC框架，业界流行的开源的RPC框架主要有：</p>
+<ol>
+<li>FaceBook主导开发 Apache Thrift</li>
+<li>Hadoop子项目 Avro-RPC</li>
+<li>Caucho提供的Hessian</li>
+<li>Google开源的gRPC（HTTP/2、protobuf）</li>
+</ol>
+<p>在java的语言环境中，实现原理中用的主要技术包括序列化、socket通信、动态代理、反射机制。其实徒手实现一个简单RPC框架也是不复杂的，主要是由三个部分组成：</p>
+<ul>
+<li>服务提供者：运行在服务端，负责服务接口的定义和实现。</li>
+<li>服务发布者：运行在RPC服务端，负责将本地服务发布成可远程调用的服务。</li>
+<li>本地服务代理：运行RPC客户端，负责通过代理调用远程服务，将返回结果封装好供本地消费者使用。</li>
+</ul>
+<p>RPC架构一般的部署方式：</p>
+<p><img src="/2018/01/27/distributed-service-evolution/architecture-rpc.png" alt="RPC架构的部署方式"></p>
+<p>RPC框架的特点：简单、高效、通用，是SOA架构发展的底层技术支撑。</p>
+<p>RPC架构的特点：一定程度上提高了服务的重用性，但是消费者调用服务提供者配置管理困难，并且消费者无负载均衡控制，调用关系梳理困难。</p>
+<h3 id="03-SOA架构"><a href="#03-SOA架构" class="headerlink" title="03 SOA架构"></a>03 SOA架构</h3><p>SOA是面向服务架构，是一种粗粒度的、以服务为中心的架构。业界流行的框架：</p>
+<ol>
+<li>Dubbo/Dubbox（阿里/当当开源）</li>
+<li>HSF（阿里商业版）</li>
+<li>DSF（华为商业版）</li>
+<li>Coral Service（亚马逊内部）</li>
+<li>Spring Cloud（pivotal开源/商业版）</li>
+</ol>
+<p>在上述框架中大家最熟悉的应该是Dubbo框架，Dubbo框架的官方文档写的非常好，学习分布式服务框架必读文档。</p>
+<p>SOA架构的应用部署方式：</p>
+<p><img src="/2018/01/27/distributed-service-evolution/architecture-soa.png" alt="SOA架构的应用部署方式"><br>与上面RPC架构的图相比，其中多了两个翅膀，不要小看这两个翅膀，它们为我们的服务开发和运维工作提供了很多便利，起到了为应用保驾护航的作用。</p>
+<p>特点：<br>在服务注册中心的协助下实现了，服务自动发现、统一配置、可配置的服务路由、可配置的集群容错机制、服务治理等；服务治理也是依赖服务注册中心实现的，和具体的服务消费者和提供者是松耦合的，服务治理包括：服务运行态管控、服务生命周期管理、服务监控、服务安全、服务故障快速定位等功能；为运维工作提供了极大的便利。</p>
+<h3 id="04-微服务架构"><a href="#04-微服务架构" class="headerlink" title="04 微服务架构"></a>04 微服务架构</h3><p>微服务架构是一种服务化的架构风格，对服务的拆分粒度更细。微服务架构诞生肩负了更多的责任，最大限度的利用IT资源，容器化部署，敏捷交付以及自动化运维等。</p>
+<p><img src="/2018/01/27/distributed-service-evolution/architecture-micro.png" alt="微服务架构"><br>上面一张ppt基本概括了微服务的一切，应该是盖住了。。。</p>
+<blockquote>
+<p>结束语：第一篇写于家中文章，回头看看还可以，本文主要写的是一个发展过程，还是宏观的东西多一点，循序渐进，后面会慢慢深入进去。</p>
+</blockquote>
 
+    </div>
 
-</h3>
-
-    <article class="post">
-        
-        <div class="post-content">
-            <div class="post-head home-post-head">
-                <h1 class="post-title"> 
-                    <a href="/2018/01/14/microservice-improve-architecture/">微服务改造—架构设计</a>
-                </h1>
-                <div class="post-meta">  &bull;
-                    <time class="post-date" datetime="" title="">
-                        2018年01月14日
-                    </time>
-                </div>
-            </div>
-            <p class="brief">
-                
-随着我厂业务需求的压力逐渐增长，同时基础设施的不断完善，系统架构的微服务改造被正式提上日程。从微服务改造的目标架构蓝图设计开始讨论，架构组进行了整整两天的激烈讨论，明确了很多的业务边界。在此过程中我学习到很多知识，结合之前的一些经验...
-            </p> 
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
         </div>
-    </article>
- 
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/01/27/clean-code-read-note/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
 
 
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
 
 
 
