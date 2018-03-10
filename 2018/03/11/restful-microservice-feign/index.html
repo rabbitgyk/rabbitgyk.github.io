@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>uncode-schedule-manage定制化管理系统 | rabbitGYK&#39;s blog</title>
+<title>restful microservice-feign | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -144,9 +144,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="uncode-schedule-manage定制化管理系统">
+        <h1 id="restful microservice-feign">
             
-            uncode-schedule-manage定制化管理系统
+            restful microservice-feign
             
         </h1>
         <div class="post-meta">
@@ -162,7 +162,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            分布式定时任务
+            Feign
             
         </span>
     </span>
@@ -170,7 +170,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2018/01/27</span>
+        <span class="date-meta">2018/03/11</span>
     </span>
 </div>
 
@@ -180,43 +180,242 @@
     
     <div class="post-body post-content">
         <blockquote>
-<p>Uncode-Schedule分布式服务框架的系列文章，今天再补充一篇定时任务的管理系统。方便监控定时任务的执行状态以及手动控制。Uncode-Schedule框架本身自带有一个简单的查看定时任务的页面，但是比较简单，为了更方便全面的监控定时任务，我单独做了一个监控系统，名叫<a href="https://github.com/rabbitgyk/uncode-schedule-manage" target="_blank" rel="noopener">uncode-schedule-manage</a>。本文主要介绍一下该监控系统的功能和使用方法。</p>
+<p>现在的微服务已经有种趋势是，微服务之间的调用越来越多采用HTTP协议。如何优雅地高效地调用HTTP服务是我们需要考虑的一个问题。前两天已经简单对比了一下常用的几个HTTP client工具，参见：<a href="https://www.jianshu.com/p/6adb1fb56afc" target="_blank" rel="noopener">RESTful风格的微服务-HTTP client</a>，最后说到个人推荐使用 Feign + Http Client。</p>
 </blockquote>
-<h2 id="功能简介"><a href="#功能简介" class="headerlink" title="功能简介"></a>功能简介</h2><p>主要功能包括定时任务的执行状态查看和手动执行定时任务。</p>
-<p>一、 首页<br>管理界面首页如下图，其中功能包括：<br>1.1. 查看集群节点服务器名称以及是否是调度节点；<br>1.2. 定时任务的列表，除了包含定时任务的基本信息之外，还包含每个定时任务的执行次数和最近一次的执行时间，还可以将定时任务的信息在zk中删除；<br>1.3. 添加定时任务的功能，可以将一个Spring bean中的方法作为定时任务添加进去。<br><img src="/2018/01/27/uncode-schedule-manage/manage-page.png" alt="管理界面首页"></p>
-<p><img src="/2018/01/27/uncode-schedule-manage/add-page.png" alt="管理界面首页添加定时任务功能"></p>
-<p>二、手动执行功能<br>手动执行的定时任务列表如下图，再点击“执行”前需要先选择集群中的某个服务器节点，选择之后点击“执行”，弹出如下“执行任务界面”，在这个界面中需要填写要传入的方法参数，还要添加完整执行节点的url（端口+项目名称）。</p>
-<p><img src="/2018/01/27/uncode-schedule-manage/manual-list.png" alt="手动执行任务列表"></p>
-<p><img src="/2018/01/27/uncode-schedule-manage/execute-task.png" alt="执行任务界面"></p>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><ol>
-<li><p>修改配置文件applicationContext.xml</p>
-<pre><code>&lt;bean id=&quot;zkScheduleManager&quot; class=&quot;cn.uncode.schedule.ZKScheduleManager&quot; init-method=&quot;init&quot;&gt;
- &lt;property name=&quot;zkConfig&quot;&gt;
-     &lt;map&gt;
-         &lt;entry key=&quot;zkConnectString&quot; value=&quot;192.168.7.149:2181&quot; /&gt;
-         &lt;entry key=&quot;rootPath&quot; value=&quot;/uncode/schedule&quot; /&gt;
-         &lt;entry key=&quot;zkSessionTimeout&quot; value=&quot;60000&quot; /&gt;
-         &lt;entry key=&quot;userName&quot; value=&quot;ScheduleAdmin&quot; /&gt;
-         &lt;entry key=&quot;password&quot; value=&quot;password&quot; /&gt;
-         &lt;entry key=&quot;autoRegisterTask&quot; value=&quot;true&quot; /&gt;
-         &lt;entry key=&quot;isCheckParentPath&quot; value=&quot;true&quot; /&gt;
-         &lt;entry key=&quot;ipBlacklist&quot; value=&quot;192.168.7.231&quot; /&gt;
-     &lt;/map&gt;
- &lt;/property&gt;
-&lt;/bean&gt;
-</code></pre><p>修改其中的zk配置，首先连接字符串<code>zkConnectString</code>和要监控的定时任务注册的zk一样，以及根目录、用户名和密码都要一样；然后还要将管理系统部署节点的IP地址加入到黑名单<code>&lt;entry key=&quot;ipBlacklist&quot; value=&quot;192.168.7.231&quot; /&gt;</code>，使其不可成为任务执行节点。</p>
-</li>
-<li><p>修改配置文件schedule.properties</p>
-<pre><code>uncode.schedule.server.code=1000000001
-</code></pre><p>将这个值配置成最大值，使其永远不会成为调度节点。</p>
-</li>
-<li><p>使用maven打成war包，部署到tomcat即可。</p>
-</li>
-<li><p>首页地址是：<code>http://192.168.7.231:8089/uncode-schedule-manage/main/page</code></p>
-</li>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>可能你会说，一般的微服务框架都有完整的服务提供者和服务消费者以及服务注册中心解决方案，比如Dubbo和Spring Cloud等，按照各自标准的方式就能轻松实现服务调用。而最近兴起的Service Mesh的微服务解决方案，是将微服务治理相关的功能作为基础设施服务，独立于业务功能服务开发之外，而且不限制实现服务发布和服务消费所实现的框架，因此我们有必要单独探索一下HTTP client的用法。</p>
+<p>从前两天我的试用感受上来看，比较喜欢使用 Feign + Http Client (apache.httpcomponents) 这套HTTP服务调用工具。我的所有的测试代码都是基于 Spring Boot 2.0 框架写的，Spring Boot 也是个人目前比较喜欢的服务开发框架，能让我快速的构建测试基础项目。</p>
+<h2 id="01-HTTP请求响应"><a href="#01-HTTP请求响应" class="headerlink" title="01 HTTP请求响应"></a>01 HTTP请求响应</h2><p>首先介绍一下HTTP协议中本文所关系的知识点，主要是如何通过HTTP协议发送数据和接收数据。</p>
+<p>Internet的基本协议是TCP/IP协议，目前广泛使用的FTP、HTTP协议都是基于TCP/IP的，HTTP是Web应用最主要使用的协议。HTTP的版本也从刚开始的1.0到现在普遍使用的1.1，还有逐渐全面支持的2.0，HTTP协议的快速发展也使其用途更加广泛。</p>
+<ul>
+<li>请求报文分为：请求行、请求头、请求体。</li>
+<li>响应报文分为：响应行、响应头、响应体。</li>
+</ul>
+<p>本文主要介绍的是HTTP client的使用方式，因此我们详细介绍一下请求报文：</p>
+<ul>
+<li>请求行：请求方法、请求URL、HTTP协议及版本；</li>
+<li>请求头：Accept、Content-Type、Host、Cookie、Referer、Cache-Control等；</li>
+<li>请求体：就是请求数据；</li>
+</ul>
+<p>在我们的实际使用过程中，不止是请求体能携带数据发送至服务器端，携带数据的方式分为以下四种：</p>
+<ul>
+<li>Query Parameter，就是常见的请求url问号（?）后面的部分（例如，?name=rabbitGYK&amp;age=125）；</li>
+<li>Path Parameter，这种数据是作为url的一部分出现的（例如，/person/rabbitGYK）；</li>
+<li>Request Body，这是实实在在放在了HTTP协议的数据部分，常见的POST方法提交form表单；</li>
+<li>Request Header，经常在Cookie中放置一些数据，后者通过给某个header设置特定的value；</li>
+</ul>
+<p>请求方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法（操作）</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>请求读取由URL所标记的信息</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>向服务器提交信息</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>在指明的URL下存储一个文档</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>删除指明的URL所标记的资源</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>请求读取由URL所标记的信息的首部</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>用来进行环回测试的请求报文</td>
+</tr>
+<tr>
+<td>OPTIOON</td>
+<td>请求一些选项的信息</td>
+</tr>
+<tr>
+<td>CONNECT</td>
+<td>用于代理服务器</td>
+</tr>
+</tbody>
+</table>
+<p>其中，前面四个方法是我们在微服务设计中经常用到的，在使用的时候我们经常关注它们是否是幂等性操作，GET、PUT、DELETE都是幂等操作，POST不是，以下进行分析：</p>
+<ul>
+<li>首先GET请求很好理解，对资源做查询多次，此实现的结果都是一样的。 </li>
+<li>PUT请求的幂等性可以这样理解，将A修改为B，它第一次请求值变为了B，再进行多次此操作，最终的结果还是B，与一次执行的结果是一样的，所以PUT是幂等操作。 </li>
+<li>同理可以理解DELETE操作，第一次将资源删除后，后面多次进行此删除请求，最终结果是一样的，将资源删除掉了。</li>
+<li>POST不是幂等操作，因为一次请求添加一份新资源，二次请求则添加了两份新资源，多次请求会产生不同的结果，因此POST不是幂等操作。</li>
+</ul>
+<h2 id="02-Feign的示例"><a href="#02-Feign的示例" class="headerlink" title="02 Feign的示例"></a>02 Feign的示例</h2><p>我做的这个测试实践是基于spring boot 2.0的项目，需要首先在<a href="http://start.spring.io/" target="_blank" rel="noopener">SPRING INITIALIZR</a>生成基础的spring boot项目。然后具体的操作步骤如下：</p>
+<ol>
+<li>引入依赖jar包</li>
 </ol>
+<pre><code>&lt;!-- feign核心包 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.github.openfeign&lt;/groupId&gt;
+    &lt;artifactId&gt;feign-core&lt;/artifactId&gt;
+    &lt;version&gt;9.5.1&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- feign使用jackson数据编码 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.github.openfeign&lt;/groupId&gt;
+    &lt;artifactId&gt;feign-jackson&lt;/artifactId&gt;
+    &lt;version&gt;9.5.1&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- jackson的jar在spring boot的项目中本身就已经引入了，不需要单独引入 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-core&lt;/artifactId&gt;
+    &lt;version&gt;2.9.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- feign的http client底层实现使用apache httpcomponents httpclient --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.github.openfeign&lt;/groupId&gt;
+    &lt;artifactId&gt;feign-httpclient&lt;/artifactId&gt;
+    &lt;version&gt;9.5.1&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;
+    &lt;artifactId&gt;httpclient&lt;/artifactId&gt;
+    &lt;version&gt;4.5.5&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ol>
+<li>编写调用服务的HTTP client代码</li>
+</ol>
+<pre><code>package com.rabbit.boot.consumer.service;
+
+import com.rabbit.boot.consumer.common.ResultEntity;
+import com.rabbit.boot.consumer.model.Person;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+
+import java.util.List;
+
+/**
+ * @Author: guoyankui
+ * @DATE: 06/03/2018 10:24 AM
+ */
+@Headers({&quot;Accept: application/json&quot;, &quot;Host: web&quot;})
+public interface PersonService {
+
+    /**
+     * GET Request Body 只有底层使用ApacheHttpClient，可以这么用
+     * HttpURLConnection（JDK）：这种用法会将get方法自动转为post
+     * OkHttpClient：这种用法会报错，method GET must not have a request body.
+     * @param person
+     * @return
+     */
+    @RequestLine(&quot;GET /person/name&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;String&gt; getPersonInfo(Person person);
+
+    /**
+     * GET Uri Template
+     * @param name 使用@Param注解是将参数放在Uri Template中的占位符
+     * @return
+     */
+    @RequestLine(&quot;GET /person/info?name={name}&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;Person&gt; getPersonInfo(@Param(&quot;name&quot;) String name);
+
+    /**
+     * GET Uri Template
+     * @param age
+     * @param male
+     * @return 返回复杂参数
+     */
+    @RequestLine(&quot;GET /persons?age={age}&amp;male={male}&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;List&lt;Person&gt;&gt; getPersons(@Param(&quot;age&quot;) Integer age, @Param(&quot;male&quot;) Boolean male);
+
+    /**
+     * POST Request Body
+     * @param person feign中这种传递object（标准POJO）的方式，是将参数放在了Request Body中
+     * @return
+     */
+    @RequestLine(&quot;POST /person&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;Person&gt; addPerson(Person person);
+
+    /**
+     * POST Uri Template 也可以
+     * @param name
+     * @return
+     */
+    @RequestLine(&quot;POST /name?name={name}&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;String&gt; getName(@Param(&quot;name&quot;) String name);
+
+    /**
+     * PUT Uri Template
+     * @param name
+     * @param age
+     * @return
+     */
+    @RequestLine(&quot;PUT /person/{name}?age={age}&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;Person&gt; updatePerson(@Param(&quot;name&quot;) String name, @Param(&quot;age&quot;) Integer age);
+
+    /**
+     * PUT Request Body
+     * @param person
+     * @return
+     */
+    @RequestLine(&quot;PUT /person/info&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;Person&gt; updatePersonOne(Person person);
+
+    /**
+     * DELETE Uri Template
+     * @param name
+     * @return
+     */
+    @RequestLine(&quot;DELETE /person/{name}&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;Person&gt; deletePerson(@Param(&quot;name&quot;) String name);
+
+    /**
+     * DELETE Request Body
+     * @param person
+     * @return
+     */
+    @RequestLine(&quot;DELETE /person/info&quot;)
+    @Headers(&quot;Content-Type: application/json&quot;)
+    ResultEntity&lt;Person&gt; deletePersonOne(Person person);
+}
+</code></pre><ol>
+<li>利用Feign构建客户端实例</li>
+</ol>
+<pre><code>private String baseUrl = &quot;http://127.0.0.1:9999/boot-linkerd-test&quot;;
+
+private PersonService personService = Feign.builder().client(new ApacheHttpClient())
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder()).target(PersonService.class, baseUrl);
+</code></pre><p>其中，<code>client(new ApacheHttpClient())</code>是指定使用Apache Http client作为发起HTTP请求的底层支撑，<code>encoder(new JacksonEncoder())</code> 是指定请求数据使用Jackson API编码，<code>decoder(new JacksonDecoder())</code>是指定对响应数据使用Jackson API解码，<code>target(PersonService.class, baseUrl)</code>中指定了构建出来的服务调用客户端类型，以及基础URL，<code>baseUrl</code> 加上 <code>@RequestLine</code> 中的URL部分组成完整的服务端URL。</p>
+<ol>
+<li>调用服务</li>
+</ol>
+<pre><code>ResultEntity&lt;String&gt; resultEntity = personService.getPersonInfo(person);
+ResultEntity&lt;Person&gt; resultEntity = personService.getPersonInfo(name);
+ResultEntity&lt;List&lt;Person&gt;&gt; persons = personService.getPersons(age, male);
+ResultEntity&lt;Person&gt; resultEntity = personService.addPerson(person);
+ResultEntity&lt;String&gt; resultEntity = personService.getName(name);
+ResultEntity&lt;Person&gt; person = personService.updatePerson(name, age);
+ResultEntity&lt;Person&gt; person1 = personService.updatePersonOne(person);
+ResultEntity&lt;Person&gt; person = personService.deletePerson(name);
+ResultEntity&lt;Person&gt; person1 = personService.deletePersonOne(person);
+</code></pre><p>从上面的代码示例可以看出，就像调用普通的方法一样调用服务，优雅吧！</p>
+<h2 id="03-总结"><a href="#03-总结" class="headerlink" title="03 总结"></a>03 总结</h2><p>本文从HTTP协议的相关知识开始，介绍了Feign的简单用法，选取的示例相对来说比较全面，包含了GET、POST、PUT、DELETE四种常用的请求方法，以及分别使用URI Template和Request Body传递参数的方式，还有请求头的设置方法。</p>
 <blockquote>
-<p>总结：有了这个管理界面就可以很方便的查看定时任务和手动执行定时任务，完美支撑Uncode-Schedule分布式定时任务框架。</p>
+<p>个人非常喜欢Feign这个HTTP服务的调用工具，让人感觉到，原来http协议的接口调用也能像调用本地方法一样使用，再也不怕写不出整洁的代码了。</p>
 </blockquote>
 
     </div>
@@ -235,10 +434,8 @@
 
 <div class="article-nav prev-next-wrap clearfix">
     
-        <a href="/2018/01/27/uncode-schedule-framework/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
-    
-        <a href="/2018/01/27/why-not-rollback-spring-transaction/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+        <a href="/2018/03/11/restful-microservice-http-client/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 

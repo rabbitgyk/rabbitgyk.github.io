@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rabbitgyk.com/2018/03/11/restful-microservice-feign/</loc>
+    
+    <lastmod>2018-03-10T16:25:32.540Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rabbitgyk.com/2018/03/11/restful-microservice-http-client/</loc>
     
-    <lastmod>2018-03-10T16:18:00.069Z</lastmod>
+    <lastmod>2018-03-10T16:21:09.628Z</lastmod>
     
   </url>
   
