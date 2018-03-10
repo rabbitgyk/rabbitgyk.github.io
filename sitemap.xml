@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rabbitgyk.com/2018/03/11/restful-microservice-http-client/</loc>
+    
+    <lastmod>2018-03-10T16:18:00.069Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rabbitgyk.com/2018/01/27/apache-flume-user-guide/</loc>
     
     <lastmod>2018-01-27T10:44:04.694Z</lastmod>
