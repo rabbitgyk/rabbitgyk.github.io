@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>如何让Spring boot 2.0 支持h2c协议 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="如何让Spring boot 2.0 支持h2c协议">
+            
+            如何让Spring boot 2.0 支持h2c协议
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            spring boot
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/05/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>前面有文章介绍了Spring boot 2.0 中配置实现HTTP/2协议的各种情形，但是其中介绍都是<code>h2</code>协议。HTTP/2协议有两个版本：<code>h2</code>  和 <code>h2c</code>，<code>h2c</code> 是 <code>h2</code> 的明文版本，没有建立在TLS基础上，没有安全保障。正是因为没有TLS层的加解密相关步骤，比较适合用在后端服务之间通信，gRPC就是同时支持这两个版本的HTTP/2协议。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>HTTP/2连接是建立在TCP连接之上的应用层协议，客户端是TCP连接的发起者。</p>
+<p>HTTP/2使用和HTTP/1.1一样的 URI schemes：”http” 和 “https”，并且还是共享同样的默认端口：http的80，https的443。这意味着，对于”http” 和 “https”确定其是否支持HTTP/2协议的方式是不同的。</p>
+<p>在<a href="https://httpwg.org/specs/rfc7540.html" target="_blank" rel="noopener">官方文档</a>中，为HTTP/2协议定义了两个版本：<code>h2</code>  和 <code>h2c</code>：</p>
+<ul>
+<li>h2版本的协议是建立在TLS层之上的HTTP/2协议，这个标志被用在TLS应用层协议协商（TLS-ALPN）域和任何其它的TLS之上的HTTP/2协议。</li>
+<li>h2c版本是建立在明文的TCP之上的HTTP/2协议，这个标志被用在HTTP/1.1的升级协议头域和其它任何直接在TCP层之上的HTTP/2协议。</li>
+</ul>
+<p>既然在HTTP/2协议的官方介绍中有两个版本，我们之前的<a href="https://www.jianshu.com/p/7ddcdd3847d6" target="_blank" rel="noopener">文章</a>介绍的是Spring boot 2.0如何实现<code>h2</code>，本文我们会介绍如何让Spring boot 2.0支持<code>h2c</code>协议。</p>
+<h2 id="01-Spring-boot-2-0-h2c协议服务端"><a href="#01-Spring-boot-2-0-h2c协议服务端" class="headerlink" title="01 Spring boot 2.0 h2c协议服务端"></a>01 Spring boot 2.0 h2c协议服务端</h2><p>由于h2c协议相对于h2来说简单些，应该要实现也不难，但是从Spring boot 2.0的官方文档上看，明确写明了“Spring boot 不支持h2c —— HTTP/2协议的明文版本”，于是就想其它办法来支持h2c。</p>
+<p>首先，想的是通过外置的tomcat配置来支持h2c，因为tomcat8.5中的server.xml配置中，有HTTP/2协议相关的配置：</p>
+<pre><code>&lt;Connector port=&quot;8443&quot; protocol=&quot;org.apache.coyote.http11.Http11AprProtocol&quot;
+           maxThreads=&quot;150&quot; SSLEnabled=&quot;true&quot; &gt;
+    &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;
+    &lt;SSLHostConfig&gt;
+        &lt;Certificate certificateKeyFile=&quot;conf/localhost-rsa-key.pem&quot;
+                     certificateFile=&quot;conf/localhost-rsa-cert.pem&quot;
+                     certificateChainFile=&quot;conf/localhost-rsa-chain.pem&quot;
+                     type=&quot;RSA&quot; /&gt;
+    &lt;/SSLHostConfig&gt;
+&lt;/Connector&gt;
+</code></pre><p>这里显示要添加证书，明显支持的是基于TLS层之上的h2版本的HTTP/2协议，但是从配置上可以禁用SSL，于是就尝试了一下，果然成功了。配置成如下示例，就支持h2c了：</p>
+<pre><code>&lt;Connector port=&quot;5080&quot; protocol=&quot;HTTP/1.1&quot; connectionTimeout=&quot;20000&quot;&gt;
+    &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;
+&lt;/Connector&gt;
+</code></pre><p>tomcat容器自身是支持多个connector的配置的，想到这里，就想在Spring boot 2.0 中是否支持同时配置多个Connector，查看Spring boot的官方文档发现如下配置：</p>
+<p><img src="/2018/05/27/spring-boot2-and-h2c/tomcat-connector-spring-boot.png" alt="Spring boot 2.0 tomcat Connector"></p>
+<p>文档中示例是通过 java configure 的方式配置一个https的connector，在application.yaml中不支持配置多个connector。</p>
+<p>因此我就模仿这外置tomcat配置h2c的方式，在Spring boot 2.0 的内置tomcat中通过java configure的方式配置h2c协议，具体代码如下：</p>
+<pre><code>@Bean
+public ServletWebServerFactory servletContainer() {
+    TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+    tomcat.addAdditionalTomcatConnectors(createH2cConnector());
+    return tomcat;
+}
+
+private Connector createH2cConnector() {
+    Connector connector = new Connector(&quot;org.apache.coyote.http11.Http11NioProtocol&quot;);
+    Http2Protocol upgradeProtocol = new Http2Protocol();
+    connector.addUpgradeProtocol(upgradeProtocol);
+    //connector.setScheme(&quot;http&quot;);
+    connector.setPort(5080);
+
+    return connector;
+}
+</code></pre><p>这时启动我们的Spring boot应用，会发现最后的启动日志，我们同时启动三个端口，也即是三个Connector：</p>
+<pre><code>Tomcat started on port(s): 8080 (http) 8443 (https) 5080 (http) with context path &#39;/demo-h2c&#39;
+</code></pre><h2 id="02-Curl-工具验证h2c协议服务端"><a href="#02-Curl-工具验证h2c协议服务端" class="headerlink" title="02 Curl 工具验证h2c协议服务端"></a>02 Curl 工具验证h2c协议服务端</h2><p>首先需要检查你的curl工具是否支持HTTP/2协议，验证方式：</p>
+<pre><code>➜  ~ curl -V
+curl 7.54.0 (x86_64-apple-darwin17.0) libcurl/7.54.0 LibreSSL/2.0.20 zlib/1.2.11 nghttp2/1.24.0
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtsp smb smbs smtp smtps telnet tftp
+Features: AsynchDNS IPv6 Largefile GSS-API Kerberos SPNEGO NTLM NTLM_WB SSL libz HTTP2 UnixSockets HTTPS-proxy
+</code></pre><p>从上面的 Features 信息发现，我的curl工具是支持HTTP/2协议的。</p>
+<p>下面开始验证我Spring boot 的服务在5080端口是否是h2c，具体如下：</p>
+<pre><code>➜  ~ curl -v --http2 http://127.0.0.1:5080/demo-h2c/h2c/hello\?name\=guoyankui
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 5080 (#0)
+&gt; GET /demo-h2c/h2c/hello?name=guoyankui HTTP/1.1
+&gt; Host: 127.0.0.1:5080
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt; Connection: Upgrade, HTTP2-Settings
+&gt; Upgrade: h2c
+&gt; HTTP2-Settings: AAMAAABkAARAAAAAAAIAAAAA
+&gt;
+&lt; HTTP/1.1 101
+&lt; Connection: Upgrade
+&lt; Upgrade: h2c
+&lt; Date: Sun, 06 May 2018 13:12:37 GMT
+* Received 101
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Connection state changed (MAX_CONCURRENT_STREAMS updated)!
+&lt; HTTP/2 200
+&lt; content-type: text/plain;charset=UTF-8
+&lt; date: Sun, 06 May 2018 13:12:37 GMT
+&lt;
+* Connection #0 to host 127.0.0.1 left intact
+Hello h2c: null%
+</code></pre><p>OK, 验证通过了。</p>
+<h2 id="03-支持h2c协议的java客户端"><a href="#03-支持h2c协议的java客户端" class="headerlink" title="03 支持h2c协议的java客户端"></a>03 支持h2c协议的java客户端</h2><p>在上一节中使用Curl工具验证了Spring boot 2.0 的服务的h2c协议，但是在java语言中，还需要有支持h2c的Java客户端。目前一般的 java 客户端都只是支持h2，有的还不支持HTTP/2协议，而且浏览器一般也不支持h2c。</p>
+<p>现在找到一个支持h2c的java客户端也不容易，目前找到okhttp3的最新版本<code>3.10.0</code>也不支持h2c，但是发现在最新的github代码中<code>3.11.0-SNAPSHOT</code>版本已经支持了<code>h2c</code>，代码示例：</p>
+<pre><code>public static void main(String[] args) throws Exception {
+    testH2C();
+}
+
+public static void testH2C() throws Exception {
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .protocols(Arrays.asList(Protocol.H2C))
+            .build();
+
+    Request request = new Request.Builder()
+            .url(&quot;http://127.0.0.1:5080/demo-h2c/h2c/hello?name=guoyankui&quot;)
+            .build();
+    Response response = okHttpClient.newCall(request).execute();
+    System.out.println(response.protocol());
+    System.out.println(response.body().string());
+}
+</code></pre><p>执行这个main函数之后，输出的结果：</p>
+<pre><code>h2c
+Hello h2c: guoyankui
+</code></pre><p>从输出的结果来看，验证了<code>h2c</code>协议的客户端和服务端。</p>
+<h2 id="04-结束"><a href="#04-结束" class="headerlink" title="04 结束"></a>04 结束</h2><p>目前，找到了okhttp3的<code>3.11.0</code>版本支持<code>h2c</code>，有支持h2c的Java 客户端了，我们也在Spring boot 2.0中实现了h2c的服务端，因此也算有了支持<code>h2c</code>协议的完整方案。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/05/27/spring-boot2-graceful-shutdown/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+    
+    
+        <a href="/2018/05/27/spring-boot2-and-http2-again/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">五月 2018</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">三月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Feign/" style="font-size: 10px;">Feign</a> <a href="/tags/HTPP-2/" style="font-size: 10px;">HTPP/2</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/deploy/" style="font-size: 10px;">deploy</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/h2c/" style="font-size: 10px;">h2c</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/http-2/" style="font-size: 10px;">http/2</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/maven-plugin/" style="font-size: 10px;">maven plugin</a> <a href="/tags/restful/" style="font-size: 12.5px;">restful</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/优雅停机/" style="font-size: 12.5px;">优雅停机</a> <a href="/tags/健康检查/" style="font-size: 10px;">健康检查</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>

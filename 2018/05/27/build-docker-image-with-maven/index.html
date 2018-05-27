@@ -1,0 +1,420 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>快速构建docker镜像：maven插件 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="快速构建docker镜像：maven插件">
+            
+            快速构建docker镜像：maven插件
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>Docker</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            maven plugin
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/05/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>越来越多的项目开始了docker容器化部署的进化，在容器化之前我们部署一个项目，可能由源代码产出一个jar或者war即可直接发布了，启动之后是一个java进程；容器化之后，由源代码产出的是一个docker镜像，而启动的是一个容器。多了这么多步骤是为了容器化之后的运维便利性，从现在来看，容器化是势不可挡的趋势。为了实现的我们CI/CD的终极目标：一键发布，这里介绍一个maven plugin（输入源代码，输出docker镜像）。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>在实施CI/CD的过程中，实现一键发布用的最多的工具就是Jenkins了，在Jenkins上通过配置将每一个步骤串联起来，现在出现了pipeline让这个过程更简单了，一般的持续集成的流程是：</p>
+<ol>
+<li>从代码仓库下载代码（git或者svn）；</li>
+<li>通过工具（maven或者gradle）编译出可执行程序包（jar或者war）；</li>
+<li>使用dockerfile配置build出docker镜像；</li>
+<li>将docker镜像发布至镜像仓库；</li>
+<li>将镜像部署到云平台；</li>
+<li>多环境分发镜像。</li>
+</ol>
+<p>上述流程在工具齐全的情况下，是相当灵活好用的，公司一般都是这么使用的，而且也能将职责明确。但是当工具不够齐全的时候，或者说个人单打独斗的时候，会使用的工具有限，就寄希望于一个工具能够搞定更多的事情。<code>dockerfile-maven-plugin</code> 就是这样一个maven工具的插件。</p>
+<h2 id="01-Docker镜像管理"><a href="#01-Docker镜像管理" class="headerlink" title="01 Docker镜像管理"></a>01 Docker镜像管理</h2><p>Docker镜像的管理可以类比作Jar包的管理，在虚拟机时代我们要部署程序时，都是将jar包或者war部署到机器上，然后执行它，docker容器化了之后，部署的是docker镜像，一般是部署在paas云平台上。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">-</th>
+<th>Docker镜像管理</th>
+<th>Jar包管理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">官方仓库</td>
+<td><a href="https://hub.docker.com/" target="_blank" rel="noopener">https://hub.docker.com/</a></td>
+<td><a href="http://mvnrepository.com/" target="_blank" rel="noopener">http://mvnrepository.com/</a></td>
+</tr>
+<tr>
+<td style="text-align:center">私有仓库</td>
+<td>Nexus</td>
+<td>harbor</td>
+</tr>
+<tr>
+<td style="text-align:center">本地仓库命令</td>
+<td>maven：mvn install</td>
+<td>docker build</td>
+</tr>
+<tr>
+<td style="text-align:center">发布至远程仓库</td>
+<td>maven：mvn deploy</td>
+<td>docker push</td>
+</tr>
+</tbody>
+</table>
+<h2 id="02-maven-插件：dockerfile-maven-plugin"><a href="#02-maven-插件：dockerfile-maven-plugin" class="headerlink" title="02 maven 插件：dockerfile-maven-plugin"></a>02 maven 插件：dockerfile-maven-plugin</h2><p>这是本文的主角，该maven插件可以实现有java源代码直接到docker镜像，配置了dockerfile-maven-plugin插件的maven工具就像是一个管道，一端输入Java源代码，另一端直接输出docker镜像。</p>
+<p>在<a href="https://github.com/spotify/dockerfile-maven" target="_blank" rel="noopener">dockerfile-maven-plugin</a>插件出现之前，还有一个maven插件是<a href="https://github.com/spotify/docker-maven-plugin" target="_blank" rel="noopener">docker-maven-plugin</a>，是由同一个作者创造，作者明确表示推荐使用dockerfile-maven-plugin，并会持续升级；而docker-maven-plugin不在添加任何新功能，只接受修复bug。两个插件的设计思想是有差别的，前者需要独立编写Dockerfile文件，后者允许没有Dockerfile文件，所有的docker相关配置都写在pom文件的plugin中，这样使maven插件显得很笨重，并且如果脱离了这个maven插件还得重写编写Dockerfile，不够灵活。</p>
+<p>因此，推荐使用maven插件：<strong>dockerfile-maven-plugin</strong>。</p>
+<p>具体操作方法是：</p>
+<ol>
+<li>首先本地要安装docker环境。</li>
+<li>在maven的pom文件中配置build的插件。<br>```<properties><br><dockerfile.maven.version>1.4.0</dockerfile.maven.version><br><docker.registry.name.prefix>192.168.6.37:80/galaxy</docker.registry.name.prefix><br></properties>
+
+</li>
+</ol>
+<p><plugin><br>    <groupid>com.spotify</groupid><br>    <artifactid>dockerfile-maven-plugin</artifactid><br>    <version>${dockerfile.maven.version}</version><br>    <dependencies><br>        <dependency><br>            <groupid>javax.activation</groupid><br>            <artifactid>activation</artifactid><br>            <version>1.1.1</version><br>        </dependency><br>    </dependencies><br>    <executions><br>        <execution><br>            <id>default</id><br>            <goals><br>                <goal>build</goal><br>                <goal>push</goal><br>            </goals><br>        </execution><br>    </executions><br>    <configuration><br>        <repository>${docker.registry.name.prefix}/${project.artifactId}</repository><br>        <tag>${project.version}</tag><br>        <username>username</username><br>        <password>password</password><br>        <buildargs><br>            <jar_file>${project.build.finalName}.jar</jar_file><br>        </buildargs><br>    </configuration><br></plugin><br>```</p>
+<ol>
+<li>标准的Dockerfile放在classpath的根目录下。</li>
+<li>执行maven命令：mvn clean package。</li>
+</ol>
+<p>从<code>&lt;execution&gt;</code>的配置中可以看到，在执行maven命令的时候会默认执行docker的<code>build</code>和<code>push</code>。<br>单独执行dockerfile操作的maven命令是：<code>mvn dockerfile:build</code> 和 <code>mvn dockerfile:push</code>等。<code>&lt;configuration&gt;</code>中配置docker镜像的仓库的地址等。</p>
+<h2 id="03-结束"><a href="#03-结束" class="headerlink" title="03 结束"></a>03 结束</h2><p>这样一个基于docker镜像的开发部署流程就可以在本地完成了，其中只用到了maven工具。这样，一个人在使用docker镜像部署所开发的系统的过程更加流畅高效了。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/05/27/spring-boot2-actuator-health/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+    
+    
+        <a href="/2018/05/27/restful-microservice-spring-boot-http2/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">五月 2018</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">三月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Feign/" style="font-size: 10px;">Feign</a> <a href="/tags/HTPP-2/" style="font-size: 10px;">HTPP/2</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/deploy/" style="font-size: 10px;">deploy</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/h2c/" style="font-size: 10px;">h2c</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/http-2/" style="font-size: 10px;">http/2</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/maven-plugin/" style="font-size: 10px;">maven plugin</a> <a href="/tags/restful/" style="font-size: 12.5px;">restful</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/优雅停机/" style="font-size: 12.5px;">优雅停机</a> <a href="/tags/健康检查/" style="font-size: 10px;">健康检查</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>

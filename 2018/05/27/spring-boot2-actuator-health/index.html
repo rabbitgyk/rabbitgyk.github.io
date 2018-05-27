@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Spring boot 2.0 Actuator 的健康检查 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Spring boot 2.0 Actuator 的健康检查">
+            
+            Spring boot 2.0 Actuator 的健康检查
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            spring boot
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/05/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>spring boot 框架是spring framework发展史上一次质的飞跃，用过都说好。它不仅仅是简化了繁琐的配置文件，提高了开发效率，整合了开发中常用的各种组件，优雅地处理了它们之间的版本兼容性问题，等等。除了以上这些优点还有本文将重点介绍的监控，Spring boot框架自带全方位的监控，这样，做spring boot应用的监控简直是太方便了。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>在当下流行的Service Mesh架构中，由于Spring boot框架的种种优点，它特别适合作为其中的应用开发框架。</p>
+<p>说到Service Mesh的微服务架构，主要特点是将服务开发和服务治理分离开来，然后再结合容器化的Paas平台，将它们融合起来，这依赖的都是互相之间默契的配合。也就是说各自都暴露出标准的接口，可以通过这些接口互相交织在一起。</p>
+<p>Service Mesh的架构设计中的要点之一，就是<strong>全方位的监控</strong>，因此一般我们选用的服务开发框架都需要有方便又强大的监控功能支持。在Spring boot应用中开启监控特别方便，监控面也很广，还支持灵活定制。</p>
+<h2 id="01-Actuator的使用方法"><a href="#01-Actuator的使用方法" class="headerlink" title="01 Actuator的使用方法"></a>01 Actuator的使用方法</h2><p>在Spring boot应用中，要实现可监控的功能，依赖的是 <code>spring-boot-starter-actuator</code> 这个组件。它提供了很多监控和管理你的spring boot应用的HTTP或者JMX端点，并且你可以有选择地开启和关闭部分功能。当你的spring boot应用中引入下面的依赖之后，将自动的拥有审计、健康检查、Metrics监控功能。</p>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre><p>具体的使用方法：</p>
+<ol>
+<li>引入上述的依赖jar；</li>
+<li>通过下面的配置启用所有的监控端点，默认情况下，这些端点是禁用的；</li>
+</ol>
+<pre><code>management:
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;
+</code></pre><p>“*”号代表启用所有的监控端点，可以单独启用，例如，<code>health</code>，<code>info</code>，<code>metrics</code>等。</p>
+<ol>
+<li>通过<code>actuator/+端点名</code>就可以获取相应的信息。</li>
+</ol>
+<p>一般的监控管理端点的配置信息，如下：</p>
+<pre><code>management:
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;
+  server:
+    port: 10111
+    servlet:
+      context-path: /
+    ssl:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+</code></pre><p>上述配置信息仅供参考，具体须参照官方文档，由于spring boot的版本更新比较快，配置方式可能有变化。</p>
+<h2 id="02-健康检查"><a href="#02-健康检查" class="headerlink" title="02 健康检查"></a>02 健康检查</h2><p>今天重点说一下Actuator监控管理中的健康检查功能，随时能掌握线上应用的健康状况是非常重要的，尤其是现在流行的容器云平台下的应用，它们的自动恢复和扩容都依赖健康检查功能。</p>
+<p>当我们开启<code>health</code>的健康端点时，我们能够查到应用健康信息是一个汇总的信息，访问<code>http://127.0.0.1:10111/actuator/health</code>时，我们获取到的信息是<code>{&quot;status&quot;:&quot;UP&quot;}</code>，status的值还有可能是 DOWN。</p>
+<p>要想查看详细的应用健康信息需要配置<code>management.endpoint.health.show-details</code> 的值为<code>always</code>，配置之后我们再次访问<code>http://127.0.0.1:10111/actuator/health</code>，获取的信息如下：</p>
+<pre><code>{
+    &quot;status&quot;: &quot;UP&quot;,
+    &quot;details&quot;: {
+        &quot;diskSpace&quot;: {
+            &quot;status&quot;: &quot;UP&quot;,
+            &quot;details&quot;: {
+                &quot;total&quot;: 250685575168,
+                &quot;free&quot;: 172252426240,
+                &quot;threshold&quot;: 10485760
+            }
+        },
+        &quot;redis&quot;: {
+            &quot;status&quot;: &quot;UP&quot;,
+            &quot;details&quot;: {
+                &quot;version&quot;: &quot;3.2.11&quot;
+            }
+        },
+        &quot;db&quot;: {
+            &quot;status&quot;: &quot;UP&quot;,
+            &quot;details&quot;: {
+                &quot;database&quot;: &quot;Oracle&quot;,
+                &quot;hello&quot;: &quot;Hello&quot;
+            }
+        }
+    }
+}
+</code></pre><p>从上面的应用的详细健康信息发现，健康信息包含磁盘空间、redis、DB，启用监控的这个spring boot应用确实是连接了redis和oracle DB，actuator就自动给监控起来了，确实是很方便、很有用。</p>
+<p>经过测试发现，details中所有的监控项中的任何一个健康状态是<code>DOWN</code>，整体应用的健康状态也是<code>DOWN</code>。</p>
+<blockquote>
+<p><code>management.endpoint.health.show-details</code>的值除了<code>always</code>之外还有<code>when-authorized</code>、<code>never</code>，默认值是<code>never</code>。</p>
+</blockquote>
+<h2 id="03-健康检查的原理"><a href="#03-健康检查的原理" class="headerlink" title="03 健康检查的原理"></a>03 健康检查的原理</h2><p>Spring boot的健康信息都是从<code>ApplicationContext</code>中的各种<a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthIndicator.java" target="_blank" rel="noopener"><code>HealthIndicator</code></a><br>Beans中收集到的，Spring boot框架中包含了大量的<code>HealthIndicators</code>的实现类，当然你也可以实现自己认为的健康状态。</p>
+<p>默认情况下，最终的spring boot应用的状态是由<code>HealthAggregator</code>汇总而成的，汇总的算法是：</p>
+<ol>
+<li>设置状态码顺序：<code>setStatusOrder(Status.DOWN, Status.OUT_OF_SERVICE, Status.UP, Status.UNKNOWN);</code>。</li>
+<li>过滤掉不能识别的状态码。</li>
+<li>如果无任何状态码，整个spring boot应用的状态是 <code>UNKNOWN</code>。</li>
+<li>将所有收集到的状态码按照 1 中的顺序排序。</li>
+<li>返回有序状态码序列中的第一个状态码，作为整个spring boot应用的状态。</li>
+</ol>
+<blockquote>
+<p>源代码请参见：<code>org.springframework.boot.actuate.health.OrderedHealthAggregator</code>。</p>
+</blockquote>
+<p>Spring boot框架自带的 <code>HealthIndicators</code> 目前包括：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/cassandra/CassandraHealthIndicator.java" target="_blank" rel="noopener"><code>CassandraHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a Cassandra database is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/system/DiskSpaceHealthIndicator.java" target="_blank" rel="noopener"><code>DiskSpaceHealthIndicator</code></a></td>
+<td style="text-align:left">Checks for low disk space.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/jdbc/DataSourceHealthIndicator.java" target="_blank" rel="noopener"><code>DataSourceHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a connection to <code>DataSource</code> can be obtained.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/elasticsearch/ElasticsearchHealthIndicator.java" target="_blank" rel="noopener"><code>ElasticsearchHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that an Elasticsearch cluster is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/influx/InfluxDbHealthIndicator.java" target="_blank" rel="noopener"><code>InfluxDbHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that an InfluxDB server is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/jms/JmsHealthIndicator.java" target="_blank" rel="noopener"><code>JmsHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a JMS broker is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/mail/MailHealthIndicator.java" target="_blank" rel="noopener"><code>MailHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a mail server is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/mongo/MongoHealthIndicator.java" target="_blank" rel="noopener"><code>MongoHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a Mongo database is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/neo4j/Neo4jHealthIndicator.java" target="_blank" rel="noopener"><code>Neo4jHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a Neo4j server is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/amqp/RabbitHealthIndicator.java" target="_blank" rel="noopener"><code>RabbitHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a Rabbit server is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/redis/RedisHealthIndicator.java" target="_blank" rel="noopener"><code>RedisHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a Redis server is up.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/solr/SolrHealthIndicator.java" target="_blank" rel="noopener"><code>SolrHealthIndicator</code></a></td>
+<td style="text-align:left">Checks that a Solr server is up.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>你可以通过<code>management.health.defaults.enabled</code>这个配置项将它们全部禁用掉，也可以通过<code>management.health.xxxx.enabled</code>将其中任意一个禁用掉。</p>
+</blockquote>
+<h2 id="04-自定义-HealthIndicator-健康检查"><a href="#04-自定义-HealthIndicator-健康检查" class="headerlink" title="04 自定义 HealthIndicator 健康检查"></a>04 自定义 HealthIndicator 健康检查</h2><p>有时候需要提供自定义的健康状态检查信息，你可以通过实现<code>HealthIndicator</code>的接口来实现，并将该实现类注册为spring bean。你需要实现其中的<code>health()</code>方法，并返回自定义的健康状态响应信息，该响应信息应该包括一个状态码和要展示详细信息。例如，下面就是一个接口<code>HealthIndicator</code>的实现类：</p>
+<pre><code>import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyHealthIndicator implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        int errorCode = check(); // perform some specific health check
+        if (errorCode != 0) {
+            return Health.down().withDetail(&quot;Error Code&quot;, errorCode).build();
+        }
+        return Health.up().build();
+    }
+
+}
+</code></pre><p>另外，除了Spring boot定义的几个状态类型，我们也可以自定义状态类型，用来表示一个新的系统状态。在这种情况下，你还需要实现接口 <a href="https://github.com/spring-projects/spring-boot/tree/v2.0.1.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthAggregator.java" target="_blank" rel="noopener"><code>HealthAggregator</code></a> ，或者通过配置 <code>management.health.status.order</code> 来继续使用<code>HealthAggregator</code>的默认实现。</p>
+<p>例如，在你自定义的健康检查<code>HealthIndicator</code>的实现类中，使用了自定义的状态类型<code>FATAL</code>，为了配置该状态类型的严重程度，你需要在application的配置文件中添加如下配置：</p>
+<pre><code>management.health.status.order=FATAL, DOWN, OUT_OF_SERVICE, UNKNOWN, UP
+</code></pre><p>在做健康检查时，响应中的HTTP状态码反应了整体的健康状态，（例如，<code>UP</code> 对应 200, 而 <code>OUT_OF_SERVICE</code> 和 <code>DOWN</code> 对应 503）。同样，你也需要为自定义的状态类型设置对应的HTTP状态码，例如，下面的配置可以将 <code>FATAL</code> 映射为 503（服务不可用）：</p>
+<pre><code>management.health.status.http-mapping.FATAL=503
+</code></pre><blockquote>
+<p>如果你需要更多的控制，你可以定义自己的 <code>HealthStatusHttpMapper</code> bean。</p>
+</blockquote>
+<p>下面是内置健康状态类型对应的HTTP状态码列表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Status</th>
+<th style="text-align:left">Mapping</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">DOWN</td>
+<td style="text-align:left">SERVICE_UNAVAILABLE (503)</td>
+</tr>
+<tr>
+<td style="text-align:left">OUT_OF_SERVICE</td>
+<td style="text-align:left">SERVICE_UNAVAILABLE (503)</td>
+</tr>
+<tr>
+<td style="text-align:left">UP</td>
+<td style="text-align:left">No mapping by default, so http status is 200</td>
+</tr>
+<tr>
+<td style="text-align:left">UNKNOWN</td>
+<td style="text-align:left">No mapping by default, so http status is 200</td>
+</tr>
+</tbody>
+</table>
+<h2 id="05-结束"><a href="#05-结束" class="headerlink" title="05 结束"></a>05 结束</h2><p>本文主要介绍了Spring boot中提供的应用健康检查功能的使用方法和原理，顺带介绍了一点 Actuator 的内容。主要的内容来自<a href="https://docs.spring.io/spring-boot/docs/2.0.1.RELEASE/reference/htmlsingle/#production-ready-health" target="_blank" rel="noopener">spring boot 2.0.1的官方文档</a> 和 源码，还有一些自己的想法，希望多多支持。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/05/27/spring-boot2-and-http2-again/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+    
+    
+        <a href="/2018/05/27/build-docker-image-with-maven/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">五月 2018</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">三月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Feign/" style="font-size: 10px;">Feign</a> <a href="/tags/HTPP-2/" style="font-size: 10px;">HTPP/2</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/deploy/" style="font-size: 10px;">deploy</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/h2c/" style="font-size: 10px;">h2c</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/http-2/" style="font-size: 10px;">http/2</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/maven-plugin/" style="font-size: 10px;">maven plugin</a> <a href="/tags/restful/" style="font-size: 12.5px;">restful</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/优雅停机/" style="font-size: 12.5px;">优雅停机</a> <a href="/tags/健康检查/" style="font-size: 10px;">健康检查</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>

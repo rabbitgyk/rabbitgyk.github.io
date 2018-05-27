@@ -2,6 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rabbitgyk.com/2018/05/27/deploy-microservice-and-graceful-shutdown/</loc>
+    
+    <lastmod>2018-05-27T02:26:54.403Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rabbitgyk.com/2018/05/27/spring-boot2-graceful-shutdown/</loc>
+    
+    <lastmod>2018-05-27T02:23:07.304Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rabbitgyk.com/2018/05/27/spring-boot2-and-h2c/</loc>
+    
+    <lastmod>2018-05-27T02:19:51.928Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rabbitgyk.com/2018/05/27/spring-boot2-and-http2-again/</loc>
+    
+    <lastmod>2018-05-27T02:15:33.216Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rabbitgyk.com/2018/05/27/spring-boot2-actuator-health/</loc>
+    
+    <lastmod>2018-05-27T02:11:57.613Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rabbitgyk.com/2018/05/27/build-docker-image-with-maven/</loc>
+    
+    <lastmod>2018-05-27T02:08:15.989Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rabbitgyk.com/2018/05/27/restful-microservice-spring-boot-http2/</loc>
+    
+    <lastmod>2018-05-27T02:04:27.851Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rabbitgyk.com/2018/03/11/restful-microservice-feign/</loc>
     
     <lastmod>2018-03-10T16:27:07.793Z</lastmod>

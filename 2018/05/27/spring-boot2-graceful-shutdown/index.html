@@ -1,0 +1,650 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Spring boot 2.0 之优雅停机 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Spring boot 2.0 之优雅停机">
+            
+            Spring boot 2.0 之优雅停机
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            优雅停机
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/05/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>spring boot 框架在生产环境使用的有一段时间了，它“约定大于配置”的特性，体现了优雅流畅的开发过程，它的部署启动方式（<code>java -jar xxx.jar</code>）也很优雅。但是我使用的停止应用的方式是 <code>kill -9 进程号</code>，即使写了脚本，还是显得有些粗鲁。这样的应用停止方式，在停止的那一霎那，应用中正在处理的业务逻辑会被中断，导致产生业务异常情形。这种情况如何避免，本文介绍的优雅停机，将完美解决该问题。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>什么叫优雅停机？简单说就是，在对应用进程发送停止指令之后，能保证正在执行的业务操作不受影响。应用接收到停止指令之后的步骤应该是，停止接收访问请求，等待已经接收到的请求处理完成，并能成功返回，这时才真正停止应用。</p>
+<p>这种完美的应用停止方式如何实现呢？就Java语言生态来说，底层的技术是支持的，所以我们才能实现在Java语言之上的各个web容器的优雅停机。</p>
+<p>在普通的外置的tomcat中，有shutdown脚本提供优雅的停机机制，但是我们在使用Spring boot的过程中发现web容器都是内置（当然也可使用外置，但是不推荐），这种方式提供简单的应用启动方式，方便的管理机制，非常适用于微服务应用中，但是默认没有提供优雅停机的方式。这也是本文探索这个问题的根本原因。</p>
+<p>应用是否是实现了优雅停机，如何才能验证呢？这需要一个处理时间较长的业务逻辑，模拟这样的逻辑应该很简单，使用线程sleep或者长时间循环。我的模拟业务逻辑代码如下：</p>
+<pre><code>@GetMapping(value = &quot;/sleep/one&quot;, produces = &quot;application/json&quot;)
+public ResultEntity&lt;Long&gt; sleepOne(String systemNo){
+    logger.info(&quot;模拟业务处理1分钟，请求参数：{}&quot;, systemNo);
+    Long serverTime = System.currentTimeMillis();
+//        try {
+//            Thread.sleep(60*1000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+    while (System.currentTimeMillis() &lt; serverTime + (60 * 1000)){
+        logger.info(&quot;正在处理业务，当前时间：{}，开始时间：{}&quot;, System.currentTimeMillis(), serverTime);
+    }
+    ResultEntity&lt;Long&gt; resultEntity = new ResultEntity&lt;&gt;(serverTime);
+    logger.info(&quot;模拟业务处理1分钟，响应参数：{}&quot;, resultEntity);
+    return resultEntity;
+}
+</code></pre><p>验证方式就是，在触发这个接口的业务处理之后，业务逻辑处理时间长达1分钟，需要在处理结束前，发起停止指令，验证是否能够正常返回。验证时所使用的kill指令：<code>kill -2（Ctrl + C）</code>、<code>kill -15</code>、<code>kill -9</code>。</p>
+<h2 id="01-Java-语言的优雅停机"><a href="#01-Java-语言的优雅停机" class="headerlink" title="01 Java 语言的优雅停机"></a>01 Java 语言的优雅停机</h2><p>从上面的介绍中我们发现，Java语言本身是支持优雅停机的，这里就先介绍一下普通的java应用是如何实现优雅停止的。</p>
+<p>当我们使用<code>kill PID</code>的方式结束一个Java应用的时候，JVM会收到一个停止信号，然后执行shutdownHook的线程。一个实现示例如下：</p>
+<pre><code>public class ShutdownHook extends Thread {
+    private Thread mainThread;
+    private boolean shutDownSignalReceived;
+
+    @Override
+    public void run() {
+        System.out.println(&quot;Shut down signal received.&quot;);
+        this.shutDownSignalReceived=true;
+        mainThread.interrupt();
+        try {
+            mainThread.join(); //当收到停止信号时，等待mainThread的执行完成
+        } catch (InterruptedException e) {
+        }
+        System.out.println(&quot;Shut down complete.&quot;);
+    }
+
+    public ShutdownHook(Thread mainThread) {
+        super();
+        this.mainThread = mainThread;
+        this.shutDownSignalReceived = false;
+        Runtime.getRuntime().addShutdownHook(this);
+    }
+
+    public boolean shouldShutDown(){
+        return shutDownSignalReceived;
+    }
+
+}
+</code></pre><p>其中关键语句<code>Runtime.getRuntime().addShutdownHook(this);</code>，注册一个JVM关闭的钩子，这个钩子可以在以下几种场景被调用： </p>
+<ol>
+<li>程序正常退出 </li>
+<li>使用System.exit() </li>
+<li>终端使用Ctrl+C触发的中断 </li>
+<li>系统关闭 </li>
+<li>使用Kill pid命令干掉进程</li>
+</ol>
+<p>测试shutdownHook的功能，代码示例：</p>
+<pre><code>public class TestMain {
+    private ShutdownHook shutdownHook;
+    public static void main( String[] args ) {
+        TestMain app = new TestMain();
+        System.out.println( &quot;Hello World!&quot; );
+        app.execute();
+        System.out.println( &quot;End of main()&quot; );
+    }
+    public TestMain(){
+        this.shutdownHook = new ShutdownHook(Thread.currentThread());
+    }
+    public void execute(){
+        while(!shutdownHook.shouldShutDown()){
+            System.out.println(&quot;I am sleep&quot;);
+            try {
+                Thread.sleep(1*1000);
+            } catch (InterruptedException e) {
+                System.out.println(&quot;execute() interrupted&quot;);
+            }
+            System.out.println(&quot;I am not sleep&quot;);
+        }
+        System.out.println(&quot;end of execute()&quot;);
+    }
+}
+</code></pre><p>启动测试代码，之后再发送一个中断信号，控制台输出：</p>
+<pre><code>I am sleep
+I am not sleep
+I am sleep
+I am not sleep
+I am sleep
+I am not sleep
+I am sleep
+Shut down signal received.
+execute() interrupted
+I am not sleep
+end of execute()
+End of main()
+Shut down complete.
+
+Process finished with exit code 130 (interrupted by signal 2: SIGINT)
+</code></pre><p>可以看出，在接收到中断信号之后，整个main函数是执行完成的。</p>
+<h2 id="02-actuator-shutdown-of-Spring-boot"><a href="#02-actuator-shutdown-of-Spring-boot" class="headerlink" title="02 actuator/shutdown of Spring boot"></a>02 actuator/shutdown of Spring boot</h2><p>我们知道了java本身在支持优雅停机上的能力，然后在Spring boot中又发现了<code>actuator/shutdown</code>的管理端点。于是我把优雅停机的功能寄希望于此，开始配置测试，开启配置如下：</p>
+<pre><code>management:
+  server:
+    port: 10212
+    servlet:
+      context-path: /
+    ssl:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true #启用shutdown端点
+</code></pre><p>测试结果很失望，并没有实现优雅停机的功能，就是将普通的kill命令，做成了HTTP端点。于是开始查看Spring boot的官方文档和源代码，试图找到它的原因。</p>
+<p>在官方文档上对shutdown端点的介绍：</p>
+<pre><code>shutdown    Lets the application be gracefully shutdown.
+</code></pre><p>从此介绍可以看出，设计上应该是支持优雅停机的。但是为什么现在还不够优雅，在github上托管的Spring boot项目中发现，有一个<a href="https://github.com/spring-projects/spring-boot/issues/4657" target="_blank" rel="noopener">issue</a>一直处于打开状态，已经两年多了，里面很多讨论，看完之后发现在Spring boot中完美的支持优雅停机不是一件容易的事，首先Spring boot支持web容器很多，其次对什么样的实现才是真正的优雅停机，讨论了很多。想了解更多的同学，把这个issue好好阅读一下。</p>
+<p>这个issue中还有一个重要信息，就是这个issue曾经被加入到2.0.0的milestone中，后来由于没有完成又移除了，现在状态是被添加在2.1.0的milestone中。我测试的版本是2.0.1，期待官方给出完美的优雅停机方案。</p>
+<h2 id="03-Spring-boot-优雅停机"><a href="#03-Spring-boot-优雅停机" class="headerlink" title="03 Spring boot 优雅停机"></a>03 Spring boot 优雅停机</h2><p>虽然官方暂时还没有提供优雅停机的支持，但是我们为了减少进程停止对业务的影响，还是要给出能满足基本需求的方案来。</p>
+<p><strong>针对tomcat的解决方案是：</strong></p>
+<pre><code>package com.epay.demox.unipay.provider;
+
+import org.apache.catalina.connector.Connector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @Author: guoyankui
+ * @DATE: 2018/5/20 12:59 PM
+ *
+ * 优雅关闭 Spring Boot tomcat
+ */
+
+@Component
+public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, ApplicationListener&lt;ContextClosedEvent&gt; {
+    private final Logger log = LoggerFactory.getLogger(GracefulShutdownTomcat.class);
+    private volatile Connector connector;
+    private final int waitTime = 30;
+    @Override
+    public void customize(Connector connector) {
+        this.connector = connector;
+    }
+    @Override
+    public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
+        this.connector.pause();
+        Executor executor = this.connector.getProtocolHandler().getExecutor();
+        if (executor instanceof ThreadPoolExecutor) {
+            try {
+                ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
+                threadPoolExecutor.shutdown();
+                if (!threadPoolExecutor.awaitTermination(waitTime, TimeUnit.SECONDS)) {
+                    log.warn(&quot;Tomcat thread pool did not shut down gracefully within &quot; + waitTime + &quot; seconds. Proceeding with forceful shutdown&quot;);
+                }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+}
+</code></pre><pre><code>public class UnipayProviderApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UnipayProviderApplication.class);
+    }
+
+    @Autowired
+    private GracefulShutdownTomcat gracefulShutdownTomcat;
+
+    @Bean
+    public ServletWebServerFactory servletContainer() {
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+        tomcat.addConnectorCustomizers(gracefulShutdownTomcat);
+        return tomcat;
+    }
+}
+</code></pre><p>该方案的代码来自官方issue中的讨论，添加这些代码到你的Spring boot项目中，然后再重新启动之后，发起测试请求，然后发送kill停止指令（<code>kill -2（Ctrl + C）</code>、<code>kill -15</code>）。测试结果：</p>
+<ol>
+<li>Spring boot的健康检查，为<code>UP</code>。</li>
+<li>正在执行操作不会终止，直到执行完成。</li>
+<li>不再接收新的请求，客户端报错信息为：<code>Connection reset by peer</code>。</li>
+<li>最后正常终止进程（业务执行完成后，立即进程停止）。</li>
+</ol>
+<p>从测试结果来看，是满足我们的需求的。当然如果发送指令<code>kill -9</code>，进程会立即停止。</p>
+<p><strong>针对undertow的解决方案是：</strong></p>
+<pre><code>package com.epay.demox.unipay.provider;
+
+import io.undertow.Undertow;
+import io.undertow.server.ConnectorStatistics;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Field;
+import java.util.List;
+
+/**
+ * @Author: guoyankui
+ * @DATE: 2018/5/20 5:47 PM
+ *
+ * 优雅关闭 Spring Boot undertow
+ */
+@Component
+public class GracefulShutdownUndertow implements ApplicationListener&lt;ContextClosedEvent&gt; {
+
+    @Autowired
+    private GracefulShutdownUndertowWrapper gracefulShutdownUndertowWrapper;
+
+    @Autowired
+    private ServletWebServerApplicationContext context;
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent contextClosedEvent){
+        gracefulShutdownUndertowWrapper.getGracefulShutdownHandler().shutdown();
+        try {
+            UndertowServletWebServer webServer = (UndertowServletWebServer)context.getWebServer();
+            Field field = webServer.getClass().getDeclaredField(&quot;undertow&quot;);
+            field.setAccessible(true);
+            Undertow undertow = (Undertow) field.get(webServer);
+            List&lt;Undertow.ListenerInfo&gt; listenerInfo = undertow.getListenerInfo();
+            Undertow.ListenerInfo listener = listenerInfo.get(0);
+            ConnectorStatistics connectorStatistics = listener.getConnectorStatistics();
+            while (connectorStatistics.getActiveConnections() &gt; 0){}
+        }catch (Exception e){
+            // Application Shutdown
+        }
+    }
+}
+</code></pre><pre><code>package com.epay.demox.unipay.provider;
+
+import io.undertow.server.HandlerWrapper;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.GracefulShutdownHandler;
+import org.springframework.stereotype.Component;
+
+/**
+ * @Author: guoyankui
+ * @DATE: 2018/5/20 5:50 PM
+ */
+@Component
+public class GracefulShutdownUndertowWrapper implements HandlerWrapper {
+    private GracefulShutdownHandler gracefulShutdownHandler;
+    @Override
+    public HttpHandler wrap(HttpHandler handler) {
+        if(gracefulShutdownHandler == null) {
+            this.gracefulShutdownHandler = new GracefulShutdownHandler(handler);
+        }
+        return gracefulShutdownHandler;
+    }
+    public GracefulShutdownHandler getGracefulShutdownHandler() {
+        return gracefulShutdownHandler;
+    }
+}
+</code></pre><pre><code>public class UnipayProviderApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UnipayProviderApplication.class);
+    }
+    @Autowired
+    private GracefulShutdownUndertowWrapper gracefulShutdownUndertowWrapper;
+    @Bean
+    public UndertowServletWebServerFactory servletWebServerFactory() {
+        UndertowServletWebServerFactory factory = new UndertowServletWebServerFactory();
+        factory.addDeploymentInfoCustomizers(deploymentInfo -&gt; deploymentInfo.addOuterHandlerChainWrapper(gracefulShutdownUndertowWrapper));
+        factory.addBuilderCustomizers(builder -&gt; builder.setServerOption(UndertowOptions.ENABLE_STATISTICS, true));
+        return factory;
+    }
+}
+</code></pre><p>该方法参考<a href="http://www.spring4all.com/article/1022" target="_blank" rel="noopener">文章</a>，采用与tomcat同样的测试方案，测试结果：</p>
+<ol>
+<li>Spring boot的健康检查，为<code>UP</code>。</li>
+<li>正在执行操作不会终止，直到执行完成。</li>
+<li>不再接收新的请求，客户端报错信息为：<code>503  Service Unavailable</code>。</li>
+<li>最后正常终止进程（在业务执行完成后的一分钟进程停止）。</li>
+</ol>
+<h2 id="04-结束"><a href="#04-结束" class="headerlink" title="04 结束"></a>04 结束</h2><p>到此为止，对Java和Spring boot应用的优雅停机机制有了基本的认识。虽然实现了需求，但是这其中还有很多知识点需要探索，比如Spring上下文监听器，上下文关闭事件等，还有undertow提供的<code>GracefulShutdownHandler</code>的原理是什么，为什么是1分钟之后进程再停止，这些问题等研究明白，再来一篇续。如果又哪位同学能解答我的疑惑，请在评论区留言。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/05/27/deploy-microservice-and-graceful-shutdown/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+    
+    
+        <a href="/2018/05/27/spring-boot2-and-h2c/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">五月 2018</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">三月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Feign/" style="font-size: 10px;">Feign</a> <a href="/tags/HTPP-2/" style="font-size: 10px;">HTPP/2</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/deploy/" style="font-size: 10px;">deploy</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/h2c/" style="font-size: 10px;">h2c</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/http-2/" style="font-size: 10px;">http/2</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/maven-plugin/" style="font-size: 10px;">maven plugin</a> <a href="/tags/restful/" style="font-size: 12.5px;">restful</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/优雅停机/" style="font-size: 12.5px;">优雅停机</a> <a href="/tags/健康检查/" style="font-size: 10px;">健康检查</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
