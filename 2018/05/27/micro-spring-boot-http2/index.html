@@ -202,7 +202,7 @@
 <li>HTTP 1.1 Pipeling解决方式，也是我们常说的Keep-Alive模式，建立一次连接之后，若干个请求排队串行化单线程处理，后面的请求等待前面的请求返回了获得执行机会，一旦有请求超时等待，后续的请求只能被阻塞，毫无办法，也就是人们常说的线头阻塞（Head-of-Line Blocking）。</li>
 <li>HTTP 2.0多路复用，多个请求同时在一个连接上并行执行，若某个请求任务耗时严重，不会影响到其它请求的正常执行。</li>
 </ul>
-<p><img src="restful-microservice-spring-boot-http2/http1-http2.png" alt="HTTP 1.x 对比 HTTP 2.0"></p>
+<p><img src="micro-spring-boot-http2/http1-http2.png" alt="HTTP 1.x 对比 HTTP 2.0"></p>
 <p><strong>HTTP/2 &amp; HTTPS</strong></p>
 <p>HTTPS是建构在SSL/TLS之上的HTTP协议，一种保证信息传输安全的协议，HTTP/2的定义本身是和HTTPS无关的。但是，在开放的互联网上HTTP/2将只用于<a href="https://网址，而" target="_blank" rel="noopener">https://网址，而</a> <a href="http://网址将继续使用HTTP/1.x，目的是在开放互联网上增加使用加密技术，以提供强有力的保护去遏制主动攻击。所以，在进行HTTP/2推广的同时也在强制推广HTTPS。" target="_blank" rel="noopener">http://网址将继续使用HTTP/1.x，目的是在开放互联网上增加使用加密技术，以提供强有力的保护去遏制主动攻击。所以，在进行HTTP/2推广的同时也在强制推广HTTPS。</a></p>
 <p>目前大部分HTTP/2的实现都是要强制使用HTTPS的，很少能见到有直接在TCP层之上实现的HTTP/2。</p>
@@ -258,7 +258,7 @@ http2:
  enabled: true
 </code></pre></li>
 <li>完成配置，重启Spring Boot项目即可。</li>
-<li>验证请求是否是HTTP/2协议，在Chrome浏览器中，可以在地址栏输入<code>chrome://net-internals/#http2</code>查看，结果如下图所示：<br><img src="restful-microservice-spring-boot-http2/http2-result.png" alt="HTTP/2验证结果"></li>
+<li>验证请求是否是HTTP/2协议，在Chrome浏览器中，可以在地址栏输入<code>chrome://net-internals/#http2</code>查看，结果如下图所示：<br><img src="micro-spring-boot-http2/http2-result.png" alt="HTTP/2验证结果"></li>
 </ol>
 <p>以上步骤就完成了为Spring Boot项目配置HTTP/2，具体更多信息请参见<a href="https://docs.spring.io/spring-boot/docs/2.0.x-SNAPSHOT/reference/htmlsingle/#howto-configure-http2" target="_blank" rel="noopener">Spring Boot 的官方介绍</a>。</p>
 <h2 id="03-HTTP-2协议的服务如何调用"><a href="#03-HTTP-2协议的服务如何调用" class="headerlink" title="03 HTTP/2协议的服务如何调用"></a>03 HTTP/2协议的服务如何调用</h2><p>在昨天的文章（<a href="https://www.jianshu.com/p/8376d709d972" target="_blank" rel="noopener">RESTful风格的微服务-Feign调用服务</a>）中，介绍了Feign如何调用HTTP微服务。现在普通的HTTP微服务变成了安全加密的HTTPS和高性能的HTTP/2，我们该如何调用，需要怎样改造调用微服务的客户端？</p>
