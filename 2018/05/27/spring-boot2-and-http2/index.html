@@ -26,7 +26,7 @@
     <!--Title-->
 
 
-<title>RESTful风格的微服务-spring boot&amp;HTTP/2 | rabbitGYK&#39;s blog</title>
+<title>RESTful风格的微服务-spring boot与HTTP/2 | rabbitGYK&#39;s blog</title>
 
 
     <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
@@ -144,9 +144,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="RESTful风格的微服务-spring boot&amp;HTTP/2">
+        <h1 id="RESTful风格的微服务-spring boot与HTTP/2">
             
-            RESTful风格的微服务-spring boot&amp;HTTP/2
+            RESTful风格的微服务-spring boot与HTTP/2
             
         </h1>
         <div class="post-meta">
@@ -202,7 +202,7 @@
 <li>HTTP 1.1 Pipeling解决方式，也是我们常说的Keep-Alive模式，建立一次连接之后，若干个请求排队串行化单线程处理，后面的请求等待前面的请求返回了获得执行机会，一旦有请求超时等待，后续的请求只能被阻塞，毫无办法，也就是人们常说的线头阻塞（Head-of-Line Blocking）。</li>
 <li>HTTP 2.0多路复用，多个请求同时在一个连接上并行执行，若某个请求任务耗时严重，不会影响到其它请求的正常执行。</li>
 </ul>
-<p><img src="spring-boot2-and-http2/http1-http2.png" alt="HTTP 1.x 对比 HTTP 2.0"></p>
+<p><img src="spring-boot2-and-http2/http1-http2.png" alt="HTTP1.x对比HTTP 2.0"></p>
 <p><strong>HTTP/2 &amp; HTTPS</strong></p>
 <p>HTTPS是建构在SSL/TLS之上的HTTP协议，一种保证信息传输安全的协议，HTTP/2的定义本身是和HTTPS无关的。但是，在开放的互联网上HTTP/2将只用于<a href="https://网址，而" target="_blank" rel="noopener">https://网址，而</a> <a href="http://网址将继续使用HTTP/1.x，目的是在开放互联网上增加使用加密技术，以提供强有力的保护去遏制主动攻击。所以，在进行HTTP/2推广的同时也在强制推广HTTPS。" target="_blank" rel="noopener">http://网址将继续使用HTTP/1.x，目的是在开放互联网上增加使用加密技术，以提供强有力的保护去遏制主动攻击。所以，在进行HTTP/2推广的同时也在强制推广HTTPS。</a></p>
 <p>目前大部分HTTP/2的实现都是要强制使用HTTPS的，很少能见到有直接在TCP层之上实现的HTTP/2。</p>
