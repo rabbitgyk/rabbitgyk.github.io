@@ -1,0 +1,484 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>RESTful风格的微服务-spring boot&amp;HTTP/2 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="RESTful风格的微服务-spring boot&amp;HTTP/2">
+            
+            RESTful风格的微服务-spring boot&amp;HTTP/2
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>微服务</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            spring boot
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/05/27</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>最近发布的Spring Boot 2.0中，其中一个新特性就是支持了HTTP/2，Spring Boot具有天生的易用性，现在再加上HTTP/2的高性能，还继承Spring框架的易拓展性，Spring Boot的未来应该是一片光明。本文将一步步教你配置Spring Boot项目支持HTTP/2。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>HTTP协议是一个很成功的协议，已经被广泛使用。然而，HTTP/1.1的底层传输方式的几个特性，已经对应用的整体性能产生了负面影响。特别是，HTTP/1.0在每次的TCP连接上只允许发送一次请求，在HTTP/1.1中增加了请求管线，但是这仅仅解决了部分的并发问题，并且仍然存在阻塞的现象，因此需要发送多个请求的HTTP/1.0和HTTP/1.1客户端就与服务器建立多个连接，以达到高并发低延迟的目的。</p>
+<p>另外，HTTP请求头中的字段经常重复且冗长，带来不必要的网络流量，并会导致初始的TCP拥塞窗口被快速填满。当在一个新的TCP连接上发送多个请求时，这可能导致更大的延迟。</p>
+<p>HTTP/2通过在底层连接上定义更优的HTTP语义来解决这些问题。具体来说，它允许在同一个连接上交错地传输请求和响应信息，并对HTTP请求头字段使用高效的压缩编码。它还允许对请求设置优先特权，让更重要的请求更快地完成，从而进一步提高性能。</p>
+<p>目前大部分浏览器、服务器端软件、客户端工具以及各种http协议的相关工具都开始支持HTTP/2，具体的支持范围可以查看<a href="https://github.com/http2/http2-spec/wiki/Implementations" target="_blank" rel="noopener">官方文档</a>。</p>
+<p>已经使用HTTP/2协议的网站也很多，像Google、Twitter、Akamai等这些国外的公司早就支持HTTP/2了，国内的网站比如知乎、新浪、阿里、京东等也都已经全面支持HTTP/2，所以HTTP/2已经过了前期推广的阶段，开始逐渐普及了。</p>
+<h2 id="01-HTTP-2"><a href="#01-HTTP-2" class="headerlink" title="01 HTTP/2"></a>01 HTTP/2</h2><p>HTTP协议从1991年的HTTP 0.9 到 HTTP 1.0、HTTP 1.1 再到 2015年开始至今的HTTP 2.0，每个版本都带来了惊人的升级体验。HTTP/2的惊人之处可以在<a href="https://http2.akamai.com/demo" target="_blank" rel="noopener">这里</a>体验一下，可以感受到相比HTTP 1.1在性能上的大幅提升。</p>
+<p><strong>HTTP/2的新特性：</strong></p>
+<ol>
+<li>新的二进制格式：HTTP 1.x的解析是基于文本，HTTP 2.0的解析是基于二进制，更加适用于服务器间信息传输了。</li>
+<li>多路复用（MultiPlexing）：也就是连接共享，每个请求都有一个ID，这样在一个连接上可以发送多个请求，并且它们在传输过程中是混杂在一起的，接收方可以根据请求的ID将请求再归属到不同的服务端请求里面。</li>
+<li>请求优先级（request prioritization）：HTTP/2中，一个源只有一个连接来实现多路复用，所有资源通过一个连接传输，为了避免线头堵塞（Head Of Line Block），这时资源传输的顺序就更重要了。优先加载重要资源，可以尽快渲染页面，提升用户体验。</li>
+<li>header压缩：通信上方各自缓存一份Header fields表，只传输压缩之后的相应编码，避免了重复的header传输。</li>
+<li>服务端推送（server push）：这个就很好理解了，HTTP 1.x都是只能从client拉取资源，HTTP/2支持从server端推送资源至client端。</li>
+</ol>
+<p><strong>HTPP 2.0的多路复用和HTTP 1.x的长连接的区别：</strong></p>
+<ul>
+<li>HTTP 1.0中一次请求响应就建立一次连接，用完关闭，每个请求都要建立一个连接。</li>
+<li>HTTP 1.1 Pipeling解决方式，也是我们常说的Keep-Alive模式，建立一次连接之后，若干个请求排队串行化单线程处理，后面的请求等待前面的请求返回了获得执行机会，一旦有请求超时等待，后续的请求只能被阻塞，毫无办法，也就是人们常说的线头阻塞（Head-of-Line Blocking）。</li>
+<li>HTTP 2.0多路复用，多个请求同时在一个连接上并行执行，若某个请求任务耗时严重，不会影响到其它请求的正常执行。</li>
+</ul>
+<p><img src="spring-boot2-and-http2/http1-http2.png" alt="HTTP 1.x 对比 HTTP 2.0"></p>
+<p><strong>HTTP/2 &amp; HTTPS</strong></p>
+<p>HTTPS是建构在SSL/TLS之上的HTTP协议，一种保证信息传输安全的协议，HTTP/2的定义本身是和HTTPS无关的。但是，在开放的互联网上HTTP/2将只用于<a href="https://网址，而" target="_blank" rel="noopener">https://网址，而</a> <a href="http://网址将继续使用HTTP/1.x，目的是在开放互联网上增加使用加密技术，以提供强有力的保护去遏制主动攻击。所以，在进行HTTP/2推广的同时也在强制推广HTTPS。" target="_blank" rel="noopener">http://网址将继续使用HTTP/1.x，目的是在开放互联网上增加使用加密技术，以提供强有力的保护去遏制主动攻击。所以，在进行HTTP/2推广的同时也在强制推广HTTPS。</a></p>
+<p>目前大部分HTTP/2的实现都是要强制使用HTTPS的，很少能见到有直接在TCP层之上实现的HTTP/2。</p>
+<p>因此，可能会有人说建立在HTTPS之上会额外消耗很多性能，这个答案是肯定的。HTTP使用TCP三次握手建立连接，客户端和服务器需要交换3个包，HTTPS除了TCP的三个包，还要加上SSL/TLS握手需要的9个包，所以一共是12个包，增加了建立连接的时间。但是HTTP/2的多路复用技术，建立一次连接可以一直发送请求，因此HTTPS带来的性能影响可以忽略不计。</p>
+<blockquote>
+<p>更加详细的HTTP/2的资料请参见<a href="https://http2.github.io/" target="_blank" rel="noopener">HTTP/2官方网站</a>。</p>
+</blockquote>
+<h2 id="02-Spring-Boot-Server端配置HTTP-2"><a href="#02-Spring-Boot-Server端配置HTTP-2" class="headerlink" title="02 Spring Boot Server端配置HTTP/2"></a>02 Spring Boot Server端配置HTTP/2</h2><p>通过上面的介绍，我们知道HTTP/2是HTTP协议一次优秀的升级，因此作为服务端开发者怎能不尝试这种技术呢。正好前几天最新发布的Spring Boot 2.0中宣布支持HTTP/2，下面我们就配置体验一下吧。</p>
+<p>由前面的介绍可以知道，HTTP/2的实现都是强制配置HTTPS的，Spring Boot的实现也不例外，因此我们先将HTTP配置成HTTPS，配置HTTPS有需要证书，所以下面就从生成证书开始介绍。</p>
+<p><strong>1. 生成证书的步骤：</strong></p>
+<ol>
+<li>keystore以及服务器密钥对儿的生成：<br><code>keytool -genkeypair -alias rabbitsslkey -keyalg RSA -validity 3650 -keystore rabbitkeystore.jks</code></li>
+<li>验证新生成的keystore文件以及证书信息：<br><code>keytool -list -v -keystore rabbitkeystore.jks</code></li>
+<li>导出公钥证书：<br><code>keytool -export -alias rabbitsslkey -keystore rabbitkeystore.jks -rfc -file rabbitcert.cer</code></li>
+<li>Truststore的生成以及公钥证书的导入：<br><code>keytool -import -alias rabbitsslkey -file rabbitcert.cer  -keystore rabbittruststore.jks</code></li>
+<li>验证生成的truststore文件：<br><code>keytool -list -v -keystore rabbittruststore.jks</code></li>
+</ol>
+<blockquote>
+<p>关于生成证书更加详细的介绍请参见<a href="http://blog.csdn.net/shfqbluestone/article/details/21242323" target="_blank" rel="noopener">详细解释步骤</a>。</p>
+</blockquote>
+<p><strong>2. 为Spring Boot项目配置HTTPS</strong></p>
+<ol>
+<li>将上面生成的私钥证书<code>rabbitkeystore.jks</code>复制到项目的resource目录下。</li>
+<li>在配置文件<code>application.yaml</code>中添加如下配置：<pre><code>server:
+ssl:
+ key-store: classpath:rabbitkeystore.jks
+ key-store-password: rabbit
+ key-password: rabbit
+</code></pre></li>
+<li>重启配置好的Spring Boot项目，即可使用HTTPS来访问你的服务了。</li>
+</ol>
+<p><strong>3. 为Spring Boot项目配置HTTP/2</strong></p>
+<p>使Spring Boot项目支持HTTP/2，只需要在<code>application.yaml</code>简单地配置<code>server.http2.enabled: true</code>就可以了。但是，在原生的JDK8中是不支持HTTP/2协议的，因此还需要选择支持HTTP/2的WEB服务器。</p>
+<p>在Spring Boot应用中常用到的WEB服务器有：Undertow、Jetty、Tomcat三个，使用这三个WEB服务器都能配置出支持HTTP/2的Spring Boot服务，具体步骤参见<a href="https://docs.spring.io/spring-boot/docs/2.0.x-SNAPSHOT/reference/htmlsingle/#howto-configure-http2" target="_blank" rel="noopener">官方文档</a>。而我选用是Undertow，使用它的原因不止是配置HTTP/2最简单，而且它还是这三个中性能最好的内嵌servlet服务器。具体操作步骤如下：</p>
+<ol>
+<li>在Spring Boot的依赖中排除默认的tomcat服务器，引入undertow服务器，方法是修改项目的POM文件，如下：<pre><code>&lt;dependency&gt;
+ &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+ &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+ &lt;exclusions&gt;
+     &lt;exclusion&gt;
+         &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+         &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;
+     &lt;/exclusion&gt;
+ &lt;/exclusions&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+ &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+ &lt;artifactId&gt;spring-boot-starter-undertow&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre></li>
+<li>在<code>application.yaml</code>中添加配置：<pre><code>server:
+http2:
+ enabled: true
+</code></pre></li>
+<li>完成配置，重启Spring Boot项目即可。</li>
+<li>验证请求是否是HTTP/2协议，在Chrome浏览器中，可以在地址栏输入<code>chrome://net-internals/#http2</code>查看，结果如下图所示：</li>
+</ol>
+<p><img src="spring-boot2-and-http2/http2-result.png" alt="HTTP/2验证结果"></p>
+<p>以上步骤就完成了为Spring Boot项目配置HTTP/2，具体更多信息请参见<a href="https://docs.spring.io/spring-boot/docs/2.0.x-SNAPSHOT/reference/htmlsingle/#howto-configure-http2" target="_blank" rel="noopener">Spring Boot 的官方介绍</a>。</p>
+<h2 id="03-HTTP-2协议的服务如何调用"><a href="#03-HTTP-2协议的服务如何调用" class="headerlink" title="03 HTTP/2协议的服务如何调用"></a>03 HTTP/2协议的服务如何调用</h2><p>在昨天的文章（<a href="https://www.jianshu.com/p/8376d709d972" target="_blank" rel="noopener">RESTful风格的微服务-Feign调用服务</a>）中，介绍了Feign如何调用HTTP微服务。现在普通的HTTP微服务变成了安全加密的HTTPS和高性能的HTTP/2，我们该如何调用，需要怎样改造调用微服务的客户端？</p>
+<p><strong>1. 配置调用HTTPS的微服务的客户端</strong></p>
+<ol>
+<li>将带有公钥的<code>rabbittruststore.jks</code>复制到项目的resource目录下。</li>
+<li>使用Apache httpcomponents编写Http client客户端：<br>```<br>package com.rabbit.boot.consumer.Util;</li>
+</ol>
+<p>import org.apache.http.client.HttpClient;<br>import org.apache.http.conn.ssl.NoopHostnameVerifier;<br>import org.apache.http.conn.ssl.SSLConnectionSocketFactory;<br>import org.apache.http.conn.ssl.TrustSelfSignedStrategy;<br>import org.apache.http.impl.client.CloseableHttpClient;<br>import org.apache.http.impl.client.HttpClients;<br>import org.apache.http.ssl.SSLContexts;</p>
+<p>import javax.net.ssl.SSLContext;<br>import java.io.File;</p>
+<p>/**</p>
+<ul>
+<li>@Author: guoyankui</li>
+<li><p>@DATE: 09/03/2018 5:17 PM<br>*/<br>public class HttpClientUtils {</p>
+<p> // 包含授信公钥文件路径<br> static String trustStorePath = HttpClientUtils.class.getResource(“/rabbittruststore.jks”).getPath();</p>
+<p> /**</p>
+<ul>
+<li>获取安全的加密（Https）的HttpClient</li>
+<li><p>@return<br>*/<br>public static HttpClient getTLSHttpClient(){<br> SSLContext sslcontext = null;<br> // Trust own CA and all self-signed certs<br> try {</p>
+<pre><code> sslcontext = SSLContexts.custom()
+         .loadTrustMaterial(new File(trustStorePath), &quot;rabbit&quot;.toCharArray(), new TrustSelfSignedStrategy())
+         .build();
+</code></pre><p> } catch (Exception e) {</p>
+<pre><code> e.printStackTrace();
+</code></pre><p> }</p>
+<p> // Allow TLSv1 protocol only<br> SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(</p>
+<pre><code>     sslcontext, new String[] { &quot;TLSv1&quot; }, null,
+     NoopHostnameVerifier.INSTANCE);
+</code></pre><p> CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();<br> return httpclient;<br>}<br>}</p>
+<pre><code>3. 设置Feign客户端：
+</code></pre><p>private PersonService personService = Feign.builder().client(new ApacheHttpClient(HttpClientUtils.getTLSHttpClient()))</p>
+<pre><code> .encoder(new JacksonEncoder())
+ .decoder(new JacksonDecoder()).target(PersonService.class, baseUrl);
+</code></pre><p>```</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>这样就可以使用Feign + Http Client (apache httpcomponents) 调用HTTPS的微服务了。</p>
+<p><strong>2. 配置调用HTTP/2的微服务的客户端</strong></p>
+<ul>
+<li>Java自带的HTTP client，在JDK9才开始支持HTTP/2客户端；</li>
+<li>HttpComponents HttpClient，在<a href="https://hc.apache.org/news.html" target="_blank" rel="noopener">5.0版本</a>才开始支持http2.0，目前5.0还是Beta版；</li>
+<li>OkHttp，从OkHttp3开始支持HTTP/2，现在已经是<a href="http://square.github.io/okhttp/" target="_blank" rel="noopener">v3.10.0</a>版本；</li>
+</ul>
+<p>关于<em>配置编写调用HTTP/2的微服务的客户端</em>还没有做出实践操作，各位朋友有建议的请评论区探讨。</p>
+<h2 id="04-总结"><a href="#04-总结" class="headerlink" title="04 总结"></a>04 总结</h2><p>本文从HTTP/2协议的产生原因以及新特性开始讨论，由于个人也是刚开始学习相关知识，其中描述不尽全面，比如HTTP/2的ALPN（协议协商）原理未涉及。后面还介绍了在Spring Boot项目如何实现HTTP/2协议的服务，本文混杂这HTTP/2的原理和实践，希望能带您入门，更加深入的相关知识需要各位自己探索了。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/05/27/deploy-microservice-and-graceful-shutdown/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">五月 2018</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">三月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Feign/" style="font-size: 10px;">Feign</a> <a href="/tags/HTPP-2/" style="font-size: 10px;">HTPP/2</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/deploy/" style="font-size: 10px;">deploy</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/h2c/" style="font-size: 10px;">h2c</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/http2/" style="font-size: 10px;">http2</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/maven-plugin/" style="font-size: 10px;">maven plugin</a> <a href="/tags/restful/" style="font-size: 12.5px;">restful</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/优雅停机/" style="font-size: 12.5px;">优雅停机</a> <a href="/tags/健康检查/" style="font-size: 10px;">健康检查</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
