@@ -1,0 +1,422 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://rabbitgyk.com">
+    <!--SEO-->
+
+<meta name="description" content="一个程序员的修行之路"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>开发pinpoint插件log4j2 | rabbitGYK&#39;s blog</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="rabbitGYK&#39;s blog" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+    <link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?d5fcdd0ff48c66e673939cbd25bd3a93";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw fa-home"></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/微服务/"><i class="fa fa-fw fa-gears"></i>微服务</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Docker/"><i class="fa fa-fw fa-ship"></i>Docker</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/区块链/"><i class="fa fa-fw fa-window-restore"></i>区块链</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/技术栈/"><i class="fa fa-fw fa-tasks"></i>技术栈</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw fa-taxi"></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw fa-paint-brush"></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="开发pinpoint插件log4j2">
+            
+            开发pinpoint插件log4j2
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>工具</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            调用链
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2018/06/18</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote>
+<p>pinpoint是一个非常优秀的APM工具，适用于使用Java构建的大型分布式系统。受到论文 <a href="http://research.google.com/pubs/pub36356.html" title="Google Dapper" target="_blank" rel="noopener">Dapper</a>的启发，pinpoint提供了一套体验很好的调用链分析视图。</p>
+</blockquote>
+<h2 id="00-前言"><a href="#00-前言" class="headerlink" title="00 前言"></a>00 前言</h2><p>首先，说明一下开发pinpoint的log4j2插件的初衷，我们最近在做微服务治理和PAAS平台，当我们做到微服务监控的时候，就遇到微服务治理中的一个重要问题，就是大量微服务被创建，并上线运行，它们之间的调用关系是怎样的？其中的数据流向是什么样？如果我们对这些信息没有一个全面的掌握的话，微服务化的系统简直就成了一堆乱麻，出了问题完全不知道从何下手。</p>
+<p>其次，最近流行的微服务解决方案：service Mesh，又在微服务中加入了很多独立进程的组件，它们来完成微服务的治理工作，当数据流量经过它们的时候，数据是否能够完整，这些组件是否是处在正常工作的状态？都需要我们监控掌握。</p>
+<p>这些问题不仅需要各自的监控告警，还需要一个整体调用链的监控。这时我们就选择了Pinpoint调用链监控工具，在众多的调用链监控工具（cat、skywalking、zipkin等）中，我们选择它主要从以下几个方面考虑：</p>
+<ul>
+<li>代码的侵入程度</li>
+<li>插件生态的完整性</li>
+<li>监控的力度</li>
+<li>是否符合标准规范（openTrancing）</li>
+</ul>
+<p>综合以上的种种考虑，选择了pinpoint来实现这个调用链的监控功能。</p>
+<p>但是由于我们选择的微服务技术栈的先进性，有个别功能pinpoint的现有插件不能完成监控，于是就需要我们做一定的定制性开发。</p>
+<p>第一个要实现的就是log4j2日志组件的pinpoint插件，这个插件的功能就是将调用链的一些信息放在log插件的<code>MDC</code>中，以方便将这些信息输出打印到日志文件中。</p>
+<p>为什么选择log4j2作为log日志的输出组件呢？官方的pinpoint插件中包含有log4j和logback的插件，如果选择这两个日志组件，pinpoint不需要改造即可完成功能需求。我们的理由是，首先log4j不能满足我们的日志文件切分和滚动覆盖的需求，logback有一些性能问题。从log日志组件的发展上看，logack是log4j的升级版，log4j2是logback的升级版，每一个升级版本都做了很多优化。所以从需求和性能出发我们选择最新的log4j2.</p>
+<p>可能读者们还有一个疑问，为什么需要将调用链的信息打印到日志文件中呢？这是因为，当系统运行出现问题的时候，我们需要快速排查这个问题，这时候需要能将各个监控信息快速关联起来，更多有关联的信息，才有助于我们排查问题，否则一堆孤立的信息对我们帮助是不大的。通常我们的日志信息是存储在日志中心（ELK）的，我们通过一定的格式化手段将每条日志信息中都带有调用链的tranceId信息，这时我们就可以拿在pinpoint中的任意一条调用链的tranceId，到日志中心搜索出对应的所有的日志。</p>
+<p>各种理由准备充分，确定要开发log4j2的pinpoint日志插件了。</p>
+<h2 id="01-准备工作"><a href="#01-准备工作" class="headerlink" title="01 准备工作"></a>01 准备工作</h2><p>在开发之前需要做几个准备工作，以便我们能够顺利开展log4j2的插件开发。</p>
+<ol>
+<li>下载源代码之前，先将代码：<a href="https://github.com/naver/pinpoint" target="_blank" rel="noopener">naver/pinpoint</a>，fork一份到自己的仓库，方便自己提交代码。</li>
+<li>从自己github仓库中下载fork的pinpoint源代码。</li>
+<li>进入根目录<code>pinpoint/</code>下整体编译一下：<code>mvn clean install -Dmaven.test.skip=true</code>，如果网络好的话，很快就能编译成功。</li>
+<li>使用IDEA打开源代码。</li>
+</ol>
+<h2 id="02-开发代码"><a href="#02-开发代码" class="headerlink" title="02 开发代码"></a>02 开发代码</h2><p>在开发pinpoint插件之前，需要阅读一下官方文档中的<a href="http://naver.github.io/pinpoint/plugindevguide.html" target="_blank" rel="noopener">pinpoint插件开发指南</a>。但是我们现在要开发的log4j2的插件功能相对简单，从上述描述中，可以知道，主要就是将pinpoint调用链相关信息输出到日志中。</p>
+<p>首先我们查看一下，log4j和logback的插件是如何开发的，我们模仿一下即可。主要包括一下几点：</p>
+<ul>
+<li>在plugins模块下创建log4j2的maven子模块，创建完成如下图：</li>
+</ul>
+<p><img src="/2018/06/18/develop-pinpoint-plugin-log4j2/pinpoint-code.png" alt="log4j2-module"></p>
+<ul>
+<li>在pom中添加log4j2的依赖：</li>
+</ul>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+    &lt;version&gt;2.10.0&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>找到代码插入点 <code>org.apache.logging.log4j.ThreadContext</code>。</li>
+<li>在拦截器中，将需要的信息插入到其中。</li>
+<li>这样信息就到了log的 <code>MDC</code> 中。</li>
+</ul>
+<p>完整的代码参见我的<a href="https://github.com/rabbitgyk/pinpoint/tree/master/plugins/log4j2" target="_blank" rel="noopener">github</a>。log4j2的插件代码参考官方github中的一个<a href="https://github.com/naver/pinpoint/issues/3055" target="_blank" rel="noopener">issue</a>问题。</p>
+<h2 id="03-编译"><a href="#03-编译" class="headerlink" title="03 编译"></a>03 编译</h2><p>在编译之前需要注意几点：</p>
+<ul>
+<li>在plugins的pom文件中添加log4j2的maven坐标：</li>
+</ul>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.navercorp.pinpoint&lt;/groupId&gt;
+    &lt;artifactId&gt;pinpoint-log4j2-plugin&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><ul>
+<li>修改编译的jdk版本，由jdk1.6升级为jdk1.7，原因是我们依赖的log4j2的jar要求jdk的版本是1.7+，在总的pom文件中修改（操作系统的环境变量<code>JAVA_7_HOME</code>要存在）：</li>
+</ul>
+<pre><code>&lt;jdk.version&gt;1.7&lt;/jdk.version&gt;
+&lt;jdk.home&gt;${env.JAVA_7_HOME}&lt;/jdk.home&gt;
+</code></pre><ul>
+<li>升级了jdk版本之后，编译会发现，pinpoint中有个模块是依赖jdk1.6的，就是 <code>pinpoint-profiler-optional-jdk6</code>，它是一个可选的模块，于是需要我们在编译的是排除掉。</li>
+</ul>
+<p>这样最后我们编译的命令就是：<code>mvn -pl &#39;!com.navercorp.pinpoint:pinpoint-profiler-optional-jdk6&#39; clean install -Dmaven.test.skip=true</code>，不出意外我们应该能编译成功。</p>
+<p>最后编译完成之后，可以在agent模块的target目录下找到我们需要的最新的agent包，拿走替换原来的agent即可实现支持log4j2了，当然需要在<code>pinpoint.config</code>中需要配置开启：<code>profiler.log4j2.logging.transactioninfo=true</code>。</p>
+<h2 id="04-结束"><a href="#04-结束" class="headerlink" title="04 结束"></a>04 结束</h2><p>到此为止，完成了第一个pinpoint插件的开发，相对比较简单，继续深入学习pinpoint的实现原理，希望能根据项目需求开发更多的插件，以实现我们全链路连贯性监控的目标。</p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">rabbitGYK</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+    
+        <a href="/2018/05/27/spring-boot2-and-http2/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <script type="text/javascript" src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    <script>
+    var gitment = new Gitment({
+        id: window.location.pathname,
+        owner:"rabbitgyk",
+        repo:"rabbitgyk.github.io",
+        oauth: {
+          client_id:"7a93c03ab378debc7255",
+          client_secret:"16f434c64b36be9d141b1cbbe270514fbe461b8c"
+        },
+        perPage:"10",
+    });
+    gitment.render('comments');
+    </script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>rabbitGYK的博客已经上线！欢迎访问~ <br/>
+github地址：<a href="https://github.com/rabbitgyk" title="fork me" target="_blank">GitHub</a> <br/>
+<hr/>程序员，web全栈工程师，主语言java，关注微服务生态圈。
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/"><i class="fa" aria-hidden="true">Docker</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/"><i class="fa" aria-hidden="true">工具</i></a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/微服务/"><i class="fa" aria-hidden="true">微服务</i></a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术栈/"><i class="fa" aria-hidden="true">技术栈</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/"><i class="fa" aria-hidden="true">六月 2018</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/"><i class="fa" aria-hidden="true">五月 2018</i></a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/"><i class="fa" aria-hidden="true">三月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">26</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/API-Gateway/" style="font-size: 10px;">API Gateway</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Elasticsearch/" style="font-size: 12.5px;">Elasticsearch</a> <a href="/tags/Feign/" style="font-size: 10px;">Feign</a> <a href="/tags/HTPP-2/" style="font-size: 10px;">HTPP/2</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/clean-code/" style="font-size: 10px;">clean code</a> <a href="/tags/deploy/" style="font-size: 10px;">deploy</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/flume/" style="font-size: 10px;">flume</a> <a href="/tags/h2c/" style="font-size: 10px;">h2c</a> <a href="/tags/happy-new-year/" style="font-size: 10px;">happy new year</a> <a href="/tags/http2/" style="font-size: 10px;">http2</a> <a href="/tags/java/" style="font-size: 17.5px;">java</a> <a href="/tags/log4j2/" style="font-size: 10px;">log4j2</a> <a href="/tags/maven-plugin/" style="font-size: 10px;">maven plugin</a> <a href="/tags/pinpoint/" style="font-size: 10px;">pinpoint</a> <a href="/tags/restful/" style="font-size: 12.5px;">restful</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/事件驱动/" style="font-size: 10px;">事件驱动</a> <a href="/tags/事务/" style="font-size: 10px;">事务</a> <a href="/tags/优雅停机/" style="font-size: 12.5px;">优雅停机</a> <a href="/tags/健康检查/" style="font-size: 10px;">健康检查</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/分布式定时任务/" style="font-size: 15px;">分布式定时任务</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/微服务/" style="font-size: 20px;">微服务</a> <a href="/tags/故障/" style="font-size: 10px;">故障</a> <a href="/tags/数据/" style="font-size: 10px;">数据</a> <a href="/tags/日志/" style="font-size: 10px;">日志</a> <a href="/tags/架构/" style="font-size: 10px;">架构</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/调用链/" style="font-size: 10px;">调用链</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/rabbitgyk" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:yankuiguo@gmail.com" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">沈立洋博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2018
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    <a href="//github.com/rabbitgyk/rabbitgyk.github.io" class="copyright-links" target="_blank" rel="nofollow">rabbitGYK</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
